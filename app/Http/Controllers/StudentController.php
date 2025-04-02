@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -11,7 +12,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $students = Student::paginate(5);
+        return view('admin.students.index', compact('students'));
     }
 
     /**
@@ -19,7 +21,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.students.create');
     }
 
     /**
@@ -27,7 +29,20 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'gender' => 'required|string|max:10',
+            'nrc' => 'required|string|max:20',
+            'dob' => 'required|date',
+            'email' => 'required|string|email|max:50',
+            'phone' => 'required|string|max:30',
+            'address' => 'required|string|max:100',
+            'parent_info' => 'required|string|max:100',
+        ]);
+
+        Student::create($request->all());
+
+        return redirect()->route('students.index')->with('success', 'Student created successfully.');
     }
 
     /**
@@ -43,7 +58,8 @@ class StudentController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $student = Student::find($id);
+        return view('admin.students.edit', compact('student'));
     }
 
     /**
@@ -51,7 +67,19 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'gender' => 'required|string|max:10',
+            'nrc' => 'required|string|max:20',
+            'dob' => 'required|date',
+            'email' => 'required|string|email|max:50',
+            'phone' => 'required|string|max:30',
+            'address' => 'required|string|max:100',
+            'parent_info' => 'required|string|max:100',
+        ]);
+        $student = Student::find($id);
+        $student->update($request->all());
+        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
     }
 
     /**
@@ -59,6 +87,8 @@ class StudentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $students = Student::find($id);
+        $students->delete();
+        return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
     }
 }

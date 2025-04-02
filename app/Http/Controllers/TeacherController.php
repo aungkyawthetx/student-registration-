@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 
 class TeacherController extends Controller
@@ -11,7 +12,8 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        //
+        $teachers = Teacher::paginate(5);
+        return view('admin.teachers.index', compact('teachers'));
     }
 
     /**
@@ -19,7 +21,7 @@ class TeacherController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.teachers.create');
     }
 
     /**
@@ -27,7 +29,15 @@ class TeacherController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'=>'required|string|max:50',
+            'subject'=>'required|string|max:50',
+            'email'=>'required|string|email|max:50',
+            'phone'=>'required|string|max:30',
+        ]);
+
+        Teacher::create($request->all());
+        return redirect()->route('teachers.index')->with('success', 'Teacher created successfully.');
     }
 
     /**
@@ -43,7 +53,8 @@ class TeacherController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $teacher = Teacher::find($id);
+        return view('admin.teachers.edit', compact('teacher'));
     }
 
     /**
@@ -51,7 +62,17 @@ class TeacherController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name'=>'required|string|max:50',
+            'subject'=>'required|string|max:50',
+            'email'=>'required|string|email|max:50',
+            'phone'=>'required|string|max:30',
+        ]);
+
+        $teacher = Teacher::find($id);
+        $teacher->update($request->all());
+
+        return redirect()->route('teachers.index')->with('success', 'Teacher updated successfully.');
     }
 
     /**
@@ -59,6 +80,8 @@ class TeacherController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $teacher = Teacher::find($id);
+        $teacher->delete();
+        return redirect()->route('teachers.index')->with('success', 'Teacher deleted successfully.');
     }
 }

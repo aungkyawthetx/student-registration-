@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\admin;
 
-use App\Models\Course;
+use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
-class CourseController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        if (Gate::denies('view', Course::class)) {
+        if (Gate::denies('view', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $courses = Course::paginate(5);
-        return view('admin.courses.index', compact('courses'));
+        $roles = Role::paginate(5);
+        return view('admin.roles.index', compact('roles'));
     }
 
     /**
@@ -25,10 +26,10 @@ class CourseController extends Controller
      */
     public function create()
     {
-        if (Gate::denies('create', Course::class)) {
+        if (Gate::denies('create', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        return view('admin.courses.create');
+        return view('admin.roles.create');
     }
 
     /**
@@ -36,20 +37,16 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        if (Gate::denies('create', Course::class)) {
+        if (Gate::denies('create', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $request->validate([
-            'name' => 'required|string|max:50',
-            'duration' => 'required|string|max:50',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'fees' => 'required',
+            'name'=> 'required|max:50',
+            'description'=>'required|string|max:100',
         ]);
 
-        Course::create($request->all());
-
-        return redirect()->route('courses.index')->with('success', 'Course created successfully.');
+        Role::create($request->all());
+        return redirect()->route('roles.index')->with('success','Role created successfully.');
     }
 
     /**
@@ -65,11 +62,11 @@ class CourseController extends Controller
      */
     public function edit(string $id)
     {
-        if (Gate::denies('update', Course::class)) {
+        if (Gate::denies('update', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $course = Course::find($id);
-        return view('admin.courses.edit', compact('course'));
+        $role = Role::find($id);
+        return view('admin.roles.edit', compact('role'));
     }
 
     /**
@@ -77,21 +74,16 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if (Gate::denies('update', Course::class)) {
+        if (Gate::denies('update', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $request->validate([
-            'name' => 'required|string|max:50',
-            'duration' => 'required|string|max:50',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'fees' => 'required',
+            'name'=> 'required|max:50',
+            'description'=>'required|string|max:100',
         ]);
-
-        $course = Course::find($id);
-        $course->update($request->all());
-
-        return redirect()->route('courses.index')->with('success', 'Course updated successfully.');
+        $role = Role::find($id);
+        $role->update($request->all());
+        return redirect()->route('roles.index')->with('success','Role updated successfully.');
     }
 
     /**
@@ -99,24 +91,24 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
-        if (Gate::denies('destroy', Course::class)) {
+        if (Gate::denies('delete', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $course = Course::find($id);
-        $course->delete();
-        return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
+        $role = Role::find($id);
+        $role->delete();
+        return redirect()->route('roles.index')->with('success','Role deleted successfully.');
     }
 
     public function search(Request $request){
         $searchData = $request->search_data;
         if($searchData == ""){
-            return redirect()->route('courses.index');
+            return redirect()->route('roles.index');
         } else {
-            $courses =Course::where('name','LIKE',"%".$searchData."%")
+            $roles =Role::where('name','LIKE',"%".$searchData."%")
             ->orWhere('id', '=',$searchData)
             ->orWhere('name','LIKE','%'.$searchData.'%')
             ->paginate(5);
-            return view('admin.courses.index', compact('courses'));
+            return view('admin.roles.index', compact('roles'));
         }
     }
 }

@@ -12,20 +12,21 @@
   {{-- fontawesome  --}}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-<body data-bs-theme="light" class="d-flex flex-column min-vh-100">
-  @include('components.navbar')
-  @include('components.sidenav')
-  <div class="container mt-4 d-none d-lg-block flex-grow-1" style="padding-left: 220px; min-height: 70vh;">
-    @yield('content')
-  </div>
-  <div class="container mt-2 d-block d-lg-none flex-grow-1">
-    @yield('content')
-  </div>
-  @include('components.footer')
-
-
-
-
+@extends('components.dark-mode')
+<body data-bs-theme="light" style="overflow-x: hidden;">
+    <div class="img-container">
+    <img src="/images/auth-bg.jpg" alt="auth-bg" id="auth-bg" class="img-fluid" style="width:100%; height: 100vh; object-fit: cover;">
+</div>
+    <div class="container position-absolute top-50 start-50 translate-middle" style="z-index: 1;">
+        <div class="card m-auto " style="max-width: 700px; border-radius: 10px;">
+            <div class="card-header text-center" style="border-radius: 10px 10px 0 0;">
+                <h4 class="mb-0">@yield('auth-title')</h4>
+            </div>
+            <div class="card-body p-4">
+                @yield('content')
+            </div>
+        </div>
+    </div>
 {{-- bootstrap js --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>

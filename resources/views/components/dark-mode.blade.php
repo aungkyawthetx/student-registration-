@@ -1,0 +1,57 @@
+<style>
+    .checkbox{
+      opacity: 0;
+      position: absolute;
+      display: none !important;
+    }
+    .checkbox-label{
+      background-color: #111;
+      cursor: pointer;
+      width: 50px;
+      height: 26px;
+      border-radius: 50px;
+      position: relative;
+      padding: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .fa-moon{
+      color: #c3d6e3;
+    }
+    .fa-sun{
+      color: #ffc074;
+    }
+    .checkbox-label .ball{
+      background-color: #fff;
+      width: 22px;
+      height: 22px;
+      position: absolute;
+      left: 2px;
+      top: 2px;
+      border-radius: 50%;
+      transition: transform 0.2s linear;
+    }
+    .checkbox:checked + .checkbox-label .ball{
+      transform: translateX(24px);
+    }
+    #checkbox{display: none;}
+  </style>
+  <script>
+    const checkbox = document.getElementById('checkbox');
+    const body = document.body;
+    const theme = localStorage.getItem('theme');
+    if (theme) {
+      body.setAttribute('data-bs-theme', theme);
+      checkbox.checked = theme === 'dark';
+    }
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        body.setAttribute('data-bs-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.setAttribute('data-bs-theme', 'light');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>

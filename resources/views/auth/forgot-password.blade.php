@@ -1,8 +1,8 @@
 @extends('layouts.auth')
-@section('title', 'Login')
-@section('auth-title', 'Log in to your account')
+@section('title', 'Forgot Password')
+@section('auth-title', 'Reset Password')
 @section('content')
-<form action="{{ route('login.store') }}" method="POST">
+<form action="{{ route('reset-pass') }}" method="POST">
     @csrf
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
@@ -23,22 +23,9 @@
             <span class="text-danger"><small>{{ $message }}</small></span>
         @enderror
     </div>
-    <div class="mb-3">
-        <label for="password" class="form-label"><i class="fas fa-lock"></i> Password</label>
-        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Enter your password">
-        @error('password')
-            <span class="text-danger"><small>{{ $message }}</small></span>
-        @enderror
-    </div>
-    <div class="mb-3">
-        <label for="remember_me">
-            <input type="checkbox" name="remember" id="remember_me"> Remember Me
-        </label>
-    </div>
     <div class="mb-3 d-flex justify-content-between align-items-center">
-        <a href="{{route('register')}}" class="text-body">>> Create an account here</a>
-        <a href="{{route('forgot-pass')}}" class="text-body">>> Forgot password</a>
+        <a href="{{route('login')}}" class="text-body">>> Back to login</a>
     </div>
-    <button type="submit" class="btn btn-primary w-100 text-uppercase fw-bold">Login</button>
+    <button type="submit" class="btn btn-primary w-100 text-uppercase fw-bold">Reset password</button>
 </form>
 @endsection

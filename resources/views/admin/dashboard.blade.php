@@ -13,6 +13,5 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
-    <h6>Welcome back {{Auth::user()->name}}</h6>
     <h2>Admin Dashboard</h2>
 @endsection

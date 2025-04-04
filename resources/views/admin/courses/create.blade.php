@@ -1,9 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Add New Course')
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h4>Add New Course</h4>
+    <div class="card border-0 shadow bg-light">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h4 class="text-uppercase">New Course</h4>
+            <a href="{{ route('courses.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
         </div>
         <div class="card-body">
             <form action="{{ route('courses.store') }}" method="POST">
@@ -28,7 +29,7 @@
                     <label for="fees" class="form-label ms-2"><i class="fas fa-dollar-sign"></i> Fees</label>
                     <input type="number" class="form-control" id="fees" name="fees" placeholder="Enter course fees">
                 </div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add</button>
+                <button type="submit" class="btn btn-primary float-end"><i class="fas fa-plus"></i> Add</button>
             </form>
         </div>
     </div>

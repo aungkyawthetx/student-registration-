@@ -3,17 +3,17 @@
         <h6 class="text-underline">Students</h6>
         <li class="nav-item">
             <a href="{{route('students.index')}}" class="nav-link {{ request()->routeIs('students.index') ? 'active' : 'link-dark' }}" aria-current="page">
-                <i class="bi bi-people"></i> Students
+                <i class="fa-solid fa-users"></i> Students
             </a>
         </li>
         <li>
-            <a href="" class="nav-link link-dark">
-                <i class="bi bi-card-list"></i> Enrollment
+            <a href="{{ route('enrollments.index') }}" class="nav-link {{ request()->routeIs('enrollments.index') ? 'active' : 'link-dark' }}">
+                <i class="fa-solid fa-clipboard-list"></i> Enrollment
             </a>
         </li>
         <li>
-            <a href="" class="nav-link link-dark">
-                <i class="bi bi-check2-square"></i> Attendance
+            <a href="{{ route('attendances.index') }}" class="nav-link {{ request()->routeIs('attendances.index') ? 'active' : 'link-dark' }}">
+                <i class="fa-regular fa-square-check"></i> Attendance
             </a>
         </li>
         <hr>
@@ -24,7 +24,7 @@
             </a>
         </li>
         <li>
-            <a href="" class="nav-link link-dark">
+            <a href="{{ route('teachercourses.index') }}" class="nav-link {{ request()->routeIs('teachercourses.index') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-journal-bookmark"></i> Teacher Courses
             </a>
         </li>
@@ -41,8 +41,8 @@
             </a>
         </li>
         <li>
-            <a href="" class="nav-link link-dark">
-                <i class="bi bi-calendar"></i> Class Timetables
+            <a href="{{ route('classes.index') }}" class="nav-link {{ request()->routeIs('classes.index') ? 'active' : 'link-dark' }}">
+                <i class="fa-regular fa-calendar"></i> Classes
             </a>
         </li>
         <hr>

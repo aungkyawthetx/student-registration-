@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,8 @@ class TeacherController extends Controller
      */
     public function create()
     {
-        return view('admin.teachers.create');
+        $courses = Course::all();
+        return view('admin.teachers.create', compact('courses'));
     }
 
     /**
@@ -31,13 +33,18 @@ class TeacherController extends Controller
     {
         $request->validate([
             'name'=>'required|string|max:50',
-            'subject'=>'required|string|max:50',
+            'course'=>'required|string|max:50',
             'email'=>'required|string|email|max:50',
             'phone'=>'required|string|max:30',
         ]);
 
-        Teacher::create($request->all());
-        return redirect()->route('teachers.index')->with('success', 'Teacher created successfully.');
+        Teacher::create([
+            'name' => $request->name, 
+            'subject' => $request->course, 
+            'email' =>  $request->email, 
+            'phone' => $request->phone,
+        ]);
+        return redirect()->route('teachers.index')->with('success', 'Teacher added successfully.');
     }
 
     /**
@@ -82,6 +89,6 @@ class TeacherController extends Controller
     {
         $teacher = Teacher::find($id);
         $teacher->delete();
-        return redirect()->route('teachers.index')->with('success', 'Teacher deleted successfully.');
+        return redirect()->route('teachers.index')->with('success', 'One row deleted.');
     }
 }

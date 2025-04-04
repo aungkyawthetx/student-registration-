@@ -3,16 +3,17 @@
 namespace App\Models;
 
 use App\Models\Course;
-use App\Models\Teacher;
+use App\Models\Student;
 use Illuminate\Database\Eloquent\Model;
 
-class TeacherCourse extends Model
+class Enrollment extends Model
 {
+
     protected $guarded = [];
 
-    public function teacher()
+    public function student()
     {
-        return $this->belongsTo(Teacher::class);
+        return $this->belongsTo(Student::class);
     }
 
     public function course()

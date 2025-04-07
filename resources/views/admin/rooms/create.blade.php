@@ -1,9 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Add New Room')
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h4>Add New Room</h4>
+    <div class="card border-0 shadow bg-light">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h4 class="text-uppercase"> New Room</h4>
+            <a href="{{ route('rooms.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> BACK</a>
         </div>
         <div class="card-body">
             <form action="{{ route('rooms.store') }}" method="POST">
@@ -22,7 +23,7 @@
                         <span class="text-danger"><small>{{ $message }}</small></span>
                     @enderror
                 </div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add</button>
+                <button type="submit" class="btn btn-primary float-end"><i class="fas fa-plus"></i> Add</button>
             </form>
         </div>
     </div>

@@ -9,7 +9,11 @@ use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\TeacherCoursesController;
+
+
 
 Route::get('/', function () {
     return view('admin.dashboard');
@@ -42,5 +46,4 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/courses_search', [CourseController::class,'search'])->name('courses.search');
     //rooms
     Route::resource('rooms', RoomController::class);
-    Route::get('/rooms_search', [RoomController::class,'search'])->name('rooms.search');
 });

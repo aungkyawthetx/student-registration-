@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -41,13 +42,18 @@ class TeacherController extends Controller
         }
         $request->validate([
             'name'=>'required|string|max:50',
-            'subject'=>'required|string|max:50',
+            'course'=>'required|string|max:50',
             'email'=>'required|string|email|max:50',
             'phone'=>'required|string|max:30',
         ]);
 
-        Teacher::create($request->all());
-        return redirect()->route('teachers.index')->with('success', 'Teacher created successfully.');
+        Teacher::create([
+            'name' => $request->name, 
+            'subject' => $request->course, 
+            'email' =>  $request->email, 
+            'phone' => $request->phone,
+        ]);
+        return redirect()->route('teachers.index')->with('success', 'Teacher added successfully.');
     }
 
     /**

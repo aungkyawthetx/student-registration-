@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('class_timetables', function (Blueprint $table) {
+        Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
-            $table->integer('room_id');
+            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('course_id');
             $table->date('date');
-            $table->string('start_time');
-            $table->string('end_time');
-            $table->date('end_date');
             $table->timestamps();
+            //FK
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('class_timetables');
+        Schema::dropIfExists('enrollments');
     }
 };

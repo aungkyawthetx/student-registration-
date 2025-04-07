@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TeacherController extends Controller
 {
@@ -13,6 +14,9 @@ class TeacherController extends Controller
      */
     public function index()
     {
+        if (Gate::denies('view', Teacher::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $teachers = Teacher::paginate(5);
         return view('admin.teachers.index', compact('teachers'));
     }
@@ -22,8 +26,10 @@ class TeacherController extends Controller
      */
     public function create()
     {
-        $courses = Course::all();
-        return view('admin.teachers.create', compact('courses'));
+        if (Gate::denies('create', Teacher::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
+        return view('admin.teachers.create');
     }
 
     /**
@@ -31,6 +37,9 @@ class TeacherController extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::denies('create', Teacher::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $request->validate([
             'name'=>'required|string|max:50',
             'course'=>'required|string|max:50',
@@ -60,6 +69,9 @@ class TeacherController extends Controller
      */
     public function edit(string $id)
     {
+        if (Gate::denies('update', Teacher::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $teacher = Teacher::find($id);
         return view('admin.teachers.edit', compact('teacher'));
     }
@@ -69,6 +81,9 @@ class TeacherController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (Gate::denies('update', Teacher::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $request->validate([
             'name'=>'required|string|max:50',
             'subject'=>'required|string|max:50',
@@ -87,8 +102,26 @@ class TeacherController extends Controller
      */
     public function destroy(string $id)
     {
+        if (Gate::denies('delete', Teacher::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $teacher = Teacher::find($id);
         $teacher->delete();
-        return redirect()->route('teachers.index')->with('success', 'One row deleted.');
+        return redirect()->route('teachers.index')->with('success', 'Teacher deleted successfully.');
+    }
+
+    public function search(Request $request){
+        $searchData = $request->search_data;
+        if($searchData == ""){
+            return redirect()->route('teachers.index');
+        } else {
+            $teachers = Teacher::where('name','LIKE',"%".$searchData."%")
+            ->orWhere('id', '=',$searchData)
+            ->orWhere('name','LIKE','%'.$searchData.'%')
+            ->orWhere('email','LIKE','%'.$searchData.'%')
+            ->orWhere('subject','LIKE','%'.$searchData.'%')
+            ->paginate(5);
+            return view('admin.teachers.index', compact('teachers'));
+        }
     }
 }

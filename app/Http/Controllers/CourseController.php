@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CourseController extends Controller
 {
@@ -12,6 +13,9 @@ class CourseController extends Controller
      */
     public function index()
     {
+        if (Gate::denies('view', Course::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $courses = Course::paginate(5);
         return view('admin.courses.index', compact('courses'));
     }
@@ -21,6 +25,9 @@ class CourseController extends Controller
      */
     public function create()
     {
+        if (Gate::denies('create', Course::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         return view('admin.courses.create');
     }
 
@@ -29,6 +36,9 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::denies('create', Course::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $request->validate([
             'name' => 'required|string|max:50',
             'duration' => 'required|string|max:50',
@@ -55,6 +65,9 @@ class CourseController extends Controller
      */
     public function edit(string $id)
     {
+        if (Gate::denies('update', Course::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $course = Course::find($id);
         return view('admin.courses.edit', compact('course'));
     }
@@ -64,6 +77,9 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (Gate::denies('update', Course::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $request->validate([
             'name' => 'required|string|max:50',
             'duration' => 'required|string|max:50',
@@ -83,8 +99,24 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
+        if (Gate::denies('destroy', Course::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $course = Course::find($id);
         $course->delete();
         return redirect()->route('courses.index')->with('success', 'One row deleted.');
+    }
+
+    public function search(Request $request){
+        $searchData = $request->search_data;
+        if($searchData == ""){
+            return redirect()->route('courses.index');
+        } else {
+            $courses =Course::where('name','LIKE',"%".$searchData."%")
+            ->orWhere('id', '=',$searchData)
+            ->orWhere('name','LIKE','%'.$searchData.'%')
+            ->paginate(5);
+            return view('admin.courses.index', compact('courses'));
+        }
     }
 }

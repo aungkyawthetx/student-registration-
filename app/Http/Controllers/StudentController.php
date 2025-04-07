@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class StudentController extends Controller
 {
@@ -12,6 +13,9 @@ class StudentController extends Controller
      */
     public function index()
     {
+        if (Gate::denies('view', Student::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $students = Student::paginate(5);
         return view('admin.students.index', compact('students'));
     }
@@ -21,6 +25,9 @@ class StudentController extends Controller
      */
     public function create()
     {
+        if (Gate::denies('create', Student::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         return view('admin.students.create');
     }
 
@@ -29,6 +36,9 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::denies('create', Student::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $request->validate([
             'name' => 'required|string|max:50',
             'gender' => 'required|string|max:10',
@@ -58,6 +68,9 @@ class StudentController extends Controller
      */
     public function edit(string $id)
     {
+        if (Gate::denies('update', Student::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $student = Student::find($id);
         return view('admin.students.edit', compact('student'));
     }
@@ -67,6 +80,9 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (Gate::denies('update', Student::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $request->validate([
             'name' => 'required|string|max:50',
             'gender' => 'required|string|max:10',
@@ -87,8 +103,25 @@ class StudentController extends Controller
      */
     public function destroy(string $id)
     {
+        if (Gate::denies('delete', Student::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $students = Student::find($id);
         $students->delete();
         return redirect()->route('students.index')->with('success', 'One row deleted.');
+    }
+
+    public function search(Request $request){
+        $searchData = $request->search_data;
+        if($searchData == ""){
+            return redirect()->route('students.index');
+        } else {
+            $students = Student::where('name','LIKE',"%".$searchData."%")
+            ->orWhere('id', '=',$searchData)
+            ->orWhere('email','LIKE','%'.$searchData.'%')
+            ->orWhere('nrc','LIKE','%'.$searchData.'%')
+            ->paginate(5);
+            return view('admin.students.index', compact('students'));
+        }
     }
 }

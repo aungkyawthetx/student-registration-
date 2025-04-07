@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\admin;
 
-use App\Models\Room;
+use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
-class RoomController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        if (Gate::denies('view', Room::class)) {
+        if (Gate::denies('view', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $rooms = Room::paginate(5);
-        return view('admin.rooms.index', compact('rooms'));
+        $roles = Role::paginate(5);
+        return view('admin.roles.index', compact('roles'));
     }
 
     /**
@@ -25,10 +26,10 @@ class RoomController extends Controller
      */
     public function create()
     {
-        if (Gate::denies('create', Room::class)) {
+        if (Gate::denies('create', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        return view('admin.rooms.create');
+        return view('admin.roles.create');
     }
 
     /**
@@ -36,16 +37,16 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        if (Gate::denies('create', Room::class)) {
+        if (Gate::denies('create', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $request->validate([
-            'building' => 'required|string|max:10',
-            'name' => 'required|string|max:10',
+            'name'=> 'required|max:50',
+            'description'=>'required|string|max:100',
         ]);
 
-        Room::create($request->all());
-        return redirect()->route('rooms.index')->with('success', 'Room created successfully.');
+        Role::create($request->all());
+        return redirect()->route('roles.index')->with('success','Role created successfully.');
     }
 
     /**
@@ -61,11 +62,11 @@ class RoomController extends Controller
      */
     public function edit(string $id)
     {
-        if (Gate::denies('update', Room::class)) {
+        if (Gate::denies('update', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $room = Room::find($id);
-        return view('admin.rooms.edit', compact('room'));
+        $role = Role::find($id);
+        return view('admin.roles.edit', compact('role'));
     }
 
     /**
@@ -73,18 +74,16 @@ class RoomController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if (Gate::denies('update', Room::class)) {
+        if (Gate::denies('update', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $request->validate([
-            'building' => 'required|string|max:10',
-            'name' => 'required|string|max:10',
+            'name'=> 'required|max:50',
+            'description'=>'required|string|max:100',
         ]);
-
-        $room = Room::find($id);
-        $room->update($request->all());
-
-        return redirect()->route('rooms.index')->with('success', 'Room updated successfully.');
+        $role = Role::find($id);
+        $role->update($request->all());
+        return redirect()->route('roles.index')->with('success','Role updated successfully.');
     }
 
     /**
@@ -92,25 +91,24 @@ class RoomController extends Controller
      */
     public function destroy(string $id)
     {
-        if (Gate::denies('delete', Room::class)) {
+        if (Gate::denies('delete', Role::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $room = Room::find($id);
-        $room->delete();
-        return redirect()->route('rooms.index')->with('success', 'One row deleted.');
+        $role = Role::find($id);
+        $role->delete();
+        return redirect()->route('roles.index')->with('success','Role deleted successfully.');
     }
 
     public function search(Request $request){
         $searchData = $request->search_data;
         if($searchData == ""){
-            return redirect()->route('rooms.index');
+            return redirect()->route('roles.index');
         } else {
-            $rooms = Room::where('name','LIKE',"%".$searchData."%")
+            $roles =Role::where('name','LIKE',"%".$searchData."%")
             ->orWhere('id', '=',$searchData)
-            ->orWhere('building','LIKE','%'.$searchData.'%')
             ->orWhere('name','LIKE','%'.$searchData.'%')
             ->paginate(5);
-            return view('admin.rooms.index', compact('rooms'));
+            return view('admin.roles.index', compact('roles'));
         }
     }
 }

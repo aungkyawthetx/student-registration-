@@ -5,12 +5,12 @@
         <h6 class="text-underline" data-bs-toggle="collapse" href="#accounts" role="button" aria-expanded="{{ request()->routeIs('users.index') || request()->routeIs('roles.index') || request()->routeIs('users.create') || request()->routeIs('users.edit') || request()->routeIs('roles.create') || request()->routeIs('roles.edit') ? 'true' : 'false' }}" aria-controls="accountsMenu">Accounts <i class="bi bi-chevron-down"></i></h6>
         <div class="collapse {{ request()->routeIs('users.index') || request()->routeIs('roles.index') || request()->routeIs('users.create') || request()->routeIs('users.edit') || request()->routeIs('roles.create') || request()->routeIs('roles.edit') ? 'show' : '' }}" id="accounts">
             <li class="nav-item">
-            <a href="{{route('users.index')}}" class="nav-link text-body {{ request()->routeIs('users.index') ? 'active fw-bold' : ''}}" aria-current="page">
+            <a href="{{route('users.index')}}" class="nav-link text-body {{ request()->routeIs('users.index') ? 'active' : ''}}" aria-current="page">
                 <i class="bi bi-people"></i> Users
             </a>
             </li>
             <li class="nav-item">
-            <a href="{{route('roles.index')}}" class="nav-link text-body {{ request()->routeIs('roles.index') ? 'active fw-bold' : ''}}" aria-current="page">
+            <a href="{{route('roles.index')}}" class="nav-link text-body {{ request()->routeIs('roles.index') ? 'active' : ''}}" aria-current="page">
                 <i class="bi bi-shield-lock"></i> Roles
             </a>
             </li>
@@ -20,17 +20,17 @@
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin') || auth()->user()->hasRole('Teacher'))
         <h6 class="text-underline">Students</h6>
         <li class="nav-item">
-            <a href="{{route('students.index')}}" class="nav-link {{ request()->routeIs('students.index') ? 'active' : 'link-dark' }}" aria-current="page">
+            <a href="{{route('students.index')}}" class="nav-link text-body {{ request()->routeIs('students.index') ? 'active' : '' }}" aria-current="page">
                 <i class="fa-solid fa-users"></i> Students
             </a>
         </li>
         <li>
-            <a href="{{ route('enrollments.index') }}" class="nav-link {{ request()->routeIs('enrollments.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('enrollments.index') }}" class="nav-link text-body {{ request()->routeIs('enrollments.index') ? 'active' : '' }}">
                 <i class="fa-solid fa-clipboard-list"></i> Enrollment
             </a>
         </li>
         <li>
-            <a href="{{ route('attendances.index') }}" class="nav-link {{ request()->routeIs('attendances.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('attendances.index') }}" class="nav-link text-body {{ request()->routeIs('attendances.index') ? 'active' : '' }}">
                 <i class="fa-regular fa-square-check"></i> Attendance
             </a>
         </li>
@@ -39,12 +39,12 @@
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
         <h6 class="text-underline">Teachers</h6>
         <li>
-            <a href="{{route('teachers.index')}}" class="nav-link text-body {{ request()->routeIs('teachers.index') ? 'active fw-bold' : ''}}">
+            <a href="{{route('teachers.index')}}" class="nav-link text-body {{ request()->routeIs('teachers.index') ? 'active' : ''}}">
                 <i class="bi bi-person-badge"></i> Teachers
             </a>
         </li>
         <li>
-            <a href="{{ route('teachercourses.index') }}" class="nav-link {{ request()->routeIs('teachercourses.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('teachercourses.index') }}" class="nav-link text-body {{ request()->routeIs('teachercourses.index') ? 'active' : '' }}">
                 <i class="bi bi-journal-bookmark"></i> Teacher Courses
             </a>
         </li>
@@ -53,17 +53,17 @@
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin') || auth()->user()->hasRole('Teacher'))
         <h6 class="text-underline">Courses</h6>
         <li>
-            <a href="{{route('courses.index')}}" class="nav-link text-body {{ request()->routeIs('courses.index') ? 'active fw-bold' : ''}}">
+            <a href="{{route('courses.index')}}" class="nav-link text-body {{ request()->routeIs('courses.index') ? 'active' : ''}}">
                 <i class="bi bi-book"></i> Courses
             </a>
         </li>
         <li>
-            <a href="{{route('rooms.index')}}" class="nav-link text-body {{ request()->routeIs('rooms.index') ? 'active fw-bold' : ''}}">
+            <a href="{{route('rooms.index')}}" class="nav-link text-body {{ request()->routeIs('rooms.index') ? 'active' : ''}}">
                 <i class="bi bi-door-closed"></i> Rooms
             </a>
         </li>
         <li>
-            <a href="{{ route('classes.index') }}" class="nav-link {{ request()->routeIs('classes.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('classes.index') }}" class="nav-link text-body {{ request()->routeIs('classes.index') ? 'active' : '' }}">
                 <i class="fa-regular fa-calendar"></i> Classes
             </a>
         </li>

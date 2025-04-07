@@ -14,6 +14,12 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 </div>
 <div class="container">
     <div class="row my-3">
@@ -44,6 +50,9 @@
           <th scope="col">ID</th>
           <th scope="col">Name</th>
           <th scope="col">Email</th>
+          @if(auth()->user()->hasRole('Super admin'))
+          <th scope="col">Password</th>
+          @endif
           <th scope="col">Role</th>
         </tr>
         </thead>
@@ -66,6 +75,35 @@
             <th scope="row">{{$user->id}}</th>
             <td>{{$user->name}}</td>
             <td>{{$user->email}}</td>
+            @if(auth()->user()->hasRole('Super admin'))
+            <td>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPasswordModal{{ $user->id }}">
+                <i class="fas fa-edit"></i>
+            </button>
+
+            <div class="modal fade" id="viewPasswordModal{{ $user->id }}" tabindex="-1" aria-labelledby="viewPasswordLabel{{ $user->id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form method="POST" action="{{ route('verify-password-view') }}">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="viewPasswordLabel{{ $user->id }}">Enter your password</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="password" name="password" class="form-control" placeholder="Your password">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Verify</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </td>
+            @endif
+
             <td>{{$user->role ? $user->role->name : 'N/A' }}</td>
               </tr>
             @endforeach

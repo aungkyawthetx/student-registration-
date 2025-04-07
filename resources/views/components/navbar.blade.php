@@ -17,7 +17,13 @@
           <i class="fa fa-user-circle"></i> {{ Auth::user()->name }}
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Change Password</a></li>
+            @if(auth()->user()->hasRole('Super admin'))
+              <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewPasswordModal">
+                <i class="fa fa-lock"></i> Change Password
+              </button></li>
+          @else
+          <li><a class="dropdown-item" href="{{route('change-password', Auth::user()->id)}}"><i class="fa fa-lock"></i> Change Password</a></li>
+          @endif
         <li><hr class="dropdown-divider"></li>
         <form action="{{route('logout')}}" method="POST">
           @csrf
@@ -34,3 +40,23 @@
     </ul>
   </div>
 </nav>
+<div class="modal fade" id="viewPasswordModal" tabindex="-1" aria-labelledby="viewPasswordLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <form method="POST" action="{{ route('verify-password-view') }}">
+          @csrf
+          <input type="hidden" name="user_id" value="{{Auth::user()->id}}">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="viewPasswordLabel">Enter your password</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                  <input type="password" name="password" class="form-control" placeholder="Your password">
+              </div>
+              <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Verify</button>
+              </div>
+          </div>
+      </form>
+  </div>
+</div>

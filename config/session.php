@@ -214,4 +214,5 @@ return [
 
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
 
+    'remember_me' => env('SESSION_REMEMBER_ME', 43200), // 30 days in minutes
 ];

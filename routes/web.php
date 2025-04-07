@@ -2,12 +2,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ClassController;
-use App\Http\Controllers\admin\AdminUserController;
-use App\Http\Controllers\auth\RegisterController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\admin\RoleController;
+use App\Http\Controllers\auth\LoginController;
+use App\Http\Controllers\auth\RegisterController;
+use App\Http\Controllers\admin\AdminUserController;
+use App\Http\Controllers\admin\AdminDashboardController;
 
 Route::get('/', function () {
     return view('admin.dashboard');

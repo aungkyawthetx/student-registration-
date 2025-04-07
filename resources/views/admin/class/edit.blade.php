@@ -12,7 +12,7 @@
               @csrf
               @method('PUT')
                   <div class="mb-3">
-                    <label for="roomId" class="form-label ms-2 fw-bold"> <i class="fa-solid fa-door-closed text-primary"></i> Room</label>
+                    <label for="roomId" class="form-label ms-2 fw-bold"> <i class="fa-solid fa-door-closed"></i> Room</label>
                     <select class="form-select @error('room_id') is-invalid @enderror" name="room_id">
                       <option value="" disabled>Select a Room</option>
                       @foreach($rooms as $room)
@@ -50,7 +50,7 @@
                     @enderror
                   </div>
                   <div class="mb-3">
-                    <label for="end_date" class="form-label fw-bold ms-2"> <i class="fa-solid fa-calendar text-primary"></i> Date</label>
+                    <label for="end_date" class="form-label fw-bold ms-2"> <i class="fa-solid fa-calendar text-warning"></i> End Date</label>
                     <input type="date" class="form-control @error('date') is-invalid @enderror" name="end_date" placeholder="Enter End Date" value="{{$class->end_date ?? old('end_date') }}">
                     @error('end_date')
                         <span class="text-danger"><small>{{ $message }}</small></span>

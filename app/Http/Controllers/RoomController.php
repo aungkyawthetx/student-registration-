@@ -78,6 +78,6 @@ class RoomController extends Controller
     {
         $room = Room::find($id);
         $room->delete();
-        return redirect()->route('rooms.index')->with('success', 'Room deleted successfully.');
+        return redirect()->route('rooms.index')->with('success', 'One row deleted.');
     }
 }

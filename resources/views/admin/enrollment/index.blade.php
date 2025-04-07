@@ -3,7 +3,7 @@
 @section('content')
     <div class="container d-flex align-items-center justify-content-between">
         <h2 class="text-uppercase">Enrollment list</h2>
-        <a href="{{ route('enrollments.create') }}" class="btn btn-primary rounded-1"> New Enroll <i class="fa-solid fa-plus"></i> </a>
+        <a href="{{ route('enrollments.create') }}" class="btn btn-primary rounded-1"> Add New <i class="fa-solid fa-plus"></i> </a>
     </div>
     @if(session('successAlert'))
             <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">

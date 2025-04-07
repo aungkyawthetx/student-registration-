@@ -99,7 +99,7 @@ class ClassController extends Controller
 
         if ($class) {
             $class->delete();
-            return redirect()->route('classes.index')->with('successAlert', 'Class Deleted!');
+            return redirect()->route('classes.index')->with('successAlert', 'One row deleted.');
         }
         return redirect()->route('classes.index')->with('errorAlert', 'Class Not Found!');
     }

@@ -94,6 +94,6 @@ class EnrollmentController extends Controller
     {
         $enrollment = Enrollment::find($id);
         $enrollment->delete();
-        return redirect()->route('enrollments.index')->with('successAlert', 'Enrollment Deleted!');
+        return redirect()->route('enrollments.index')->with('successAlert', 'One row deleted.');
     }
 }

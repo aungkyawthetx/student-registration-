@@ -101,6 +101,6 @@ class AttendanceController extends Controller
     {
         $attendance = Attendance::find($id);
         $attendance->delete();
-        return redirect()->route('attendances.index')->with('success', 'One row deleted!');
+        return redirect()->route('attendances.index')->with('success', 'One row deleted.');
     }
 }

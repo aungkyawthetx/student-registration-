@@ -12,7 +12,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::paginate(8);
+        $courses = Course::paginate(5);
         return view('admin.courses.index', compact('courses'));
     }
 
@@ -85,6 +85,6 @@ class CourseController extends Controller
     {
         $course = Course::find($id);
         $course->delete();
-        return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
+        return redirect()->route('courses.index')->with('success', 'One row deleted.');
     }
 }

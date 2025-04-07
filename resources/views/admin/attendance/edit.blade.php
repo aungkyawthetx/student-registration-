@@ -68,7 +68,7 @@
                   <span class="text-danger"><small>{{ $message }}</small></span>
                 @enderror
               </div>
-              <button type="submit" class="btn btn-primary float-end"> Submit </button>
+              <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
           </form>
       </div>
   </div>

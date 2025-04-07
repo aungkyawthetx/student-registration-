@@ -3,7 +3,7 @@
 @section('content')
   <div class="container d-flex align-items-center justify-content-between">
     <h2 class="d-inline text-uppercase"> class list</h2>
-    <a href="{{ route('classes.create') }}" class="btn btn-primary my-2 float-end"> New Class </a>
+    <a href="{{ route('classes.create') }}" class="btn btn-primary my-2 float-end"> Add New <i class="fas fa-plus"></i> </a>
   </div>
   @if(Session('successAlert'))
         <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">

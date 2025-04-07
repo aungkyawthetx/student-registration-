@@ -21,7 +21,8 @@ class LoginController extends Controller
 
         if(Auth::guard('web')->attempt([
             'email'=>$request->email,
-            'password'=>$request->password])){
+            'password'=>$request->password],
+             $request->remember)){
                 return redirect()->intended(route('admin.dashboard'))->with('success','Logged in successfully.');
         } else {
             return redirect()->back()->withInput()->withErrors([

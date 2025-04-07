@@ -3,7 +3,7 @@
 @section('content')
 <div class="container d-flex justify-content-between align-items-center">
     <h2 class="d-inline">Courses List</h2>
-    @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin'))
+    @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
     <a href="{{ route('courses.create') }}" class="btn btn-primary my-2"><i class="fas fa-plus"></i> Add new</a>
     @endif
 </div>
@@ -38,7 +38,7 @@
     <table class="table table-hover table-bordered table-striped">
         <thead>
         <tr>
-        @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin'))
+        @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
           <th scope="col"></th>
         @endif
           <th scope="col">ID</th>
@@ -53,7 +53,7 @@
         @if($courses->isNotEmpty())
           @foreach($courses as $course)
           <tr>
-            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin'))
+            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
             <td>
             <div class="d-flex">
             <a href="{{ route('courses.edit', $course->id) }}" class="btn btn-sm btn-primary m-1"><i class="fas fa-edit"></i></a>

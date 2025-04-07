@@ -51,7 +51,7 @@
         @if($users->isNotEmpty())
             @foreach($users as $user)
               <tr>
-                @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin'))
+                @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
             <td>
                 <div class="d-flex">
                 <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary m-1"><i class="fas fa-edit"></i></a>

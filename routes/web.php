@@ -12,7 +12,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\TeacherCoursesController;
-
+use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {

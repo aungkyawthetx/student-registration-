@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StudentsExport;
+use App\Imports\StudentsImport;
+use App\Models\Role;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
@@ -16,8 +21,9 @@ class StudentController extends Controller
         if (Gate::denies('view', Student::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
+        $roles = Role::all();
         $students = Student::paginate(5);
-        return view('admin.students.index', compact('students'));
+        return view('admin.students.index', compact('students', 'roles'));
     }
 
     /**
@@ -110,6 +116,21 @@ class StudentController extends Controller
         $students->delete();
         return redirect()->route('students.index')->with('success', 'One row deleted.');
     }
+        
+    public function destroyall()
+    {
+        if (Gate::denies('delete', Student::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
+        $students = Student::all();
+        if ($students->isEmpty()) {
+            return redirect()->route('students.index')->with('error', 'No students to delete.');
+        }
+        foreach ($students as $student) {
+            $student->delete();
+        }
+        return redirect()->route('students.index')->with('success','All students deleted successfully.');
+    }
 
     public function search(Request $request){
         $searchData = $request->search_data;
@@ -121,7 +142,30 @@ class StudentController extends Controller
             ->orWhere('email','LIKE','%'.$searchData.'%')
             ->orWhere('nrc','LIKE','%'.$searchData.'%')
             ->paginate(5);
-            return view('admin.students.index', compact('students'));
+            $roles = Role::all();
+            return view('admin.students.index', compact('students', 'roles'));
+        }
+    }
+
+    public function export(){
+        return Excel::download(new StudentsExport(),'students.xlsx');
+    }
+
+    public function import(Request $request){
+        $request->validate(['students'=>'required|file|mimes:xlsx,xls,csv']);
+        $file = $request->file('students');
+        $originalName = $file->getClientOriginalName();
+
+        if (!str_contains(strtolower($originalName), 'students')) {
+            return redirect()->back()->with('error', 'Excel file name must contain the word "students"');
+        }
+        try {
+            Excel::import(new StudentsImport(), $request->file('students'));
+            return redirect()->route('students.index')->with('success', 'Students imported successfully!');
+        } catch (ValidationException $e) {
+            return back()->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to import. Please check your Excel file format.');
         }
     }
 }

@@ -3,81 +3,102 @@
 @section('title', 'Users List')
 
 @section('content')
-<div class="card shadow-sm">
-    <div class="card-header bg-white border-bottom">
-        <div class="container d-flex justify-content-between align-items-center mt-1">
-            <h2 class="card-title mb-0">Users List</h2>
-            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
-            <a href="{{ route('users.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-1"></i> New User
-            </a>
-            @endif
+<div class="container d-flex justify-content-between align-items-center">
+    <h2 class="d-inline">Users List</h2>
+    <div class="d-flex align-items-center justify-content-center gap-2">
+        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+        <a href="{{ route('users.create') }}" class="btn btn-primary my-2"><i class="fas fa-plus"></i> Add new</a>
+        <form action="{{route('users.import')}}" method="POST" enctype="multipart/form-data" class="">
+            @csrf
+            <input type="file" name="users" id="users" class="form-control-sm" required>
+            <button type="submit" class="btn btn-primary my-2" title="Import"><i class="fa-solid fa-upload"></i></button>
+        </form>
+        <a href="{{ route('users.export') }}" class="btn btn-primary my-2" title="Export" onclick="return confirm('Export users data as an excel file?')"><i class="fa-solid fa-download"></i></a>
+        @endif
+    </div>
+</div>
+<div class="container">
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-
-        <div class="container mt-2">
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-
-        <div class="container mt-2">
-            <div class="row">
-                <div class="col-md-6 col-lg-4 mb-2 d-flex gap-2">
-                    <form action="{{ route('users.search') }}" method="GET" class="w-100 input-group">
-                        @csrf
-                        <div class="input-group">
-                            <input type="text" name="search_data" id="search_data" class="form-control" placeholder="Search..." value="{{ request('search_data') }}">
-                            <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
-                        </div>
-                    </form>
-                    <form action="{{ route('users.index') }}" method="GET" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-secondary" title="Reset Filters"><i class="fas fa-sync"></i></button>
-                    </form>
+    @endif
+</div>
+<div class="container">
+    <div class="row my-3">
+        <div class="col-8">
+            <form action="{{route('users.search')}}" method="GET">
+                @csrf
+                <div class="input-group">
+                    <input type="text" name="search_data" id="search_data" class="form-control" placeholder="Search ...." aria-label="Search" value="{{ request('search_data') }}">
+                    <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
                 </div>
-            </div>
+            </form>
+        </div>
+        <div class="col-2">
+            <form action="{{ route('users.index') }}" method="GET" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-secondary" title="Show All"><i class="fas fa-sync"></i></button>
+            </form>
+        </div>
+        <div class="col-2 text-end">
+            @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+            <form action="{{ route('users.destroy-all', Auth()->user()->id) }}" method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete all users (except current account)?')"><i class="fas fa-trash"></i></button>
+            </form>
+            @endif
         </div>
     </div>
-
-    <div class="card-body">
-        <div class="table-responsive container">
-            <table class="table table-striped table-hover align-middle text-center">
-                <thead class="table-light">
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        @if(auth()->user()->hasRole('Super admin'))
-                        <th>Password</th>
-                        @endif
-                        <th>Role</th>
-                        @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
-                        <th>Actions</th>
-                        @endif
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($users as $user)
-                    <tr>
-                        <td>{{ $user->id }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-
-                        @if(auth()->user()->hasRole('Super admin'))
-                        <td>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#viewPasswordModal{{ $user->id }}">
-                                <i class="fas fa-key"></i>
-                            </button>
+</div>
+<div class="table-responsive container my-3">
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+          <th scope="col"></th>
+          @endif
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Email</th>
+          @if(auth()->user()->hasRole($roles->first()->name))
+          <th scope="col">Password</th>
+          @endif
+          <th scope="col">Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if($users->isNotEmpty())
+            @foreach($users as $user)
+              <tr>
+                @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+            <td>
+                <div class="d-flex">
+                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary m-1"><i class="fas fa-edit"></i></a>
+                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline m-1">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete?')"><i class="fas fa-trash"></i></button>
+                </form>
+                </div>
+            </td>
+            @endif
+            <th scope="row">{{$user->id}}</th>
+            <td>{{$user->name}}</td>
+            <td>{{$user->email}}</td>
+            @if(auth()->user()->hasRole($roles->first()->name))
+            <td>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPasswordModal{{ $user->id }}">
+                <i class="fas fa-edit"></i>
+            </button>
 
                             <!-- Password Modal -->
                             <div class="modal fade" id="viewPasswordModal{{ $user->id }}" tabindex="-1" aria-labelledby="viewPasswordLabel{{ $user->id }}" aria-hidden="true">

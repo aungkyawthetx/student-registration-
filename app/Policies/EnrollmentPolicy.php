@@ -2,12 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Course;
-use App\Models\User;
+use App\Models\Enrollment;
 use App\Models\Role;
-use Illuminate\Auth\Access\Response;
+use App\Models\User;
 
-class CoursePolicy
+class EnrollmentPolicy
 {
     private $roles, $superadmin, $admin, $teacher;
 

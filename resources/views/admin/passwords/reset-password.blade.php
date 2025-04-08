@@ -40,7 +40,7 @@
                     <span class="text-danger"><small>{{ $message }}</small></span>
                 @enderror
             </div>
-            <button type="submit" class="btn btn-primary w-100 text-uppercase fw-bold">Change Password</button>
+            <button type="submit" class="btn btn-primary text-uppercase fw-bold">Change Password</button>
         </form>
     </div>
 </div>

@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CoursesExport;
+use App\Imports\CoursesImport;
 use App\Models\Course;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CourseController extends Controller
 {
@@ -100,6 +105,7 @@ class CourseController extends Controller
     public function destroy(string $id)
     {
         if (Gate::denies('delete', Course::class)) {
+        if (Gate::denies('delete', Course::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $course = Course::find($id);
@@ -116,7 +122,30 @@ class CourseController extends Controller
             ->orWhere('id', '=',$searchData)
             ->orWhere('name','LIKE','%'.$searchData.'%')
             ->paginate(5);
-            return view('admin.courses.index', compact('courses'));
+            $roles = Role::all();
+            return view('admin.courses.index', compact('courses','roles'));
+        }
+    }
+
+    public function export(){
+        return Excel::download(new CoursesExport(),'courses.xlsx');
+    }
+
+    public function import(Request $request){
+        $request->validate(['courses'=>'required|file|mimes:xlsx,xls,csv']);
+        $file = $request->file('courses');
+        $originalName = $file->getClientOriginalName();
+
+        if (!str_contains(strtolower($originalName), 'courses')) {
+            return redirect()->back()->with('error', 'Excel file name must contain the word "courses"');
+        }
+        try {
+            Excel::import(new CoursesImport(), $request->file('courses'));
+            return redirect()->route('courses.index')->with('success', 'Courses imported successfully!');
+        } catch (ValidationException $e) {
+            return back()->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to import. Please check your Excel file format.');
         }
     }
 }

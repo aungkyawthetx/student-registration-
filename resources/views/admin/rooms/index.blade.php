@@ -3,100 +3,102 @@
 @section('title', 'Rooms List')
 
 @section('content')
-<div class="card shadow-sm">
-    <div class="card-header bg-white border-bottom">
-        <div class="container d-flex justify-content-between align-items-center mt-1">
-            <h2 class="d-inline mb-0">Rooms List</h2>
-            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
-                <a href="{{ route('rooms.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> Add New
-                </a>
-            @endif
-        </div>
-        @if(session('success'))
-        <div class="container mt-3">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
+<div class="container d-flex justify-content-between align-items-center">
+    <h2 class="d-inline">Room List</h2>
+    <div class="d-flex align-items-center justify-content-center gap-2">
+        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+        <a href="{{ route('rooms.create') }}" class="btn btn-primary my-2"><i class="fas fa-plus"></i> Add new</a>
+        <form action="{{route('rooms.import')}}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="rooms" id="rooms" class="form-control-sm" required>
+            <button type="submit" class="btn btn-primary my-2" title="Import"><i class="fa-solid fa-upload"></i></button>
+        </form>
+        <a href="{{ route('rooms.export') }}" class="btn btn-primary my-2" title="Export" onclick="return confirm('Export rooms data as an excel file?')"><i class="fa-solid fa-download"></i></a>
         @endif
-
-        <div class="container mt-2">
-            <div class="row">
-                <div class="col-md-6 col-lg-4 d-flex gap-2">
-                    <form action="{{ route('rooms.search') }}" method="GET" class="mb-2 w-100 input-group">
-                        @csrf
-                        <div class="input-group">
-                            <input type="text" name="search_data" id="search_data" class="form-control" placeholder="Search..." value="{{ request('search_data') }}">
-                            <button class="btn btn-secondary" type="submit" title="Search">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </form>
-
-                    <form action="{{ route('rooms.index') }}" method="GET">
-                        <button type="submit" class="btn btn-secondary w-100" title="Show All">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </form>
+    </div>
+</div>
+<div class="container">
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+</div>
+<div class="container">
+    <div class="row my-3">
+        <div class="col-8">
+            <form action="{{route('rooms.search')}}" method="GET">
+                @csrf
+                <div class="input-group">
+                    <input type="text" name="search_data" id="search_data" class="form-control" placeholder="Search ...." aria-label="Search" value="{{ request('search_data') }}">
+                    <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
                 </div>
-            </div>
+            </form>
         </div>
-    </div>
-
-    <div class="card-body">
-        <div class="table-responsive container">
-            <table class="table table-striped table-hover align-middle text-center">
-                <thead class="table-light">
-                    <tr>
-                        <th>ID</th>
-                        <th>Building</th>
-                        <th>Name</th>
-                        @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
-                            <th>Actions</th>
-                        @endif
-                    </tr>
-                </thead>
-                <tbody>
-                    @if($rooms->isNotEmpty())
-                        @foreach($rooms as $room)
-                            <tr>
-                                <td>{{ $room->id }}</td>
-                                <td>{{ $room->building }}</td>
-                                <td>{{ $room->name }}</td>
-                                @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
-                                    <td>
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <a href="{{ route('rooms.edit', $room->id) }}" class="btn btn-sm btn-success">
-                                                <i class="fa-solid fa-pen-to-square me-1"></i> Edit
-                                            </a>
-                                            <form action="{{ route('rooms.destroy', $room->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this row?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="fas fa-trash me-1"></i> Delete
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                @endif
-                            </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">No data found</td>
-                        </tr>
-                    @endif
-                </tbody>
-            </table>
+        <div class="col-2 text-end">
+            <form action="{{ route('rooms.index') }}" method="GET" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-secondary" title="Show All"><i class="fas fa-sync"></i></button>
+            </form>
         </div>
-    </div>
-
-    <div class="card-footer border-0 bg-transparent pt-0">
-        <div class="container">
-            {{ $rooms->links('pagination::bootstrap-5') }}
+        <div class="col-2 text-end">
+            @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+            <form action="{{ route('rooms.destroy-all') }}" method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete all rooms?')"><i class="fas fa-trash"></i></button>
+            </form>
+            @endif
         </div>
     </div>
 </div>
+<div class="table-responsive container my-3">
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+          <th scope="col"></th>
+        @endif
+          <th scope="col">ID</th>
+          <th scope="col">Building</th>
+          <th scope="col">Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if($rooms->isNotEmpty())
+            @foreach($rooms as $room)
+            <tr>
+                @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+                <td>
+                    <div class="d-flex">
+                        <a href="{{ route('rooms.edit', $room->id) }}" class="btn btn-sm btn-primary m-1"><i class="fas fa-edit"></i></a>
+                        <form action="{{ route('rooms.destroy', $room->id) }}" method="POST" class="d-inline m-1">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete?')"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+                @endif
+                <th scope="row">{{$room->id}}</th>
+                <td>{{$room->building}}</td>
+                <td>{{$room->name}}</td>
+            </tr>
+            @endforeach
+        @else
+            <tr>
+                <td colspan="4" class="text-center">No data found</td>
+            </tr>
+        @endif
+        </tbody>
+    </table>
+</div>
+{{ $rooms->links('pagination::bootstrap-5') }}
 @endsection

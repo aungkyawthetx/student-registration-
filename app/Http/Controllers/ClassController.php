@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ClassesExport;
+use App\Imports\ClassesImport;
+use App\Models\Role;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use App\Models\ClassTimeTable;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClassController extends Controller
 {
@@ -13,8 +19,12 @@ class ClassController extends Controller
      */
     public function index()
     {
+        if (Gate::denies('view', ClassTimeTable::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
+        $roles = Role::all();
         $classes = ClassTimeTable::with('room')->paginate(5);
-        return view('admin.class.index', compact('classes'));
+        return view('admin.class.index', compact('classes', 'roles'));
     }
 
     /**
@@ -22,6 +32,9 @@ class ClassController extends Controller
      */
     public function create()
     {
+        if (Gate::denies('create', ClassTimeTable::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $rooms = Room::all();
         return view('admin.class.create', compact('rooms'));
     }
@@ -31,6 +44,9 @@ class ClassController extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::denies('create', ClassTimeTable::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $validatedData = $request->validate([
             'room_id' => 'required|integer',
             'start_time' => 'required|date_format:h:i A',
@@ -62,6 +78,9 @@ class ClassController extends Controller
      */
     public function edit(string $id)
     {
+        if (Gate::denies('update', ClassTimeTable::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $rooms = Room::all();
         $class = ClassTimeTable::find($id);
         return view('admin.class.edit', compact('class', 'rooms'));
@@ -72,11 +91,14 @@ class ClassController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (Gate::denies('update', ClassTimeTable::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $validatedData = $request->validate([
             'room_id' => 'required|integer',
             'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            'start_time' => 'required|date_format:h:i A',
+            'end_time' => 'required|date_format:h:i A|after:start_time',
         ]);
 
         $class = ClassTimeTable::find($id);
@@ -95,6 +117,9 @@ class ClassController extends Controller
      */
     public function destroy(string $id)
     {
+        if (Gate::denies('delete', ClassTimeTable::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $class = ClassTimeTable::find($id);
 
         if ($class) {
@@ -102,5 +127,59 @@ class ClassController extends Controller
             return redirect()->route('classes.index')->with('successAlert', 'One row deleted.');
         }
         return redirect()->route('classes.index')->with('errorAlert', 'Class Not Found!');
+    }
+
+    public function destroyall()
+    {
+        if (Gate::denies('delete', ClassTimeTable::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
+        $classes = ClassTimeTable::all();
+        if ($classes->isEmpty()) {
+            return redirect()->route('classes.index')->with('errorAlert','No classes to delete.');
+        }
+        foreach ($classes as $class) {
+            $class->delete();
+        }
+        return redirect()->route('classes.index')->with('successAlert','All classes deleted successfully.');
+    }
+
+    public function search(Request $request){
+        $searchData = $request->search_data;
+        if($searchData == ""){
+            return redirect()->route('classes.index');
+        } else {
+            $classes = ClassTimeTable::whereHas('room', function($rooms) use ($searchData){
+                $rooms->where('name','LIKE','%'.$searchData.'%');
+            })
+            ->orWhere('date', 'LIKE', '%'.$searchData.'%')
+            ->orWhere('start_time', 'LIKE', '%'.$searchData.'%')
+            ->orWhere('end_time', 'LIKE', '%'.$searchData.'%')
+            ->paginate(5);
+            $roles = Role::all();
+            return view('admin.class.index', compact('classes', 'roles'));
+        }
+    }
+
+    public function export(){
+        return Excel::download(new ClassesExport(),'classtimetables.xlsx');
+    }
+
+    public function import(Request $request){
+        $request->validate(['classtimetables'=>'required|file|mimes:xlsx,xls,csv']);
+        $file = $request->file('classtimetables');
+        $originalName = $file->getClientOriginalName();
+
+        if (!str_contains(strtolower($originalName), 'classtimetables')) {
+            return redirect()->back()->with('errorAlert', 'Excel file name must contain the word "classtimetables"');
+        }
+        try {
+            Excel::import(new ClassesImport(), $request->file('classtimetables'));
+            return redirect()->route('classes.index')->with('successAlert', 'Class timetables imported successfully!');
+        } catch (ValidationException $e) {
+            return back()->with('errorAlert', $e->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('errorAlert', 'Failed to import. Please check your Excel file format.');
+        }
     }
 }

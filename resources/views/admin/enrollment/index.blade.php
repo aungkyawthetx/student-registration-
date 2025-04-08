@@ -24,15 +24,22 @@
               <th scope="col">Course Name</th>
               <th scope="col">Enrollment Date</th>
               <th scope="col">Actions</th>
+              @endif
             </tr>
             </thead class="table-light">
             <tbody>
+            @if($enrollments->isEmpty())
+              <tr>
+                <td colspan="5" class="text-center"> No data found </td>
+              </tr>
+            @else
               @foreach ($enrollments as $enrollment)
               <tr>
                 <td> {{ $enrollment->id }} </td>
                 <td> {{ $enrollment->student->name }} </td>
                 <td> {{ $enrollment->course->name }} </td>
                 <td> {{ $enrollment->date }} </td>
+                @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                 <td>
                   <div>
                     <a href="{{ route('enrollments.edit', $enrollment->id) }}" class="btn btn-sm btn-success me-2"> Edit <i class="fa-solid fa-pen-to-square"></i> </a>
@@ -43,8 +50,10 @@
                     </form>
                   </div>
                 </td>
+                @endif
               </tr>
               @endforeach
+              @endif
             </tbody>
         </table>
       </div>

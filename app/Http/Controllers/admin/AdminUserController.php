@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
+use App\Imports\UsersImport;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminUserController extends Controller
 {
@@ -19,8 +23,9 @@ class AdminUserController extends Controller
         if (Gate::denies('view', User::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
+        $roles = Role::all();
         $users = User::with('role')->paginate(5);
-        return view("admin.users.index", compact('users'));
+        return view("admin.users.index", compact('users', 'roles'));
     }
 
     /**
@@ -117,6 +122,21 @@ class AdminUserController extends Controller
         return redirect()->route('users.index')->with('success','User deleted successfully.');
     }
 
+    public function destroyall($id)
+    {
+        if (Gate::denies('delete', User::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
+        $users = User::where('id', '!=', $id)->get();
+        if ($users->isEmpty()) {
+            return redirect()->route('users.index')->with('error','No users to delete.');
+        }
+        foreach ($users as $user) {
+            $user->delete();
+        }
+        return redirect()->route('users.index')->with('success','All users except current account deleted successfully.');
+    }
+
     public function search(Request $request){
         $searchData = $request->search_data;
         if($searchData == ""){
@@ -126,11 +146,35 @@ class AdminUserController extends Controller
             ->orWhere('id', '=',$searchData)
             ->orWhere('name','LIKE','%'.$searchData.'%')
             ->orWhere('email','LIKE','%'.$searchData.'%')
-            ->orWhere('roles', function($roles) use ($searchData){
+            ->orWhereHas('role', function($roles) use ($searchData){
                 $roles->where('name','LIKE','%'.$searchData.'%');
             })
             ->paginate(5);
-            return view('admin.users.index', compact('users'));
+            $roles = Role::all();
+            return view('admin.users.index', compact('users', 'roles'));
+        }
+    }
+
+    public function export(){
+        return Excel::download(new UsersExport(),'users.xlsx');
+    }
+
+    public function import(Request $request){
+        $request->validate(['users'=>'required|file|mimes:xlsx,xls,csv']);
+        $file = $request->file('users');
+        $originalName = $file->getClientOriginalName();
+
+        if (!str_contains(strtolower($originalName), 'users')) {
+            return redirect()->back()->with('error', 'Excel file name must contain the word "users"');
+        }
+
+        try {
+            Excel::import(new UsersImport(), $request->file('users'));
+            return redirect()->route('users.index')->with('success', 'Users imported successfully!');
+        } catch (ValidationException $e) {
+            return back()->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to import. Please check your Excel file format. Ensure usernames and emails are unique');
         }
     }
 }

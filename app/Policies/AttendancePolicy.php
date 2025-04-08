@@ -2,12 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Course;
-use App\Models\User;
+use App\Models\Attendance;
 use App\Models\Role;
-use Illuminate\Auth\Access\Response;
+use App\Models\User;
 
-class CoursePolicy
+class AttendancePolicy
 {
     private $roles, $superadmin, $admin, $teacher;
 
@@ -39,7 +38,7 @@ class CoursePolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role->name, [$this->superadmin, $this->admin]);
+        return in_array($user->role->name, [$this->superadmin, $this->admin, $this->teacher]);
     }
 
     /**
@@ -47,7 +46,7 @@ class CoursePolicy
      */
     public function update(User $user): bool
     {
-        return in_array($user->role->name, [$this->superadmin, $this->admin]);
+        return in_array($user->role->name, [$this->superadmin, $this->admin, $this->teacher]);
     }
 
     /**
@@ -55,7 +54,7 @@ class CoursePolicy
      */
     public function delete(User $user): bool
     {
-        return in_array($user->role->name, [$this->superadmin, $this->admin]);
+        return in_array($user->role->name, [$this->superadmin, $this->admin, $this->teacher]);
     }
 
     /**
@@ -63,7 +62,7 @@ class CoursePolicy
      */
     public function restore(User $user): bool
     {
-        return in_array($user->role->name, [$this->superadmin, $this->admin]);
+        return in_array($user->role->name, [$this->superadmin, $this->admin, $this->teacher]);
     }
 
     /**

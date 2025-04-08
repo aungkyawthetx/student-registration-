@@ -20,6 +20,9 @@
                     <label for="subject" class="form-label ms-2"><i class="fas fa-book"></i> Subject</label>
                     <input type="text" name="subject" class="form-control @error('subject') is-invalid @enderror" placeholder="Enter Subject Name" value="{{ old('subject') }}">
                     @error('subject')
+                    <label for="subject" class="form-label ms-2"><i class="fas fa-book"></i> Subject</label>
+                    <input type="text" name="subject" class="form-control @error('subject') is-invalid @enderror" placeholder="Enter Subject Name" value="{{ old('subject') }}">
+                    @error('subject')
                         <span class="text-danger"><small>{{ $message }}</small></span>
                     @enderror
                 </div>

@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TeachersExport;
+use App\Imports\TeachersImport;
 use App\Models\Course;
+use App\Models\Role;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TeacherController extends Controller
 {
@@ -17,8 +22,9 @@ class TeacherController extends Controller
         if (Gate::denies('view', Teacher::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $teachers = Teacher::with('courses')->paginate(5);
-        return view('admin.teachers.index', compact('teachers'));
+        $roles = Role::all();
+        $teachers = Teacher::paginate(5);
+        return view('admin.teachers.index', compact('teachers','roles'));
     }
 
     /**
@@ -29,7 +35,8 @@ class TeacherController extends Controller
         if (Gate::denies('create', Teacher::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        return view('admin.teachers.create');
+        $courses = Course::all();
+        return view('admin.teachers.create', compact('courses'));
     }
 
     /**
@@ -49,7 +56,7 @@ class TeacherController extends Controller
 
         Teacher::create([
             'name' => $request->name, 
-            'subject' => $request->subject, 
+            'subject' => $request->subject,
             'email' =>  $request->email, 
             'phone' => $request->phone,
         ]);
@@ -110,6 +117,21 @@ class TeacherController extends Controller
         return redirect()->route('teachers.index')->with('success', 'Teacher deleted successfully.');
     }
 
+    public function destroyall()
+    {
+        if (Gate::denies('delete', Teacher::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
+        $teachers = Teacher::all();
+        if ($teachers->isEmpty()) {
+            return redirect()->route('teachers.index')->with('error', 'No teachers to delete.');
+        }
+        foreach ($teachers as $teacher) {
+            $teacher->delete();
+        }
+        return redirect()->route('teachers.index')->with('success','All teachers deleted successfully.');
+    }
+
     public function search(Request $request){
         $searchData = $request->search_data;
         if($searchData == ""){
@@ -121,7 +143,30 @@ class TeacherController extends Controller
             ->orWhere('email','LIKE','%'.$searchData.'%')
             ->orWhere('subject','LIKE','%'.$searchData.'%')
             ->paginate(5);
-            return view('admin.teachers.index', compact('teachers'));
+            $roles = Role::all();
+            return view('admin.teachers.index', compact('teachers','roles'));
+        }
+    }
+
+    public function export(){
+        return Excel::download(new TeachersExport(),'teachers.xlsx');
+    }
+
+    public function import(Request $request){
+        $request->validate(['teachers'=>'required|file|mimes:xlsx,xls,csv']);
+        $file = $request->file('teachers');
+        $originalName = $file->getClientOriginalName();
+
+        if (!str_contains(strtolower($originalName), 'teachers')) {
+            return redirect()->back()->with('error', 'Excel file name must contain the word "teachers"');
+        }
+        try {
+            Excel::import(new TeachersImport(), $request->file('teachers'));
+            return redirect()->route('teachers.index')->with('success', 'Teachers imported successfully!');
+        } catch (ValidationException $e) {
+            return back()->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to import. Please check your Excel file format.');
         }
     }
 }

@@ -4,12 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\admin\RoleController;
-use App\Http\Controllers\auth\LoginController;
-use App\Http\Controllers\PasswordController;
-use App\Http\Controllers\RoomController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\admin\RoleController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\auth\LoginController;
@@ -19,12 +16,8 @@ use App\Http\Controllers\TeacherCoursesController;
 use App\Http\Controllers\admin\AdminUserController;
 use App\Http\Controllers\admin\AdminDashboardController;
 
-Route::get('/', function () {
-    return view('admin.dashboard');
-});
 
-//dashboard
-Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware('auth');   
 
 //auth
 Route::get('/register', [RegisterController::class,'register'])->name('register');
@@ -39,7 +32,10 @@ Route::post('/reset-pass',[PasswordController::class,'resetPass'])->name('reset-
 Route::get('/change-pass/{token}',[PasswordController::class,'changePass'])->name('change-pass');
 Route::post('/store-pass',[PasswordController::class,'storePass'])->name('store-pass');
 
+
 Route::prefix('admin')->middleware(['auth'])->group(function () {
+    //dashboard
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     //users
     Route::resource('users', AdminUserController::class);
     Route::get('/users_search', [AdminUserController::class,'search'])->name('users.search');
@@ -58,6 +54,11 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     //rooms
     Route::resource('rooms', RoomController::class);
     Route::get('/rooms_search', [RoomController::class,'search'])->name('rooms.search');
+    Route::resource('attendances', AttendanceController::class);
+    Route::resource('classes', ClassController::class);
+    Route::resource('teachercourses', TeacherCoursesController::class);
+    Route::resource('enrollments', EnrollmentController::class);
+
     //passwords
     Route::get('/change-password/{id}',[PasswordController::class,'ChangePassword'])->name('change-password')->middleware('AdminConfirmPass');
     Route::post('/store-password/{id}',[PasswordController::class,'StorePassword'])->name('store-password');

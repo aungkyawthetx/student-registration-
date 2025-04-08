@@ -1,36 +1,41 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 d-lg-block d-none bg-body-tertiary mt-5" style="position: fixed; left: 0; width:18%; min-height: 100vh;">
+<div class="d-flex flex-column flex-shrink-0 p-3 d-lg-block d-none bg-body-tertiary mt-5" style="position: fixed; left: 0; width:20%; height: 100vh; overflow-y: auto;">
     <ul class="nav nav-pills flex-column mb-auto">
         @auth
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
         <h6 class="text-underline" data-bs-toggle="collapse" href="#accounts" role="button" aria-expanded="{{ request()->routeIs('users.index') || request()->routeIs('roles.index') || request()->routeIs('users.create') || request()->routeIs('users.edit') || request()->routeIs('roles.create') || request()->routeIs('roles.edit') ? 'true' : 'false' }}" aria-controls="accountsMenu">Accounts <i class="bi bi-chevron-down"></i></h6>
         <div class="collapse {{ request()->routeIs('users.index') || request()->routeIs('roles.index') || request()->routeIs('users.create') || request()->routeIs('users.edit') || request()->routeIs('roles.create') || request()->routeIs('roles.edit') ? 'show' : '' }}" id="accounts">
             <li class="nav-item">
-            <a href="{{route('users.index')}}" class="nav-link text-body {{ request()->routeIs('users.index') ? 'active' : ''}}" aria-current="page">
+            <a href="{{route('users.index')}}" class="nav-link text-body {{ request()->routeIs('users.index') || request()->routeIs('users.create') || request()->routeIs('users.edit') ? 'active' : ''}}" aria-current="page">
                 <i class="bi bi-people"></i> Users
             </a>
             </li>
             <li class="nav-item">
-            <a href="{{route('roles.index')}}" class="nav-link text-body {{ request()->routeIs('roles.index') ? 'active' : ''}}" aria-current="page">
+            <a href="{{route('roles.index')}}" class="nav-link text-body {{ request()->routeIs('roles.index') || request()->routeIs('roles.edit') || request()->routeIs('roles.create') ? 'active' : ''}}" aria-current="page">
                 <i class="bi bi-shield-lock"></i> Roles
             </a>
             </li>
         </div>
+
+        <li class="nav-item mt-2">
+            <a href="{{ route('admin.dashboard') }}" class="text-decoration-none nav-link text-body {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"> <i class="fa-solid fa-gauge"></i> Dashboard </a>
+        </li>
+        
         <hr>
         @endif
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin') || auth()->user()->hasRole('Teacher'))
         <h6 class="text-underline">Students</h6>
         <li class="nav-item">
-            <a href="{{route('students.index')}}" class="nav-link text-body {{ request()->routeIs('students.index') ? 'active' : '' }}" aria-current="page">
+            <a href="{{route('students.index')}}" class="nav-link text-body {{ request()->routeIs('students.index') || request()->routeIs('students.create') || request()->routeIs('students.edit') ? 'active' : '' }}" aria-current="page">
                 <i class="fa-solid fa-users"></i> Students
             </a>
         </li>
         <li>
-            <a href="{{ route('enrollments.index') }}" class="nav-link text-body {{ request()->routeIs('enrollments.index') ? 'active' : '' }}">
+            <a href="{{ route('enrollments.index') }}" class="nav-link text-body {{ request()->routeIs('enrollments.index') || request()->routeIs('enrollments.create') || request()->routeIs('enrollments.edit') ? 'active' : '' }}">
                 <i class="fa-solid fa-clipboard-list"></i> Enrollment
             </a>
         </li>
         <li>
-            <a href="{{ route('attendances.index') }}" class="nav-link text-body {{ request()->routeIs('attendances.index') ? 'active' : '' }}">
+            <a href="{{ route('attendances.index') }}" class="nav-link text-body {{ request()->routeIs('attendances.index') || request()->routeIs('attendances.create') || request()->routeIs('attendances.edit') ? 'active' : '' }}">
                 <i class="fa-regular fa-square-check"></i> Attendance
             </a>
         </li>
@@ -39,12 +44,12 @@
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
         <h6 class="text-underline">Teachers</h6>
         <li>
-            <a href="{{route('teachers.index')}}" class="nav-link text-body {{ request()->routeIs('teachers.index') ? 'active' : ''}}">
-                <i class="bi bi-person-badge"></i> Teachers
+            <a href="{{route('teachers.index')}}" class="nav-link text-body {{ request()->routeIs('teachers.index') || request()->routeIs('teachers.create') || request()->routeIs('teachers.edit') ? 'active' : ''}}">
+                <i class="fas fa-chalkboard-teacher"></i> Teachers
             </a>
         </li>
         <li>
-            <a href="{{ route('teachercourses.index') }}" class="nav-link text-body {{ request()->routeIs('teachercourses.index') ? 'active' : '' }}">
+            <a href="{{ route('teachercourses.index') }}" class="nav-link text-body {{ request()->routeIs('teachercourses.index') || request()->routeIs('teachercourses.create') || request()->routeIs('teachercourses.edit') ? 'active' : '' }}">
                 <i class="bi bi-journal-bookmark"></i> Teacher Courses
             </a>
         </li>
@@ -53,17 +58,17 @@
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin') || auth()->user()->hasRole('Teacher'))
         <h6 class="text-underline">Courses</h6>
         <li>
-            <a href="{{route('courses.index')}}" class="nav-link text-body {{ request()->routeIs('courses.index') ? 'active' : ''}}">
+            <a href="{{route('courses.index')}}" class="nav-link text-body {{ request()->routeIs('courses.index') || request()->routeIs('courses.create') || request()->routeIs('courses.edit') ? 'active' : ''}}">
                 <i class="bi bi-book"></i> Courses
             </a>
         </li>
         <li>
-            <a href="{{route('rooms.index')}}" class="nav-link text-body {{ request()->routeIs('rooms.index') ? 'active' : ''}}">
+            <a href="{{route('rooms.index')}}" class="nav-link text-body {{ request()->routeIs('rooms.index') || request()->routeIs('rooms.create') || request()->routeIs('rooms.edit') ? 'active' : ''}}">
                 <i class="bi bi-door-closed"></i> Rooms
             </a>
         </li>
         <li>
-            <a href="{{ route('classes.index') }}" class="nav-link text-body {{ request()->routeIs('classes.index') ? 'active' : '' }}">
+            <a href="{{ route('classes.index') }}" class="nav-link text-body {{ request()->routeIs('classes.index') || request()->routeIs('classes.create') || request()->routeIs('classes.edit') ? 'active' : '' }}">
                 <i class="fa-regular fa-calendar"></i> Classes
             </a>
         </li>

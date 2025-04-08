@@ -33,8 +33,8 @@ class ClassController extends Controller
     {
         $validatedData = $request->validate([
             'room_id' => 'required|integer',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            'start_time' => 'required|date_format:h:i A',
+            'end_time' => 'required|date_format:h:i A|after:start_time',
             'date' => 'required|date',
             'end_date' => 'required|date'
         ]);

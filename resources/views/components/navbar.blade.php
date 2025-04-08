@@ -1,5 +1,5 @@
 @extends('components.dark-mode')
-<nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
+<nav class="navbar navbar-expand-lg sticky-top" style="background-color: #2c3e50" data-bs-theme="dark">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold" href="{{route('admin.dashboard')}}">
       Student Registration System

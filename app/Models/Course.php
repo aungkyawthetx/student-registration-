@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\Attendance;
 use App\Models\Enrollment;
@@ -19,5 +20,15 @@ class Course extends Model
     public function attendances()
     {
         return $this->hasMany(Attendance::class, 'course_id');
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'enrollments');
+    }
+
+    public function teachers()
+    {
+        return $this->belongsToMany(Teacher::class, 'teacher_courses');
     }
 }

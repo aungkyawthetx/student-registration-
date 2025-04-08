@@ -35,36 +35,36 @@
     </div>
 </div>
 <div class="table-responsive container my-3">
-    <table class="table table-hover table-bordered table-striped">
+    <table class="table table-hover table-bordered table-striped text-center">
         <thead>
         <tr>
-        @if(auth()->user()->hasRole('Super admin'))
-          <th scope="col"></th>
-        @endif
           <th scope="col">ID</th>
           <th scope="col">Name</th>
           <th scope="col">Description</th>
+          @if(auth()->user()->hasRole('Super admin'))
+          <th scope="col">Actions</th>
+          @endif
         </tr>
         </thead>
         <tbody>
         @if($roles->isNotEmpty())
             @foreach($roles as $role)
             <tr>
+                <th scope="row">{{$role->id}}</th>
+                <td>{{$role->name}}</td>
+                <td>{{$role->description}}</td>
                 @if(auth()->user()->hasRole('Super admin'))
                 <td>
-                    <div class="d-flex">
-                        <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-sm btn-primary m-1"><i class="fas fa-edit"></i></a>
-                        <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-inline m-1">
+                    <div>
+                        <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-sm btn-success me-2"> Edit <i class="fa-solid fa-pen-to-square"></i> </a>
+                        <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete?')"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this row?')"> Delete <i class="fas fa-trash"></i> </button>
                         </form>
                     </div>
                 </td>
                 @endif
-                <th scope="row">{{$role->id}}</th>
-                <td>{{$role->name}}</td>
-                <td>{{$role->description}}</td>
             </tr>
             @endforeach
         @else

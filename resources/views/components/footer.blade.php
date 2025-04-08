@@ -1,3 +1,3 @@
-<footer class="d-flex flex-wrap justify-content-end align-items-center py-4 my-2 border-top">
-    <span class="me-4 text-body-secondary">© 2025 Student Registration System || Admin Panel</span>
+<footer class="d-flex justify-content-end align-items-center py-4" style="background-color: #2c3e50; z-index: 1;" data-bs-theme="dark">
+    <span class="me-4 text-white"> &copy; 2025 Student Registration System || Admin Panel</span>
 </footer>

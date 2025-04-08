@@ -1,27 +1,31 @@
 @extends('layouts.app')
 @section('title', 'Enrollments')
 @section('content')
-    <div class="container d-flex align-items-center justify-content-between">
-        <h2 class="text-uppercase">Enrollment list</h2>
+  <div class="card shadow-sm">
+    <div class="card-header bg-white border-bottom">
+      <div class="container d-flex justify-content-between align-items-center mt-1">
+        <h2 class="d-inline mb-0">Enrollment List</h2>
         <a href="{{ route('enrollments.create') }}" class="btn btn-primary rounded-1"> Add New <i class="fa-solid fa-plus"></i> </a>
+      </div>
+      @if(session('successAlert'))
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+          {{ session('successAlert') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      @endif
     </div>
-    @if(session('successAlert'))
-            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                {{ session('successAlert') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    <div class="table-responsive container my-3">
-        <table class="table table-hover table-bordered table-striped text-center">
+    <div class="card-body">
+      <div class="table-responsive container">
+        <table class="table table-striped table-hover align-middle text-center">
             <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Student_Name</th>
-              <th scope="col">Course_Name</th>
-              <th scope="col">Enrollment_Date</th>
+              <th scope="col">Student Name</th>
+              <th scope="col">Course Name</th>
+              <th scope="col">Enrollment Date</th>
               <th scope="col">Actions</th>
             </tr>
-            </thead>
+            </thead class="table-light">
             <tbody>
               @foreach ($enrollments as $enrollment)
               <tr>
@@ -43,6 +47,12 @@
               @endforeach
             </tbody>
         </table>
+      </div>
     </div>
-    {{$enrollments->links('pagination::bootstrap-5') }}
+    <div class="card-footer border-0 bg-transparent pt-0">
+      <div class="container">
+        {{$enrollments->links('pagination::bootstrap-5') }}
+      </div>
+    </div>
+  </div>
 @endsection

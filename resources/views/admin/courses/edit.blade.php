@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Edit Course')
 @section('content')
-    <div class="card border-0 shadow bg-light">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <h4 class="text-uppercase">Edit Course</h4>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between">
+            <h4 class="card-title mb-0 d-inline">Edit Course</h4>
             <a href="{{ route('courses.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> BACK </a>
         </div>
         <div class="card-body">
@@ -38,15 +38,17 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="mb-3">
+                <div>
                     <label for="fees" class="form-label ms-2"><i class="fas fa-dollar-sign"></i> Fees</label>
                     <input type="number" class="form-control @error('fees') is-invalid @enderror" id="fees" name="fees" placeholder="Enter course fees" value="{{ old('fees', $course->fees) }}">
                     @error('fees')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-                <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
             </form>
+        </div>
+        <div class="card-footer bg-transparent border-0 pt-0">
+            <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
         </div>
     </div>
 @endsection

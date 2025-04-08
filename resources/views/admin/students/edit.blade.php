@@ -1,9 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Edit Student')
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h4>Edit student </h4>
+    <div class="card shadow-sm my-2">
+        <div class="card-header bg-white d-flex align-items-center justify-content-between">
+            <h4 class="card-title d-inline mb-0">Edit Student</h4>
+            <a href="{{ route('students.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
         </div>
         <div class="card-body">
             <form action="{{route('students.update', $student->id)}}" method="POST">
@@ -78,7 +79,7 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
+                <button type="submit" class="btn btn-primary"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
             </form>
         </div>
     </div>

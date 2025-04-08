@@ -17,7 +17,7 @@ class TeacherController extends Controller
         if (Gate::denies('view', Teacher::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $teachers = Teacher::paginate(5);
+        $teachers = Teacher::with('courses')->paginate(5);
         return view('admin.teachers.index', compact('teachers'));
     }
 
@@ -42,14 +42,14 @@ class TeacherController extends Controller
         }
         $request->validate([
             'name'=>'required|string|max:50',
-            'course'=>'required|string|max:50',
+            'subject'=>'required|string|max:50',
             'email'=>'required|string|email|max:50',
             'phone'=>'required|string|max:30',
         ]);
 
         Teacher::create([
             'name' => $request->name, 
-            'subject' => $request->course, 
+            'subject' => $request->subject, 
             'email' =>  $request->email, 
             'phone' => $request->phone,
         ]);

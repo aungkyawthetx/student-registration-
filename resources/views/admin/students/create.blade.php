@@ -1,9 +1,13 @@
 @extends('layouts.app')
 @section('title', 'Add New Student')
 @section('content')
-    <div class="card border-0 shadow rounded-2">
-        <div class="card-header">
-            <h4 class="text-uppercase">new student </h4>
+    <div class="card shadow-sm my-2">
+        <div class="card-header bg-white border-bottom">
+            <div class="container d-flex justify-content-between align-items-center mt-1">
+                <h4 class="text-uppercase">new student </h4>
+                <a href="{{ route('students.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
+            </div>
+            
         </div>
         <div class="card-body">
             <form action="{{ route('students.store') }}" method="POST">
@@ -77,7 +81,7 @@
                         <span class="text-danger"><small>{{ $message }}</small></span>
                     @enderror
                 </div>
-                <button type="submit" class="btn btn-primary rounded-1"> Add Student </button>
+                <button type="submit" class="btn btn-primary rounded-1"> <i class="fas fa-user-plus me-1"></i> Add </button>
             </form>
         </div>
     </div>

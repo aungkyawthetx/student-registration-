@@ -99,7 +99,7 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
-        if (Gate::denies('destroy', Course::class)) {
+        if (Gate::denies('delete', Course::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $course = Course::find($id);

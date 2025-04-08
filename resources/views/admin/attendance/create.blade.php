@@ -2,7 +2,7 @@
 @section('title', 'New Attendance')
 @section('content')
   
-  <div class="card shadow bg-light border-0">
+  <div class="card shadow border-0">
       <div class="card-header d-flex align-items-center justify-content-between">
           <h4 class="text-uppercase"> new attendance </h4>
           <a href="{{ route('attendances.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>

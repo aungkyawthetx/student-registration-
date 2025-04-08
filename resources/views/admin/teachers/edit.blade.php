@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Edit Teacher')
 @section('content')
-    <div class="card border-0 shadow bg-light">
+    <div class="card border-0 shadow">
         <div class="card-header d-flex align-items-center justify-content-between">
             <h4 class="text-uppercase">Edit Teacher</h4>
             <a href="{{ route('teachers.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> BACK</a>

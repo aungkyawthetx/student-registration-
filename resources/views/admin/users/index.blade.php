@@ -3,9 +3,17 @@
 @section('content')
 <div class="container d-flex justify-content-between align-items-center">
     <h2 class="d-inline">Users List</h2>
-    @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
-    <a href="{{ route('users.create') }}" class="btn btn-primary my-2"><i class="fas fa-plus"></i> Add new</a>
-    @endif
+    <div class="d-flex align-items-center justify-content-center gap-2">
+        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+        <a href="{{ route('users.create') }}" class="btn btn-primary my-2"><i class="fas fa-plus"></i> Add new</a>
+        <form action="{{route('users.import')}}" method="POST" enctype="multipart/form-data" class="">
+            @csrf
+            <input type="file" name="users" id="users" class="form-control-sm" required>
+            <button type="submit" class="btn btn-primary my-2" title="Import"><i class="fa-solid fa-upload"></i></button>
+        </form>
+        <a href="{{ route('users.export') }}" class="btn btn-primary my-2" title="Export" onclick="return confirm('Export users data as an excel file?')"><i class="fa-solid fa-download"></i></a>
+        @endif
+    </div>
 </div>
 <div class="container">
     @if(session('success'))
@@ -23,7 +31,7 @@
 </div>
 <div class="container">
     <div class="row my-3">
-        <div class="col-10">
+        <div class="col-8">
             <form action="{{route('users.search')}}" method="GET">
                 @csrf
                 <div class="input-group">
@@ -32,11 +40,20 @@
                 </div>
             </form>
         </div>
-        <div class="col-2 text-end">
+        <div class="col-2">
             <form action="{{ route('users.index') }}" method="GET" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-secondary" title="Show All"><i class="fas fa-sync"></i></button>
             </form>
+        </div>
+        <div class="col-2 text-end">
+            @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+            <form action="{{ route('users.destroy-all', Auth()->user()->id) }}" method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete all users (except current account)?')"><i class="fas fa-trash"></i></button>
+            </form>
+            @endif
         </div>
     </div>
 </div>
@@ -44,13 +61,13 @@
     <table class="table table-hover table-bordered table-striped">
         <thead>
         <tr>
-            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
+        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
           <th scope="col"></th>
           @endif
           <th scope="col">ID</th>
           <th scope="col">Name</th>
           <th scope="col">Email</th>
-          @if(auth()->user()->hasRole('Super admin'))
+          @if(auth()->user()->hasRole($roles->first()->name))
           <th scope="col">Password</th>
           @endif
           <th scope="col">Role</th>
@@ -60,7 +77,7 @@
         @if($users->isNotEmpty())
             @foreach($users as $user)
               <tr>
-                @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super admin'))
+                @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
             <td>
                 <div class="d-flex">
                 <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary m-1"><i class="fas fa-edit"></i></a>
@@ -75,7 +92,7 @@
             <th scope="row">{{$user->id}}</th>
             <td>{{$user->name}}</td>
             <td>{{$user->email}}</td>
-            @if(auth()->user()->hasRole('Super admin'))
+            @if(auth()->user()->hasRole($roles->first()->name))
             <td>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPasswordModal{{ $user->id }}">
                 <i class="fas fa-edit"></i>

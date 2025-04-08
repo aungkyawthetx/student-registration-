@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Exports\RolesExport;
 use App\Http\Controllers\Controller;
+use App\Imports\RolesImport;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RoleController extends Controller
 {
@@ -99,6 +103,21 @@ class RoleController extends Controller
         return redirect()->route('roles.index')->with('success','Role deleted successfully.');
     }
 
+    public function destroyall()
+    {
+        if (Gate::denies('delete', Role::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
+        $roles = Role::all();
+        if ($roles->isEmpty()) {
+            return redirect()->route('roles.index')->with('error', 'No roles to delete.');
+        }
+        foreach ($roles as $role) {
+            $role->delete();
+        }
+        return redirect()->route('roles.index')->with('success','All roles deleted successfully.');
+    }
+
     public function search(Request $request){
         $searchData = $request->search_data;
         if($searchData == ""){
@@ -109,6 +128,28 @@ class RoleController extends Controller
             ->orWhere('name','LIKE','%'.$searchData.'%')
             ->paginate(5);
             return view('admin.roles.index', compact('roles'));
+        }
+    }
+
+    public function export(){
+        return Excel::download(new RolesExport(),'roles.xlsx');
+    }
+
+    public function import(Request $request){
+        $request->validate(['roles'=>'required|file|mimes:xlsx,xls,csv']);
+        $file = $request->file('roles');
+        $originalName = $file->getClientOriginalName();
+
+        if (!str_contains(strtolower($originalName), 'roles')) {
+            return redirect()->back()->with('error', 'Excel file name must contain the word "roles"');
+        }
+        try {
+            Excel::import(new RolesImport(), $request->file('roles'));
+            return redirect()->route('roles.index')->with('success', 'Roles imported successfully!');
+        } catch (ValidationException $e) {
+            return back()->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to import. Please check your Excel file format.');
         }
     }
 }

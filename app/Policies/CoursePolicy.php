@@ -4,16 +4,26 @@ namespace App\Policies;
 
 use App\Models\Course;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Auth\Access\Response;
 
 class CoursePolicy
 {
+    private $roles, $superadmin, $admin, $teacher;
+
+    public function __construct()
+    {
+        $this->roles = Role::all();
+        $this->superadmin = $this->roles->first()->name;
+        $this->admin = $this->roles[1]->name;
+        $this->teacher = $this->roles[3]->name;
+    }
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->role->name === 'Super admin';
+        return $user->role->name === $this->superadmin;
     }
 
     /**
@@ -21,7 +31,7 @@ class CoursePolicy
      */
     public function view(User $user): bool
     {
-        return in_array($user->role->name, ['Super admin', 'Admin', 'Teacher']);
+        return in_array($user->role->name, [$this->superadmin, $this->admin, $this->teacher]);
     }
 
     /**
@@ -29,7 +39,7 @@ class CoursePolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role->name, ['Super admin', 'Admin']);
+        return in_array($user->role->name, [$this->superadmin, $this->admin]);
     }
 
     /**
@@ -37,7 +47,7 @@ class CoursePolicy
      */
     public function update(User $user): bool
     {
-        return in_array($user->role->name, ['Super admin', 'Admin']);
+        return in_array($user->role->name, [$this->superadmin, $this->admin]);
     }
 
     /**
@@ -45,7 +55,7 @@ class CoursePolicy
      */
     public function delete(User $user): bool
     {
-        return in_array($user->role->name, ['Super admin', 'Admin']);
+        return in_array($user->role->name, [$this->superadmin, $this->admin]);
     }
 
     /**
@@ -53,7 +63,7 @@ class CoursePolicy
      */
     public function restore(User $user): bool
     {
-        return in_array($user->role->name, ['Super admin', 'Admin']);
+        return in_array($user->role->name, [$this->superadmin, $this->admin]);
     }
 
     /**
@@ -61,6 +71,6 @@ class CoursePolicy
      */
     public function forceDelete(User $user): bool
     {
-        return $user->role->name === 'Super admin';
+        return $user->role->name === $this->superadmin;
     }
 }

@@ -2,7 +2,7 @@
 @section('title', 'New Class')
 @section('content')
   
-  <div class="card shadow bg-light border-0">
+  <div class="card shadow border-0">
       <div class="card-header d-flex align-items-center justify-content-between">
           <h4 class="text-uppercase"> new class </h4>
           <a href="{{ route('classes.index') }}" class="btn btn-dark float-end text-uppercase"> <i class="fa-solid fa-chevron-left"></i> Back</a>

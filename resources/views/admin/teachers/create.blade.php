@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Add New Teacher')
 @section('content')
-    <div class="card border-0 shadow bg-light">
+    <div class="card border-0 shadow">
         <div class="card-header d-flex align-items-center justify-content-between">
             <h4 class="text-uppercase"> new teacher</h4>
-            <a href="{{ route('teachers.index') }}" class="btn btn-dark""> <i class="fa-solid fa-chevron-left"></i> BACK</a>
+            <a href="{{ route('teachers.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> BACK</a>
         </div>
         <div class="card-body">
             <form action="{{ route('teachers.store') }}" method="POST">
@@ -17,16 +17,9 @@
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="course" class="form-label ms-2"><i class="fas fa-book"></i> Course</label>
-                    <select class="form-select @error('course') is-invalid @enderror" name="course">
-                        <option value="" disabled selected>Select a course</option>
-                        @foreach($courses as $course)
-                            <option value="{{ $course->name }}" {{ old('course', $course->id) }}>
-                                {{ $course->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('course')
+                    <label for="subject" class="form-label ms-2"><i class="fas fa-book"></i> Subject</label>
+                    <input type="text" name="subject" class="form-control @error('subject') is-invalid @enderror" placeholder="Enter Subject Name" value="{{ old('subject') }}">
+                    @error('subject')
                         <span class="text-danger"><small>{{ $message }}</small></span>
                     @enderror
                 </div>

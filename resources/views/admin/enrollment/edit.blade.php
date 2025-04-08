@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Edit Enrollment')
 @section('content')
-  <div class="card bg-light border-0 shadow">
+  <div class="card border-0 shadow">
     <div class="card-header">
       <h4 class="text-uppercase card-title"> Edit Enrollment</h4>
     </div>

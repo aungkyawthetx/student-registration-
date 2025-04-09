@@ -3,7 +3,7 @@
 
     $roles = Role::all();
 @endphp
-<div class="d-flex flex-column flex-shrink-0 p-3 d-lg-block d-none bg-body-tertiary mt-5" style="position: fixed; left: 0; width:20%; height: 100vh; overflow-y:auto;">
+<div class="d-flex flex-column flex-shrink-0 p-3 d-lg-block d-none bg-body-tertiary my-5 mb-5" style="position: fixed; left: 0; width:21%; height: 95vh; overflow-y:auto;">
     <ul class="nav nav-pills flex-column mb-auto">
         @auth
         @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
@@ -73,6 +73,17 @@
             </a>
         </li>
         <hr>
+        <h6 class="text-underline">Reports</h6>
+        <li>
+            <a href="{{route('attendance.report')}}" class="nav-link text-body {{ request()->routeIs('attendance.report') ? 'active fw-bold' : ''}}">
+                <i class="bi bi-book"></i> Student Attendance
+            </a>
+        </li>
+        <li>
+            <a href="{{route('enrollment.report')}}" class="nav-link text-body {{ request()->routeIs('enrollment.report') ? 'active fw-bold' : ''}}">
+                <i class="fa-solid fa-users"></i> Student Enrollment
+            </a>
+        </li>
         @else
         <li>
             <p class="mt-5 text-body">Gain permission from super admin for admin panel access</p>
@@ -140,6 +151,16 @@
         <li>
             <a href="{{route('classes.index')}}" class="nav-link text-body {{ request()->routeIs('classes.index') ? 'active fw-bold' : '' }}">
                 <i class="bi bi-calendar"></i> Class Timetables
+            </a>
+        </li>
+        <li>
+            <a href="{{route('attendance.report')}}" class="nav-link text-body {{ request()->routeIs('attendance.report') ? 'active fw-bold' : ''}}">
+                <i class="bi bi-book"></i> Attendance Report 
+            </a>
+        </li>
+        <li>
+            <a href="{{route('enrollment.report')}}" class="nav-link text-body {{ request()->routeIs('enrollment.report') ? 'active fw-bold' : ''}}">
+                <i class="bi bi-file-earmark-text"></i> Enrollment Report 
             </a>
         </li>
         @else

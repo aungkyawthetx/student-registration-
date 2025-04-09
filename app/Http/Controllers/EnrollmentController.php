@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Student;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;

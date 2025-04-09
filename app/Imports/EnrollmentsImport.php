@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Student;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -42,7 +43,7 @@ class EnrollmentsImport implements ToModel, WithHeadingRow
         return new Enrollment([
             'student_id' => $student ? $student->id : null,
             'course_id' => $course ? $course->id : null,
-            'date' => $row['enrollment_date'],
+            'date' => Date::excelToDateTimeObject($row['enrollment_date'])->format('Y-m-d'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -18,6 +18,9 @@ class CourseController extends Controller
      */
     public function index()
     {
+        if (Gate::denies('view', Course::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
         $roles= Role::all();
         $courses = Course::paginate(5);
         return view('admin.courses.index', compact('courses', 'roles'));

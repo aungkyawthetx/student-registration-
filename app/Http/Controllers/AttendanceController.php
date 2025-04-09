@@ -51,14 +51,19 @@ class AttendanceController extends Controller
         if (Gate::denies('create', Attendance::class)) {
             return redirect()->route('admin.dashboard')->with('error', 'No permission.');
         }
-        $request->validate([
-            'student_name' => 'required',
-            'course_name' => 'required',
-            'attendance_date' => 'required',
-            'room_name' => 'required',
+        $validateData = $request->validate([
+            'student_name' => 'required|exists:students,id',
+            'course_name' => 'required|exists:courses,id',
+            'attendance_date' => 'required|date',
+            'room_name' => 'required|exists:rooms,id',
             'status' => 'required|in:P,A,L',
         ]);
-        // dd($request->class_date);
+        $student = Student::findOrFail($validateData['student_name']);
+        if (!$student->courses()->where('courses.id', $validateData['course_name'])->exists()) {
+            return redirect()->back()->withErrors([
+                'course_name' => 'The selected course is not enrolled by the student.',
+            ])->withInput();
+        }
         Attendance::create([
             'student_id' => $request->student_name,
             'course_id' => $request->course_name,

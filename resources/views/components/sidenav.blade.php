@@ -1,157 +1,252 @@
 @php
     use App\Models\Role;
-
     $roles = Role::all();
 @endphp
+
+<!-- Desktop Sidebar -->
 <div class="d-flex flex-column flex-shrink-0 p-3 d-lg-block d-none bg-body-tertiary mt-5" style="position: fixed; left: 0; width:20%; height: 100vh; overflow-y:auto;">
     <ul class="nav nav-pills flex-column mb-auto">
         @auth
-        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-        <h6 class="text-underline" data-bs-toggle="collapse" href="#accounts" role="button" aria-expanded="{{ request()->routeIs('users.index') || request()->routeIs('roles.index') || request()->routeIs('users.create') || request()->routeIs('users.edit') || request()->routeIs('roles.create') || request()->routeIs('roles.edit') ? 'true' : 'false' }}" aria-controls="accountsMenu">Accounts <i class="bi bi-chevron-down"></i></h6>
-        <div class="collapse {{ request()->routeIs('users.index') || request()->routeIs('roles.index') || request()->routeIs('users.create') || request()->routeIs('users.edit') || request()->routeIs('roles.create') || request()->routeIs('roles.edit') ? 'show' : '' }}" id="accounts">
-            <li class="nav-item">
-            <a href="{{route('users.index')}}" class="nav-link text-body {{ request()->routeIs('users.index') || request()->routeIs('users.create') || request()->routeIs('users.edit') ? 'active' : ''}}" aria-current="page">
-                <i class="bi bi-people"></i> Users
-            </a>
-            </li>
-            <li class="nav-item">
-            <a href="{{route('roles.index')}}" class="nav-link text-body {{ request()->routeIs('roles.index') || request()->routeIs('roles.edit') || request()->routeIs('roles.create') ? 'active' : ''}}" aria-current="page">
-                <i class="bi bi-shield-lock"></i> Roles
-            </a>
-            </li>
-        </div>
-
-        <li class="nav-item mt-2">
-            <a href="{{ route('admin.dashboard') }}" class="text-decoration-none nav-link text-body {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"> <i class="fa-solid fa-gauge"></i> Dashboard </a>
-        </li>
-        
-        <hr>
-        @endif
-        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
-        <h6 class="text-underline">Students</h6>
+        <!-- Dashboard -->
         <li class="nav-item">
-            <a href="{{route('students.index')}}" class="nav-link text-body {{ request()->routeIs('students.index') ? 'active fw-bold' : ''}}" aria-current="page">
-                <i class="bi bi-people"></i> Students
+            <a href="{{ route('admin.dashboard') }}" class="nav-link text-body {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"> 
+                <i class="fa-solid fa-gauge me-2"></i> Dashboard 
             </a>
         </li>
-        <li>
-            <a href="{{route('enrollments.index')}}" class="nav-link text-body {{ request()->routeIs('enrollments.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-card-list"></i> Enrollment
-            </a>
-        </li>
-        <li>
-            <a href="{{route('attendances.index')}}" class="nav-link text-body {{ request()->routeIs('attendances.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-check2-square"></i> Attendance
-            </a>
-        </li>
-        <hr>
-        @endif
+
         @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-        <h6 class="text-underline">Teachers</h6>
-        <li>
-            <a href="{{route('teachers.index')}}" class="nav-link text-body {{ request()->routeIs('teachers.index') || request()->routeIs('teachers.create') || request()->routeIs('teachers.edit') ? 'active' : ''}}">
-                <i class="fas fa-chalkboard-teacher"></i> Teachers
-            </a>
+        <!-- Accounts Section -->
+        <li class="nav-item mt-3">
+            <div class="fw-bold mb-2 ps-2">Accounts</div>
+            <ul class="nav flex-column ps-3">
+                <li class="nav-item">
+                    <a href="{{route('users.index')}}" class="nav-link text-body {{ request()->routeIs('users.*') ? 'active' : ''}}">
+                        <i class="bi bi-people me-2"></i> Users
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('roles.index')}}" class="nav-link text-body {{ request()->routeIs('roles.*') ? 'active' : ''}}">
+                        <i class="bi bi-shield-lock me-2"></i> Roles
+                    </a>
+                </li>
+            </ul>
         </li>
-        <li>
-            <a href="{{route('teachercourses.index')}}" class="nav-link text-body {{ request()->routeIs('teachercourses.index') ? 'active fw-bold' : ''}}">
-                <i class="bi bi-journal-bookmark"></i> Teacher Courses
-            </a>
-        </li>
-        <hr>
         @endif
+
         @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
-        <h6 class="text-underline">Courses</h6>
-        <li>
-            <a href="{{route('courses.index')}}" class="nav-link text-body {{ request()->routeIs('courses.index') || request()->routeIs('courses.create') || request()->routeIs('courses.edit') ? 'active' : ''}}">
-                <i class="bi bi-book"></i> Courses
-            </a>
+        <!-- Students Section -->
+        <li class="nav-item mt-3">
+            <div class="fw-bold mb-2 ps-2">Students</div>
+            <ul class="nav flex-column ps-3">
+                <li class="nav-item">
+                    <a href="{{route('students.index')}}" class="nav-link text-body {{ request()->routeIs('students.*') ? 'active' : ''}}">
+                        <i class="bi bi-people me-2"></i> Students
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('enrollments.index')}}" class="nav-link text-body {{ request()->routeIs('enrollments.*') ? 'active' : '' }}">
+                        <i class="bi bi-card-list me-2"></i> Enrollment
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('attendances.index')}}" class="nav-link text-body {{ request()->routeIs('attendances.*') ? 'active' : '' }}">
+                        <i class="bi bi-check2-square me-2"></i> Attendance
+                    </a>
+                </li>
+            </ul>
         </li>
-        <li>
-            <a href="{{route('rooms.index')}}" class="nav-link text-body {{ request()->routeIs('rooms.index') || request()->routeIs('rooms.create') || request()->routeIs('rooms.edit') ? 'active' : ''}}">
-                <i class="bi bi-door-closed"></i> Rooms
-            </a>
+        @endif
+
+        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+        <!-- Teachers Section -->
+        <li class="nav-item mt-3">
+            <div class="fw-bold mb-2 ps-2">Teachers</div>
+            <ul class="nav flex-column ps-3">
+                <li class="nav-item">
+                    <a href="{{route('teachers.index')}}" class="nav-link text-body {{ request()->routeIs('teachers.*') ? 'active' : ''}}">
+                        <i class="fas fa-chalkboard-teacher me-2"></i> Teachers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('teachercourses.index')}}" class="nav-link text-body {{ request()->routeIs('teachercourses.*') ? 'active' : ''}}">
+                        <i class="bi bi-journal-bookmark me-2"></i> Teacher Courses
+                    </a>
+                </li>
+            </ul>
         </li>
-        <li>
-            <a href="{{route('classes.index')}}" class="nav-link text-body  {{ request()->routeIs('classes.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-calendar"></i> Class Timetables
-            </a>
+        @endif
+
+        @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
+        <!-- Courses Section -->
+        <li class="nav-item mt-3">
+            <div class="fw-bold mb-2 ps-2">Courses</div>
+            <ul class="nav flex-column ps-3">
+                <li class="nav-item">
+                    <a href="{{route('courses.index')}}" class="nav-link text-body {{ request()->routeIs('courses.*') ? 'active' : ''}}">
+                        <i class="bi bi-book me-2"></i> Courses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('rooms.index')}}" class="nav-link text-body {{ request()->routeIs('rooms.*') ? 'active' : ''}}">
+                        <i class="bi bi-door-closed me-2"></i> Rooms
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('classes.index')}}" class="nav-link text-body {{ request()->routeIs('classes.*') ? 'active' : '' }}">
+                        <i class="bi bi-calendar me-2"></i> Class Timetables
+                    </a>
+                </li>
+            </ul>
         </li>
-        <hr>
+        <li class="nav-item mt-3">
+            <h6 class="fw-bold mb-2 ps-2">Reports</h6>
+            <li class="nav-item">
+                <a href="{{route('attendance.report')}}" class="nav-link text-body {{ request()->routeIs('attendance.report') ? 'active fw-bold' : ''}}">
+                    <i class="bi bi-book"></i> Student Attendance
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{route('enrollment.report')}}" class="nav-link text-body {{ request()->routeIs('enrollment.report') ? 'active fw-bold' : ''}}">
+                    <i class="fa-solid fa-users"></i> Student Enrollment
+                </a>
+            </li>
+        </li>
         @else
-        <li>
-            <p class="mt-5 text-body">Gain permission from super admin for admin panel access</p>
+        <li class="nav-item mt-5">
+            <div class="text-body">Gain permission from super admin for admin panel access</div>
         </li>
         @endif
         @endauth
     </ul>
 </div>
 
-<div class="d-lg-none p-3 bg-body-tertiary">
-    <ul class="nav nav-pills flex-row justify-content-around">
+<!-- Mobile Bottom Navigation -->
+<div class="d-lg-none fixed-bottom bg-body-tertiary border-top">
+    <ul class="nav nav-pills justify-content-around py-2 align-items-center">
         @auth
+        <!-- Dashboard -->
+        <li class="nav-item">
+            <a href="{{ route('admin.dashboard') }}" class="nav-link text-center {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <i class="fa-solid fa-gauge d-block mx-auto"></i>
+                <small>Dashboard</small>
+            </a>
+        </li>
+
         @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+        <!-- Accounts -->
         <li class="nav-item">
-            <a href="{{route('users.index')}}" class="nav-link text-body {{ request()->routeIs('users.index') ? 'active fw-bold' : ''}}" aria-current="page">
-                <i class="bi bi-people"></i> Users
+            <a href="{{route('users.index')}}" class="nav-link text-center {{ request()->routeIs('users.*') ? 'active' : ''}}">
+                <i class="bi bi-people d-block mx-auto"></i>
+                <small>Users</small>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{route('roles.index')}}" class="nav-link text-body {{ request()->routeIs('roles.index') ? 'active fw-bold' : ''}}" aria-current="page">
-                <i class="bi bi-people"></i> Roles
+            <a href="{{route('roles.index')}}" class="nav-link text-center {{ request()->routeIs('roles.*') ? 'active' : ''}}">
+                <i class="bi bi-shield-lock d-block mx-auto"></i>
+                <small>Roles</small>
             </a>
         </li>
         @endif
+
         @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
+        <!-- Students -->
         <li class="nav-item">
-            <a href="{{route('students.index')}}" class="nav-link text-body {{ request()->routeIs('students.index') ? 'active fw-bold' : '' }}" aria-current="page">
-                <i class="bi bi-people"></i> Students
+            <a href="{{route('students.index')}}" class="nav-link text-center {{ request()->routeIs('students.*') ? 'active' : '' }}">
+                <i class="bi bi-people d-block mx-auto"></i>
+                <small>Students</small>
             </a>
         </li>
-        <li>
-            <a href="{{route('enrollments.index')}}" class="nav-link text-body {{ request()->routeIs('enrollments.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-card-list"></i> Enrollment
+        <li class="nav-item">
+            <a href="{{route('enrollments.index')}}" class="nav-link text-center {{ request()->routeIs('enrollments.*') ? 'active' : '' }}">
+                <i class="bi bi-card-list d-block mx-auto"></i>
+                <small>Enrollment</small>
             </a>
         </li>
-        <li>
-            <a href="{{route('attendances.index')}}" class="nav-link text-body {{ request()->routeIs('attendances.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-check2-square"></i> Attendance
+        <li class="nav-item">
+            <a href="{{route('attendances.index')}}" class="nav-link text-center {{ request()->routeIs('attendances.*') ? 'active' : '' }}">
+                <i class="bi bi-check2-square d-block mx-auto"></i>
+                <small>Attendance</small>
             </a>
         </li>
         @endif
+
         @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-        <li>
-            <a href="{{route('teachers.index')}}" class="nav-link text-body {{ request()->routeIs('teachers.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-person-badge"></i> Teachers
+        <!-- Teachers -->
+        <li class="nav-item">
+            <a href="{{route('teachers.index')}}" class="nav-link text-center {{ request()->routeIs('teachers.*') ? 'active' : '' }}">
+                <i class="fas fa-chalkboard-teacher d-block mx-auto"></i>
+                <small>Teachers</small>
             </a>
         </li>
-        <li>
-            <a href="{{route('teachercourses.index')}}" class="nav-link text-body {{ request()->routeIs('teachercourses.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-journal-bookmark"></i> Teacher Courses
+        <li class="nav-item">
+            <a href="{{route('teachercourses.index')}}" class="nav-link text-center {{ request()->routeIs('teachercourses.*') ? 'active' : '' }}">
+                <i class="bi bi-journal-bookmark d-block mx-auto"></i>
+                <small>Teach Courses</small>
             </a>
         </li>
         @endif
+
         @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
-        <li>
-            <a href="{{route('courses.index')}}" class="nav-link text-body {{ request()->routeIs('courses.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-book"></i> Courses
+        <!-- Courses -->
+        <li class="nav-item">
+            <a href="{{route('courses.index')}}" class="nav-link text-center {{ request()->routeIs('courses.*') ? 'active' : '' }}">
+                <i class="bi bi-book d-block mx-auto"></i>
+                <small>Courses</small>
             </a>
         </li>
-        <li>
-            <a href="{{route('rooms.index')}}" class="nav-link text-body {{ request()->routeIs('rooms.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-door-closed"></i> Rooms
+        <li class="nav-item">
+            <a href="{{route('rooms.index')}}" class="nav-link text-center {{ request()->routeIs('rooms.*') ? 'active' : '' }}">
+                <i class="bi bi-door-closed d-block mx-auto"></i>
+                <small>Rooms</small>
             </a>
         </li>
-        <li>
-            <a href="{{route('classes.index')}}" class="nav-link text-body {{ request()->routeIs('classes.index') ? 'active fw-bold' : '' }}">
-                <i class="bi bi-calendar"></i> Class Timetables
+        <li class="nav-item">
+            <a href="{{route('classes.index')}}" class="nav-link text-center {{ request()->routeIs('classes.*') ? 'active' : '' }}">
+                <i class="bi bi-calendar d-block mx-auto"></i>
+                <small>Classes</small>
             </a>
         </li>
-        @else
-        <li>
-            <p class="mt-5 text-body">Gain permission from super admin for admin panel access</p>
+        <li class="nav-item">
+            <a href="{{route('attendance.report')}}" class="nav-link text-center {{ request()->routeIs('attendance.report') ? 'active' : ''}}">
+            <i class="bi bi-book d-block mx-auto"></i>
+            <small class="d-block d-md-none text-wrap">Attendance Report</small>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{route('enrollment.report')}}" class="nav-link text-center {{ request()->routeIs('enrollment.report') ? 'active' : ''}}">
+            <i class="fa-solid fa-users d-block mx-auto"></i>
+            <small class="d-block d-md-none text-wrap"> Enrollment Report</small>
+            </a>
         </li>
         @endif
         @endauth
     </ul>
 </div>
+
+<style>
+    @media (max-width: 992px) {
+        body {
+            padding-bottom: 60px;
+        }
+        .nav-pills {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .nav-item {
+            min-width: 70px;
+        }
+    }
+    
+    .nav-link small {
+        font-size: 0.75rem;
+    }
+    
+    .nav-link.active {
+        font-weight: 500;
+    }
+    
+    .nav-link i {
+        font-size: 1.1rem;
+    }
+</style>

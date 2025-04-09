@@ -2,7 +2,7 @@
 @section('title', 'Add New User')
 @section('content')
     <div class="card">
-        <div class="card-header">
+        <div class="card-header bg-transparent">
             <h4>Add New User</h4>
         </div>
         <div class="card-body">

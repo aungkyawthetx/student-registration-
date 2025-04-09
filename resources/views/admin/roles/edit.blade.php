@@ -2,7 +2,7 @@
 @section('title', 'Edit Role')
 @section('content')
     <div class="card">
-        <div class="card-header">
+        <div class="card-header bg-transparent">
             <h4>Edit Role</h4>
         </div>
         <div class="card-body">

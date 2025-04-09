@@ -2,7 +2,7 @@
 @section('title', 'Edit Enrollment')
 @section('content')
   <div class="card shadow-sm">
-    <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between">
+    <div class="card-header bg-transparent border-bottom d-flex align-items-center justify-content-between">
       <h4 class="card-title d-inline mb-0"> Edit Enrollment</h4>
       <a href="{{ route('enrollments.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
     </div>
@@ -36,17 +36,15 @@
           <small class="text-danger ms-2 my-0 py-0"> course field is required </small>
           @enderror
         </div>
-        <div>
+        <div class="mb-2">
           <label class="form-label ms-2">Enrollment Date</label>
           <input type="date" name="enrollment_date" class="form-control @error('enrollment_date') is-invalid @enderror" value="{{ $enrollment->date }}">
           @error('enrollment_date')
           <small class="text-danger ms-2 my-0 py-0"> date field is required </small>
           @enderror
         </div>
+        <button type="submit" class="btn btn-primary rounded-1 float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
       </form>
-    </div>
-    <div class="card-footer bg-transparent border-0 pt-0">
-      <button type="submit" class="btn btn-primary rounded-1 float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
     </div>
   </div>
 @endsection

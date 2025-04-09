@@ -1,100 +1,136 @@
 @extends('layouts.app')
+
 @section('title', 'Teacher Courses')
+
 @section('content')
-  <div class="container d-flex align-items-center justify-content-between">
-    <h2 class="d-inline text-uppercase"> Teachers' courses</h2>
-    <div class="d-flex align-items-center justify-content-center gap-2">
-      @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-      <a href="{{ route('teachercourses.create') }}" class="btn btn-primary my-2"><i class="fas fa-plus"></i> Add new</a>
-      <form action="{{route('teachercourses.import')}}" method="POST" enctype="multipart/form-data">
-          @csrf
-          <input type="file" name="teachercourses" id="teachercourses" class="form-control-sm" required>
-          <button type="submit" class="btn btn-primary my-2" title="Import"><i class="fa-solid fa-upload"></i></button>
-      </form>
-      <a href="{{ route('teachercourses.export') }}" class="btn btn-primary my-2" title="Export" onclick="return confirm('Export teacher courses data as an excel file?')"><i class="fa-solid fa-download"></i></a>
-      @endif
-  </div>
-  </div>
-  @if(Session('success'))
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        {{ Session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  @endif
-  @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-  <div class="container">
-    <div class="row my-3">
-        <div class="col-8">
-            <form action="{{route('teachercourses.search')}}" method="GET">
-                @csrf
-                <div class="input-group">
-                    <input type="text" name="search_data" id="search_data" class="form-control" placeholder="Search ...." aria-label="Search" value="{{ request('search_data') }}">
-                    <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
+<div class="container my-4">
+    <div class="card shadow-sm rounded">
+        <div class="card-header container bg-transparent border-bottom">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                <h2 class="card-title mb-0">Teacher Courses</h2>
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+                        <a href="{{ route('teachercourses.create') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i>
+                            <span class="d-none d-sm-inline">Add New</span>
+                        </a>
+                    @endif
                 </div>
-            </form>
+            </div>
+
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            <div class="row my-2">
+                <div class="col-12 col-md-6 col-lg-4 d-flex gap-2 mb-2 mb-md-0">
+                    <form action="{{ route('teachercourses.search') }}" method="GET" class="w-100 input-group">
+                        <input type="text" name="search_data" id="search_data" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search_data') }}">
+                        <button class="btn btn-secondary btn-sm" type="submit" title="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                    <form action="{{ route('teachercourses.index') }}" method="GET">
+                        <button type="submit" class="btn btn-secondary btn-sm" title="Show All">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="col-12 col-md-6">
+                    @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+                        <div class="d-flex flex-wrap justify-content-md-end gap-2">
+                            <form action="{{ route('teachercourses.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
+                                @csrf
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="file" name="teachercourses" class="form-control form-control-sm" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm" title="Import">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <span class="d-none d-sm-inline">Import</span>
+                                </button>
+                            </form>
+                            <a href="{{ route('teachercourses.export') }}" class="btn btn-primary btn-sm" title="Export" onclick="return confirm('Export teacher courses data as an excel file?')">
+                                <i class="fa-solid fa-download"></i>
+                                <span class="d-none d-sm-inline">Export</span>
+                            </a>
+                            <form action="{{ route('teachercourses.destroy-all') }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete all teacher courses?')">
+                                    <i class="fas fa-trash"></i>
+                                    <span class="d-none d-sm-inline">Delete All</span>
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
-        <div class="col-2 text-end">
-            <form action="{{ route('teachercourses.index') }}" method="GET" class="d-inline">
-                @csrf
-                <button type="submit" class="btn btn-secondary" title="Show All"><i class="fas fa-sync"></i></button>
-            </form>
+
+        <div class="card-body">
+            <div class="table-responsive my-3">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Teacher Name</th>
+                            <th scope="col">Course</th>
+                            @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+                                <th scope="col">Actions</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($teacher_courses->isNotEmpty())
+                            @foreach($teacher_courses as $teacher_course)
+                                <tr>
+                                    <td>{{ $teacher_course->id ?? 'null' }}</td>
+                                    <td>{{ $teacher_course->teacher->name ?? 'no teacher' }}</td>
+                                    <td>{{ $teacher_course->course->name ?? 'no course' }}</td>
+                                    @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <a href="{{ route('teachercourses.edit', $teacher_course->id) }}" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-edit"></i>
+                                                    <span class="d-none d-sm-inline">Edit</span>
+                                                </a>
+                                                <form action="{{ route('teachercourses.destroy', $teacher_course->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this teacher course?')">
+                                                        <i class="fas fa-trash"></i>
+                                                        <span class="d-none d-sm-inline">Delete</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="{{ auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) ? 4 : 3 }}" class="text-center">No data found</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="col-2 text-end">
-          @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-          <form action="{{ route('teachercourses.destroy-all') }}" method="POST" class="d-inline">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete all teacher courses?')"><i class="fas fa-trash"></i></button>
-          </form>
-          @endif
-      </div>
+
+        <div class="card-footer bg-transparent border-0 pt-0">
+            <div class="container">
+                {{ $teacher_courses->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
     </div>
 </div>
-  <div class="table-responsive container my-3">
-    <table class="table table-hover table-bordered table-striped text-center">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Teacher_Name</th>
-          <th scope="col">Course</th>
-          @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-          <th scope="col">Actions</th>
-          @endif
-        </tr>
-      </thead>
-      <tbody>
-        @if($teacher_courses->isEmpty())
-        <tr>
-          <td colspan="4" class="text-center"> No data found </td>
-        </tr>
-        @else
-        @foreach ($teacher_courses as $teacher_course)
-        <tr>
-          <td> {{ $teacher_course->id ?? 'null' }} </td>
-          <td> {{ $teacher_course->teacher->name ?? 'no teacher' }} </td>
-          <td> {{ $teacher_course->course->name ?? 'no couse' }} </td>
-          @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-          <td>
-            <div>
-              <a href="{{ route('teachercourses.edit', $teacher_course->id) }}" class="btn btn-sm btn-success me-2"> Edit <i class="fa-solid fa-pen-to-square"></i> </a>
-              <form action="{{ route('teachercourses.destroy', $teacher_course->id) }}" method="POST" class="d-inline">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this row?')"> Delete <i class="fa-solid fa-trash"></i> </button>
-              </form>
-          </div>
-          </td>
-          @endif
-        </tr>
-        @endforeach
-        @endif
-      </tbody>
-    </table>
-    {{ $teacher_courses->links('pagination::bootstrap-5') }}
-  </div>
 @endsection

@@ -2,7 +2,7 @@
 @section('title', 'Attendance Edit')
 @section('content')
   <div class="card shadow-sm">
-      <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between">
+      <div class="card-header bg-transparent border-bottom d-flex align-items-center justify-content-between">
           <h4 class="card-title mb-0"> Edit Attendance </h4>
           <a href="{{ route('attendances.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
       </div>
@@ -56,7 +56,7 @@
                 <span class="text-danger"><small>{{ $message }}</small></span>
               @enderror
             </div>
-            <div>
+            <div class="mb-2">
               <label for="status" class="form-label ms-2"><i class="fa-solid fa-door-closed"></i> Attendance Status</label>
               <select class="form-select @error('status') is-invalid @enderror" name="status">
                   <option value="" selected disabled> Status</option>
@@ -68,10 +68,8 @@
                 <span class="text-danger"><small>{{ $message }}</small></span>
               @enderror
             </div>
+            <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
         </form>
-      </div>
-      <div class="card-footer pt-0 border-0 bg-transparent pt-0">
-        <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
       </div>
   </div>
 @endsection

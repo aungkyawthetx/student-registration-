@@ -23,7 +23,7 @@ class EnrollmentController extends Controller
         if (Gate::denies('view', Enrollment::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $roles=Role::all();
+        $roles = Role::all();
         $enrollments = Enrollment::with('student', 'course')->paginate(5);
         return view('admin.enrollment.index', compact('enrollments','roles'));
     }

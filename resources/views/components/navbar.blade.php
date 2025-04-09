@@ -4,42 +4,71 @@
     <a class="navbar-brand fw-bold" href="{{route('admin.dashboard')}}">
       Student Registration System
     </a>
-    <input type="checkbox" name="checkbox" id="checkbox" class="checkbox">
-    <label for="checkbox" class="checkbox-label">
-      <i class="fas fa-moon"></i>
-      <i class="fas fa-sun"></i>
-      <span class="ball"></span>
-    </label>
-    <ul class="navbar-nav ms-auto me-3">
-      @auth
-      <li class="nav-item dropdown ms-auto">
-        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fa fa-user-circle"></i> {{ Auth::user()->name }}
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end">
-            @if(auth()->user()->hasRole('Super admin'))
-              <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewPasswordModal">
-                <i class="fa fa-lock"></i> Change Password
-              </button></li>
+    
+    <!-- Toggle button for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapseContent" aria-controls="navbarCollapseContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarCollapseContent">
+      <div class="d-flex align-items-center ms-auto">
+        <!-- Dark mode toggle -->
+        <div class="me-3">
+          <input type="checkbox" name="checkbox" id="checkbox" class="checkbox">
+          <label for="checkbox" class="checkbox-label">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+            <span class="ball"></span>
+          </label>
+        </div>
+        
+        <!-- Navigation items -->
+        <ul class="navbar-nav">
+          @auth
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa fa-user-circle"></i> {{ Auth::user()->name }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end position-absolute">
+              @if(auth()->user()->hasRole('Super admin'))
+                <li>
+                  <button class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#viewPasswordModal">
+                    <i class="fa fa-lock"></i> 
+                    <span>Change Password</span>
+                  </button>
+                </li>
+              @else
+                <li>
+                  <a class="dropdown-item d-flex align-items-center gap-2" href="{{route('change-password', Auth::user()->id)}}">
+                    <i class="fa fa-lock"></i> 
+                    <span>Change Password</span>
+                  </a>
+                </li>
+              @endif
+              <li><hr class="dropdown-divider m-0"></li>
+              <li>
+                <form action="{{route('logout')}}" method="POST">
+                  @csrf
+                  <button class="dropdown-item d-flex align-items-center gap-2" onclick="return confirm('Are you sure to log out?');">
+                    <i class="fa fa-sign-out-alt"></i> 
+                    <span>Logout</span>
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </li>
           @else
-          <li><a class="dropdown-item" href="{{route('change-password', Auth::user()->id)}}"><i class="fa fa-lock"></i> Change Password</a></li>
-          @endif
-        <li><hr class="dropdown-divider"></li>
-        <form action="{{route('logout')}}" method="POST">
-          @csrf
-          <li><button class="dropdown-item" onclick="return confirm('Are you sure to log out?');"><i class="fa fa-sign-out-alt"></i> Logout</button></li>
-        </form>
+          <li class="nav-item d-flex">
+            <a href="{{route('login')}}" class="btn btn-primary me-2">Login</a>
+            <a href="{{route('register')}}" class="btn btn-secondary">Register</a>
+          </li>
+          @endauth
         </ul>
-      </li>
-      @else
-      <li class="d-flex justify-content-between">
-        <a href="{{route('login')}}" class="btn btn-primary me-3">Login</a>
-        <a href="{{route('register')}}" class="btn btn-secondary">Register</a>
-      </li>
-      @endauth
-    </ul>
+      </div>
+    </div>
   </div>
 </nav>
+
 <div class="modal fade" id="viewPasswordModal" tabindex="-1" aria-labelledby="viewPasswordLabel" aria-hidden="true">
   <div class="modal-dialog">
       <form method="POST" action="{{ route('verify-password-view') }}">

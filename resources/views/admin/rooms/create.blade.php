@@ -16,17 +16,15 @@
                         <span class="text-danger"><small>{{ $message }}</small></span>
                     @enderror
                 </div>
-                <div>
+                <div class="mb-2">
                     <label for="name" class="form-label ms-2"><i class="fas fa-door-closed"></i> Room Name</label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Enter room name" value="{{ old('name') }}">
                     @error('name')
                         <span class="text-danger"><small>{{ $message }}</small></span>
                     @enderror
                 </div>
+                <button type="submit" class="btn btn-primary float-end"><i class="fas fa-plus"></i> Add</button>
             </form>
-        </div>
-        <div class="card-footer  border-0 bg-transparent pt-0">
-            <button type="submit" class="btn btn-primary float-end"><i class="fas fa-plus"></i> Add</button>
         </div>
     </div>
 @endsection

@@ -3,7 +3,7 @@
 @section('content')
   
   <div class="card shadow-sm">
-    <div class="card-header border-bottom bg-white d-flex align-items-center justify-content-between">
+    <div class="card-header border-bottom bg-transparent d-flex align-items-center justify-content-between">
         <h4 class="card-title mb-0 d-inline"> Edit Class </h4>
         <a href="{{ route('classes.index') }}" class="btn btn-dark fw-bold float-end"> <i class="fa-solid fa-chevron-left"></i> Back</a>
     </div>
@@ -49,17 +49,15 @@
               <span class="text-danger"><small>{{ $message }}</small></span>
           @enderror
         </div>
-        <div>
+        <div class="mb-3">
           <label for="end_date" class="form-label fw-bold ms-2"> <i class="fa-solid fa-calendar text-warning"></i> End Date</label>
           <input type="date" class="form-control @error('date') is-invalid @enderror" name="end_date" placeholder="Enter End Date" value="{{$class->end_date ?? old('end_date') }}">
           @error('end_date')
               <span class="text-danger"><small>{{ $message }}</small></span>
           @enderror
         </div>
+        <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
       </form>
-    </div>
-    <div class="card-footer border-0 bg-transparent pt-0">
-      <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
     </div>
   </div>
 @endsection

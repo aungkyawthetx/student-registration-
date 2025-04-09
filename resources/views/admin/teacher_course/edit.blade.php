@@ -2,7 +2,7 @@
 @section('title', 'Edit Teacher and Course')
 @section('content')
   <div class="card shadow-sm">
-    <div class="card-header bg-white border-bottom">
+    <div class="card-header bg-transparent border-bottom">
         <div class="d-flex align-items-center justify-content-between">
           <h4 class="card-title"> Edit Teacher and Course</h4>
           <a href="{{ route('teachercourses.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> BACK </a>
@@ -27,10 +27,10 @@
             @enderror
           </div>
 
-          <div class="">
+          <div class="mb-3">
             <label for="course_name" class="form-label ms-2 @error('course_name') is-invalid @enderror"><i class="fas fa-book"></i> Course </label>
             <select class="form-select" id="course_id" name="course_name">
-              <option value="" disabled>Select Course</option>
+              <option value="" disabled {{ old('course_name', $teacher_course->course_id) == '' ? 'selected' : '' }}>Select Course</option>
               @foreach($courses as $course)
                 <option value="{{ $course->id }}" {{ $course->id == $teacher_course->course_id ? 'selected' : '' }}>
                   {{ $course->name }}
@@ -41,10 +41,8 @@
               <span class="text-danger"> {{ $message }} </span>
             @enderror
           </div>
+          <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
       </form>
-    </div>
-    <div class="card-footer bg-transparent border-0 pt-0">
-        <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
     </div>
   </div>
 @endsection

@@ -105,4 +105,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/change-password/{id}',[PasswordController::class,'ChangePassword'])->name('change-password')->middleware('AdminConfirmPass');
     Route::post('/store-password/{id}',[PasswordController::class,'StorePassword'])->name('store-password');
     Route::post('/verify-password-view', [PasswordController::class, 'verifyAndRedirect'])->name('verify-password-view');
+
+    //reports
+    Route::get('/enrollment-report', [ReportController::class, 'enrollmentReport'])->name('enrollment.report');
+    Route::get('/attendance-report', [ReportController::class, 'attendanceReport'])->name('attendance.report');
+    Route::get('/enrollment-report/export',[ReportController::class,'exportEnrollmentReport'])->name('enrollment-report.export');
+    Route::get('/attendance-report/export',[ReportController::class,'exportAttendanceReport'])->name('attendance-report.export');
+    Route::get('/enrollment-report_search', [ReportController::class,'searchEnrollmentReport'])->name('enrollment-report.search');
+    Route::get('/attendance-report_search', [ReportController::class,'searchAttendanceReport'])->name('attendance-report.search');
 });

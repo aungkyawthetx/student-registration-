@@ -3,7 +3,7 @@
 @section('content')
   
   <div class="card shadow-sm">
-      <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between">
+      <div class="card-header bg-transparent border-bottom d-flex align-items-center justify-content-between">
           <h4 class="card-title mb-0 d-inline"> New Class </h4>
           <a href="{{ route('classes.index') }}" class="btn btn-dark float-end text-uppercase"> <i class="fa-solid fa-chevron-left"></i> Back</a>
       </div>
@@ -45,17 +45,15 @@
                   <span class="text-danger"><small>{{ $message }}</small></span>
               @enderror
             </div>
-            <div>
+            <div class="mb-2">
               <label for="end_date" class="form-label fw-bold ms-2"> <i class="fa-solid fa-calendar text-warning"></i> End Date</label>
               <input type="date" class="form-control @error('end_date') is-invalid @enderror" name="end_date" placeholder="Enter End Date" value="{{ old('end_date') }}">
               @error('end_date')
                   <span class="text-danger"><small>{{ $message }}</small></span>
               @enderror
             </div>
+            <button type="submit" class="btn btn-primary float-end text-uppercase"> Add Class </button>
         </form>
-      </div>
-      <div class="card-footer bg-transparent border-0 pt-0">
-        <button type="submit" class="btn btn-primary float-end text-uppercase"> Add Class </button>
       </div>
   </div>
 @endsection

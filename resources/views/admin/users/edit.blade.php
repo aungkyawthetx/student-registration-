@@ -2,7 +2,7 @@
 @section('title', 'Edit User')
 @section('content')
     <div class="card shadow-sm">
-        <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between">
+        <div class="card-header bg-transparent border-bottom d-flex align-items-center justify-content-between">
             <h4>Edit User</h4>
             <a href="{{ route('users.index') }}" class="btn btn-dark">Back</a>
         </div>

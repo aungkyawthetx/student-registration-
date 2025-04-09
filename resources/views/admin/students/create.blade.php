@@ -2,7 +2,7 @@
 @section('title', 'Add New Student')
 @section('content')
     <div class="card shadow-sm my-2">
-        <div class="card-header bg-white border-bottom">
+        <div class="card-header bg-transparent border-bottom">
             <div class="container d-flex justify-content-between align-items-center mt-1">
                 <h4 class="text-uppercase">new student </h4>
                 <a href="{{ route('students.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
@@ -81,7 +81,7 @@
                         <span class="text-danger"><small>{{ $message }}</small></span>
                     @enderror
                 </div>
-                <button type="submit" class="btn btn-primary rounded-1"> <i class="fas fa-user-plus me-1"></i> Add </button>
+                <button type="submit" class="btn btn-primary"> Add <i class="fas fa-user-plus me-1"></i> </button>
             </form>
         </div>
     </div>

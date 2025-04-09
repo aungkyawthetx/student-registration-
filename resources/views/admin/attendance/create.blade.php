@@ -3,7 +3,7 @@
 @section('content')
   
   <div class="card shadow-sm">
-    <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between">
+    <div class="card-header bg-transparent border-bottom d-flex align-items-center justify-content-between">
         <h4 class="card-title mb-0"> New Attendance </h4>
         <a href="{{ route('attendances.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
     </div>
@@ -74,10 +74,8 @@
             <span class="text-danger"><small>{{ $message }}</small></span>
           @enderror
         </div>
+        <button type="submit" class="btn btn-primary float-end mt-2"> Submit </button>
       </form>
-    </div>
-    <div class="card-footer border-0 bg-transparent pt-0">
-      <button type="submit" class="btn btn-primary float-end"> Submit </button>
     </div>
   </div>
 @endsection

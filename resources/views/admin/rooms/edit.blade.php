@@ -17,17 +17,15 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-                <div>
+                <div class="mb-3">
                     <label for="name" class="form-label ms-2"><i class="fas fa-door-closed"></i> Room Name</label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Enter room name" value="{{ old('name', $room->name) }}">
                     @error('name')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
+                <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
             </form>
-        </div>
-        <div class="card-footer bg-transparent border-0 pt-0">
-            <button type="submit" class="btn btn-primary float-end"> Update <i class="fa-solid fa-arrow-up-from-bracket"></i> </button>
         </div>
     </div>
 @endsection

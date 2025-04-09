@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\Student;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
@@ -150,6 +151,7 @@ class AttendanceController extends Controller
     }
 
     public function search(Request $request){
+        $search = $request->input('search_data');
         $searchData = $request->search_data;
         if($searchData == ""){
             return redirect()->route('attendances.index');
@@ -165,7 +167,8 @@ class AttendanceController extends Controller
             })
             ->orWhere('attendance_date', 'LIKE', '%'.$searchData.'%')
             ->orWhere('attendance_status', 'LIKE', '%'.$searchData.'%')
-            ->paginate(5);
+            ->paginate(5)
+            ->appends(['search_data' => $search]);
             $roles = Role::all();
             return view('admin.attendance.index', compact('attendances', 'roles'));
         }

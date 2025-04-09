@@ -119,6 +119,7 @@ class RoleController extends Controller
     }
 
     public function search(Request $request){
+        $search = $request->input('search_data');
         $searchData = $request->search_data;
         if($searchData == ""){
             return redirect()->route('roles.index');
@@ -126,7 +127,8 @@ class RoleController extends Controller
             $roles =Role::where('name','LIKE',"%".$searchData."%")
             ->orWhere('id', '=',$searchData)
             ->orWhere('name','LIKE','%'.$searchData.'%')
-            ->paginate(5);
+            ->paginate(5)
+            ->appends(['search_data' => $search]);
             return view('admin.roles.index', compact('roles'));
         }
     }

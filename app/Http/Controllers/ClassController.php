@@ -145,6 +145,7 @@ class ClassController extends Controller
     }
 
     public function search(Request $request){
+        $search = $request->input('search_data');
         $searchData = $request->search_data;
         if($searchData == ""){
             return redirect()->route('classes.index');
@@ -155,7 +156,8 @@ class ClassController extends Controller
             ->orWhere('date', 'LIKE', '%'.$searchData.'%')
             ->orWhere('start_time', 'LIKE', '%'.$searchData.'%')
             ->orWhere('end_time', 'LIKE', '%'.$searchData.'%')
-            ->paginate(5);
+            ->paginate(5)
+            ->appends(['search_data' => $search]);
             $roles = Role::all();
             return view('admin.class.index', compact('classes', 'roles'));
         }

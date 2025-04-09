@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\Course;
 use App\Models\Room;
 use App\Models\Student;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -51,7 +52,7 @@ class AttendancesImport implements ToModel, WithHeadingRow
 
         return new Attendance([
             'student_id' => $student ? $student->id : null,
-            'attendance_date' => $row['date'],
+            'attendance_date' => Date::excelToDateTimeObject($row['date'])->format('Y-m-d'),
             'course_id' => $course ? $course->id : null,
             'room_id' => $room ? $room->id : null,
             'attendance_status' => $row['status'],

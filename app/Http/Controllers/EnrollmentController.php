@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Student;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
@@ -138,6 +139,7 @@ class EnrollmentController extends Controller
     }
 
     public function search(Request $request){
+        $search = $request->input('search_data');
         $searchData = $request->search_data;
         if($searchData == ""){
             return redirect()->route('enrollments.index');
@@ -149,7 +151,8 @@ class EnrollmentController extends Controller
                 $students->where('name','LIKE','%'.$searchData.'%');
             })
             ->orWhere('date', 'LIKE', '%'.$searchData.'%')
-            ->paginate(5);
+            ->paginate(5)
+            ->appends(['search_data' => $search]);
             $roles = Role::all();
             return view('admin.enrollment.index', compact('enrollments', 'roles'));
         }

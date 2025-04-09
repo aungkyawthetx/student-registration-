@@ -122,6 +122,7 @@ class RoomController extends Controller
     }
 
     public function search(Request $request){
+        $search = $request->input('search_data');
         $searchData = $request->search_data;
         if($searchData == ""){
             return redirect()->route('rooms.index');
@@ -130,7 +131,8 @@ class RoomController extends Controller
             ->orWhere('id', '=',$searchData)
             ->orWhere('building','LIKE','%'.$searchData.'%')
             ->orWhere('name','LIKE','%'.$searchData.'%')
-            ->paginate(5);
+            ->paginate(5)
+            ->appends(['search_data' => $search]);
             $roles = Role::all();
             return view('admin.rooms.index', compact('rooms', 'roles'));
         }

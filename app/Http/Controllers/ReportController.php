@@ -36,6 +36,7 @@ class ReportController extends Controller
     }
 
     public function searchAttendanceReport(Request $request){
+        $search = $request->input('search_data');
         $searchData = $request->search_data;
         if($searchData == ""){
             return redirect()->route('attendance.report');
@@ -60,7 +61,8 @@ class ReportController extends Controller
                 $query->orWhere('attendances.attendance_date', 'LIKE', '%'.$searchData.'%');
             })
             ->groupBy('students.name', 'courses.name')
-            ->paginate(5);
+            ->paginate(5)
+            ->appends(['search_data' => $search]);
             $roles = Role::all();
             return view('admin.attendance.report', compact('attendanceReport', 'roles'));
         }
@@ -90,6 +92,7 @@ class ReportController extends Controller
     }
 
     public function searchEnrollmentReport(Request $request){
+        $search = $request->input('search_data');
         $searchData = $request->search_data;
         if($searchData == ""){
             return redirect()->route('enrollment.report');
@@ -118,7 +121,8 @@ class ReportController extends Controller
                 $query->orWhere('courses.duration', 'LIKE', '%'.$searchData.'%');
             })
             ->groupBy('student_name', 'course_name', 'enrollment_date', 'duration', 'start_date', 'fees')
-            ->paginate(5);
+            ->paginate(5)
+            ->appends(['search_data' => $search]);
             $roles=Role::all();
             return view('admin.enrollment.report', compact('enrollmentReport','roles'));
         }

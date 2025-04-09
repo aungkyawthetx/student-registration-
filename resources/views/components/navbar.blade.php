@@ -16,7 +16,7 @@
         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="fa fa-user-circle"></i> {{ Auth::user()->name }}
         </a>
-        <ul class="dropdown-menu dropdown-menu-end">
+        <ul class="dropdown-menu dropdown-menu-end position-absolute">
             @if(auth()->user()->hasRole('Super admin'))
               <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#viewPasswordModal">
                 <i class="fa fa-lock"></i> Change Password

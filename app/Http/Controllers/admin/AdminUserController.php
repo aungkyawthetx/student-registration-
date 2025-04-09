@@ -138,6 +138,7 @@ class AdminUserController extends Controller
     }
 
     public function search(Request $request){
+        $search = $request->input('search_data');
         $searchData = $request->search_data;
         if($searchData == ""){
             return redirect()->route('users.index');
@@ -149,7 +150,8 @@ class AdminUserController extends Controller
             ->orWhereHas('role', function($roles) use ($searchData){
                 $roles->where('name','LIKE','%'.$searchData.'%');
             })
-            ->paginate(5);
+            ->paginate(5)
+            ->appends(['search_data' => $search]);
             $roles = Role::all();
             return view('admin.users.index', compact('users', 'roles'));
         }

@@ -63,7 +63,8 @@
                     <tr>
                         <th>No.</th>
                         <th>Student Name</th>
-                        <th>Course Name</th>
+                        <th>Class Name</th>
+                        <th>Time</th>
                         <th>Present</th>
                         <th>Absent</th>
                         <th>Leave</th>
@@ -74,14 +75,15 @@
                     <tr>
                         <td>{{$index + 1 }}</td>
                         <td>{{ $record->student_name ?? 'N/A' }}</td>
-                        <td>{{ $record->course_name ?? 'N/A' }}</td>
+                        <td>{{ $record->class_name ?? 'N/A' }}</td>
+                        <td>{{ $record->time }}</td>
                         <td>{{ $record->Present }}</td>
                         <td>{{ $record->Absent }}</td>
                         <td>{{ $record->Leave }}</td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center">No data found</td>
+                        <td colspan="7" class="text-center">No data found</td>
                     </tr>
                     @endforelse
                 </tbody>

@@ -16,27 +16,26 @@ class AttendancesExport implements FromCollection, WithHeadings, ShouldAutoSize,
             */
     public function collection()
     {
-        return Attendance::with('student', 'course', 'room')
+        return Attendance::with('student', 'class')
             ->get()
             ->map(function ($attendance) {
                 return [
                     'ID' => $attendance->id,
+                    'Class Name' => $attendance->class->name ? $attendance->class->name : 'N/A',
                     'Student Name' => $attendance->student->name ? $attendance->student->name : 'N/A',
                     'Date' => $attendance->attendance_date,
-                    'Course Name' => $attendance->course->name ? $attendance->course->name : 'N/A',
-                    'Room' => $attendance->room->name ? $attendance->room->name : 'N/A',
                     'Status' => $attendance->attendance_status,
                 ];
             });
     }
     public function headings(): array
     {
-        return ['ID', 'Student Name', 'Date', 'Course Name', 'Room', 'Status'];
+        return ['ID', 'Class Name', 'Student Name', 'Date', 'Status'];
     }
 
     public function styles(Worksheet $sheet){
        $sheet->getStyle('1')->getFont()->setBold(true);
        $sheet->getStyle('B1:B'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
-       $sheet->getStyle('A1:F'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+       $sheet->getStyle('A1:E'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
     }
 }

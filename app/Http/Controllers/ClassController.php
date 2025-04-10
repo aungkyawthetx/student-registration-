@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use App\Models\ClassTimeTable;
+use App\Models\Course;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
@@ -23,7 +24,7 @@ class ClassController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $roles = Role::all();
-        $classes = ClassTimeTable::with('room')->paginate(5);
+        $classes = ClassTimeTable::with('room','course')->paginate(5);
         return view('admin.class.index', compact('classes', 'roles'));
     }
 
@@ -36,7 +37,8 @@ class ClassController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $rooms = Room::all();
-        return view('admin.class.create', compact('rooms'));
+        $courses = Course::all();
+        return view('admin.class.create', compact('rooms','courses'));
     }
 
     /**
@@ -48,19 +50,19 @@ class ClassController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $validatedData = $request->validate([
+            'course_id' => 'required|integer',
             'room_id' => 'required|integer',
-            'start_time' => 'required|date_format:h:i A',
-            'end_time' => 'required|date_format:h:i A|after:start_time',
-            'date' => 'required|date',
-            'end_date' => 'required|date'
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'time' => 'required',
         ]);
 
         $classes = ClassTimeTable::create([
+            'course_id' => $validatedData['course_id'],
             'room_id' => $validatedData['room_id'],
-            'start_time' => $validatedData['start_time'],
-            'end_time' => $validatedData['end_time'],
-            'date' => $validatedData['date'],
+            'start_date' => $validatedData['start_date'],
             'end_date' => $validatedData['end_date'],
+            'time' => $validatedData['time'],
         ]);
         return redirect()->route('classes.index')->with('successAlert', 'Class Added!');
     }
@@ -82,8 +84,9 @@ class ClassController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $rooms = Room::all();
+        $courses = Course::all();
         $class = ClassTimeTable::find($id);
-        return view('admin.class.edit', compact('class', 'rooms'));
+        return view('admin.class.edit', compact('class', 'rooms','courses'));
     }
 
     /**
@@ -103,10 +106,11 @@ class ClassController extends Controller
 
         $class = ClassTimeTable::find($id);
         $class->update([
+            'course_id' => $validatedData['course_id'],
             'room_id' => $validatedData['room_id'],
-            'date' => $validatedData['date'],
-            'start_time' => $validatedData['start_time'],
-            'end_time' => $validatedData['end_time'],
+            'start_date' => $validatedData['start_date'],
+            'end_date' => $validatedData['end_date'],
+            'time' => $validatedData['time'],
         ]);
 
         return redirect()->route('classes.index')->with('successAlert', 'Class Updated!');
@@ -153,9 +157,11 @@ class ClassController extends Controller
             $classes = ClassTimeTable::whereHas('room', function($rooms) use ($searchData){
                 $rooms->where('name','LIKE','%'.$searchData.'%');
             })
-            ->orWhere('date', 'LIKE', '%'.$searchData.'%')
-            ->orWhere('start_time', 'LIKE', '%'.$searchData.'%')
-            ->orWhere('end_time', 'LIKE', '%'.$searchData.'%')
+            ->orwhereHas('course', function($courses) use ($searchData){
+                $courses->where('name','LIKE','%'.$searchData.'%');
+            })
+            ->orWhere('start_date', 'LIKE', '%'.$searchData.'%')
+            ->orWhere('time', 'LIKE', '%'.$searchData.'%')
             ->paginate(5)
             ->appends(['search_data' => $search]);
             $roles = Role::all();

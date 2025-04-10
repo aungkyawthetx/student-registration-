@@ -9,6 +9,7 @@ use App\Models\Room;
 use App\Models\Course;
 use App\Models\Student;
 use App\Models\Attendance;
+use App\Models\ClassTimeTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -26,7 +27,7 @@ class AttendanceController extends Controller
             return redirect()->route('admin.dashboard')->with('error', 'No permission.');
         }
         $roles = Role::all();
-        $attendances = Attendance::with('student', 'room')->paginate(5);
+        $attendances = Attendance::with('student', 'class')->paginate(5);
         return view('admin.attendance.index', compact('attendances','roles'));
     }
 
@@ -39,9 +40,8 @@ class AttendanceController extends Controller
             return redirect()->route('admin.dashboard')->with('error', 'No permission.');
         }
         $students = Student::all();
-        $courses = Course::all();
-        $rooms = Room::all();
-        return view('admin.attendance.create', compact('students', 'courses', 'rooms'));
+        $classes = ClassTimeTable::all();
+        return view('admin.attendance.create', compact('students', 'classes'));
     }
 
     /**
@@ -53,23 +53,21 @@ class AttendanceController extends Controller
             return redirect()->route('admin.dashboard')->with('error', 'No permission.');
         }
         $validateData = $request->validate([
+            'class_name' => 'required|exists:classes,id',
             'student_name' => 'required|exists:students,id',
-            'course_name' => 'required|exists:courses,id',
             'attendance_date' => 'required|date',
-            'room_name' => 'required|exists:rooms,id',
             'status' => 'required|in:P,A,L',
         ]);
         $student = Student::findOrFail($validateData['student_name']);
-        if (!$student->courses()->where('courses.id', $validateData['course_name'])->exists()) {
+        if (!$student->classes()->where('classes.id', $validateData['class_name'])->exists()) {
             return redirect()->back()->withErrors([
-                'course_name' => 'The selected course is not enrolled by the student.',
+                'class_name' => 'The selected class is not enrolled by the student.',
             ])->withInput();
         }
         Attendance::create([
+            'class_id' => $request->class_name,
             'student_id' => $request->student_name,
-            'course_id' => $request->course_name,
             'attendance_date' => $request->attendance_date,
-            'room_id' => $request->room_name,
             'attendance_status' => $request->status,
         ]);
         return redirect()->route('attendances.index')->with('success', 'Attendance recorded successfully.');
@@ -104,19 +102,17 @@ class AttendanceController extends Controller
             return redirect()->route('admin.dashboard')->with('error', 'No permission.');
         }
         $request->validate([
+            'class_name' => 'required',
             'student_name' => 'required',
-            'course_name' => 'required',
             'attendance_date' => 'required',
-            'room_name' => 'required',
             'status' => 'required|in:P,A,L',
         ]);
 
         $attendance = Attendance::findOrFail($id);
         $attendance->update([
+            'class_id' => $request->class_name,
             'student_id' => $request->student_name,
-            'course_id' => $request->course_name,
             'attendance_date' => $request->attendance_date,
-            'room_id' => $request->room_name,
             'attendance_status' => $request->status,
         ]);
         return redirect()->route('attendances.index')->with('success', 'Attendance updated successfully.');
@@ -159,11 +155,8 @@ class AttendanceController extends Controller
             $attendances = Attendance::whereHas('student', function($students) use ($searchData){
                 $students->where('name','LIKE','%'.$searchData.'%');
             })
-            ->orwhereHas('course', function($query) use ($searchData){
+            ->orwhereHas('class', function($query) use ($searchData){
                 $query->where('name','LIKE','%'.$searchData.'%');
-            })
-            ->orwhereHas('room', function($rooms) use ($searchData){
-                $rooms->where('name','LIKE','%'.$searchData.'%');
             })
             ->orWhere('attendance_date', 'LIKE', '%'.$searchData.'%')
             ->orWhere('attendance_status', 'LIKE', '%'.$searchData.'%')

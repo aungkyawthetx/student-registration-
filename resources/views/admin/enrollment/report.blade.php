@@ -62,9 +62,9 @@
                         <th>No.</th>
                         <th>Student Name</th>
                         <th>Enrollment Date</th>
-                        <th>Course Name</th>
-                        <th>Duration</th>
+                        <th>Class Name</th>
                         <th>Start Date</th>
+                        <th>Time</th>
                         <th>Fees</th>
                     </tr>
                 </thead>
@@ -74,9 +74,9 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $record->student_name}}</td>
                         <td>{{ $record->enrollment_date}}</td>
-                        <td>{{ $record->course_name}}</td>
-                        <td>{{ $record->duration }}</td>
+                        <td>{{ $record->class_name}}</td>
                         <td>{{ $record->start_date }}</td>
+                        <td>{{ $record->time }}</td>
                         <td>$ {{ $record->fees }}</td>
                     </tr>
                     @empty

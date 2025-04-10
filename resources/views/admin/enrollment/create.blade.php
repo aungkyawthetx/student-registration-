@@ -24,15 +24,15 @@
               @enderror
           </div>
           <div class="mb-3">
-              <label class="form-label">Courses</label>
-              <select name="course_id" class="form-select @error('course_id') is-invalid @enderror">
-                  <option value=""> Select Course </option>
-                  @foreach($courses as $course)
-                      <option value="{{ $course->id }}">{{ $course->name }}</option>
+              <label class="form-label">Classes</label>
+              <select name="class_id" class="form-select @error('class_id') is-invalid @enderror">
+                  <option value=""> Select Class </option>
+                  @foreach($classes as $class)
+                      <option value="{{ $class->id }}">{{ $class->name }}</option>
                   @endforeach
               </select>
-              @error('course_id')
-              <small class="text-danger ms-2 my-0 py-0"> courses field is required </small>
+              @error('class_id')
+              <small class="text-danger ms-2 my-0 py-0"> classes field is required </small>
               @enderror
           </div>
           <div class="mb-2">

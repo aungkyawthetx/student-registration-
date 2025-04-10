@@ -11,6 +11,18 @@
             @csrf
             @method('PUT')
             <div class="mb-3">
+              <label for="class_name" class="form-label ms-2"><i class="fa-solid fa-book"></i> Class</label>
+              <select class="form-select @error('class_name') is-invalid @enderror" name="class_name">
+                <option value="" selected disabled> Class</option>
+                <option value="{{ $attendance->class_id }}" selected>
+                  {{ $attendance->class->name }}
+                </option>
+              </select>
+              @error('class_name')
+                <span class="text-danger"><small>{{ $message }}</small></span>
+              @enderror
+            </div>
+            <div class="mb-3">
               <label for="student_name" class="form-label ms-2"><i class="fas fa-user"></i> Student_Name</label>
               <select class="form-select @error('student_name') is-invalid @enderror" name="student_name">
                 <option value="" selected disabled> Name</option>
@@ -24,35 +36,9 @@
             </div>
 
             <div class="mb-3">
-              <label for="course_name" class="form-label ms-2"><i class="fa-solid fa-book"></i> Course</label>
-              <select class="form-select @error('course_name') is-invalid @enderror" name="course_name">
-                <option value="" selected disabled> Course</option>
-                <option value="{{ $attendance->course_id }}" selected>
-                  {{ $attendance->course->name }}
-                </option>
-              </select>
-              @error('course_name')
-                <span class="text-danger"><small>{{ $message }}</small></span>
-              @enderror
-            </div>
-
-            <div class="mb-3">
               <label for="attendance_date" class="form-label ms-2"><i class="fa-solid fa-calendar-week"></i> Attendance Date</label>
               <input type="date" class="form-control @error('attendance_date') is-invalid @enderror" name="attendance_date" value="{{ old('attendance_date', $attendance->attendance_date) }}">
               @error('attendance_date')
-                <span class="text-danger"><small>{{ $message }}</small></span>
-              @enderror
-            </div>
-
-            <div class="mb-3">
-              <label for="room_name" class="form-label ms-2"><i class="fa-solid fa-door-closed"></i> Room</label>
-              <select class="form-select @error('room_name') is-invalid @enderror" name="room_name">
-                <option value="" selected disabled> Room</option>
-                <option value="{{ $attendance->room_id }}" selected>
-                  {{ $attendance->room->name }}
-                </option>
-              </select>
-              @error('room_name')
                 <span class="text-danger"><small>{{ $message }}</small></span>
               @enderror
             </div>

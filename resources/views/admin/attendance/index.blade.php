@@ -81,10 +81,9 @@
                     <thead class="table-light">
                         <tr>
                             <th scope="col">ID</th>
+                            <th scope="col">Class Name</th>
                             <th scope="col">Student Name</th>
                             <th scope="col">Date</th>
-                            <th scope="col">Course Name</th>
-                            <th scope="col">Room</th>
                             <th scope="col">Status</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
                                 <th scope="col">Actions</th>
@@ -96,10 +95,9 @@
                             @foreach ($attendances as $attendance)
                                 <tr>
                                     <td>{{ $attendance->id }}</td>
+                                    <td>{{ $attendance->class->name ?? 'no class' }}</td>
                                     <td>{{ $attendance->student->name ?? 'no student' }}</td>
                                     <td>{{ $attendance->attendance_date }}</td>
-                                    <td>{{ $attendance->course->name ?? 'no course' }}</td>
-                                    <td>{{ $attendance->room->name ?? 'no room' }}</td>
                                     <td>{{ $attendance->attendance_status }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
                                         <td>

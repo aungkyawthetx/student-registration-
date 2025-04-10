@@ -80,7 +80,7 @@
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Student Name</th>
-                            <th scope="col">Course Name</th>
+                            <th scope="col">Class Name</th>
                             <th scope="col">Enrollment Date</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                 <th scope="col">Actions</th>
@@ -93,7 +93,7 @@
                                 <tr>
                                     <td>{{ $enrollment->id }}</td>
                                     <td>{{ $enrollment->student->name }}</td>
-                                    <td>{{ $enrollment->course->name }}</td>
+                                    <td>{{ $enrollment->class->name }}</td>
                                     <td>{{ $enrollment->date }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>

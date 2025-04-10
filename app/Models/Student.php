@@ -16,13 +16,13 @@ class Student extends Model
         return $this->hasMany(Enrollment::class, 'student_id');
     }
 
-    public function attendance()
+    public function attendances()
     {
         return $this->hasMany(Attendance::class, 'student_id');
     }
 
-    public function classes()
+    public function class()
     {
-        return $this->belongsToMany(ClassTimeTable::class, 'enrollments');
+        return $this->belongsTo(ClassTimeTable::class, 'class_id');
     }
 }

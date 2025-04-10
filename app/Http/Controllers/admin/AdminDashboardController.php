@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use App\Models\ClassTimeTable;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
@@ -19,7 +18,7 @@ class AdminDashboardController extends Controller
         $studentCount = Student::count();
         $teacherCount = Teacher::count();
         $classCount = ClassTimeTable::count();
-        $studentsPerCourse = Course::withCount('students')->get();
+        // $studentsPerClass = ClassTimeTable::withCount('students')->get();
         $rawData = DB::table('enrollments')
         ->selectRaw('MONTH(date) as month, COUNT(*) as count')
         ->groupBy('month')
@@ -35,7 +34,7 @@ class AdminDashboardController extends Controller
             'studentCount',
             'teacherCount',
             'classCount',
-            'studentsPerCourse',
+            // 'studentsPerClass',
             'monthlyRegistrations',
         ));
     }

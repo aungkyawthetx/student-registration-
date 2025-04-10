@@ -30,6 +30,6 @@ class ClassTimeTable extends Model
 
     public function students()
     {
-        return $this->belongsToMany(Student::class, 'enrollments');
+        return $this->hasMany(Student::class, 'class_id');
     }
 }

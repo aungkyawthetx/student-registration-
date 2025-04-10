@@ -80,11 +80,11 @@
                     <thead class="table-light">
                         <tr>
                             <th scope="col">ID</th>
+                            <th scope="col">Course Name</th>
                             <th scope="col">Room Name</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Start Time</th>
-                            <th scope="col">End Time</th>
+                            <th scope="col">Start Date</th>
                             <th scope="col">End Date</th>
+                            <th>Time</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                 <th scope="col">Actions</th>
                             @endif

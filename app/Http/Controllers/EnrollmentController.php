@@ -25,7 +25,7 @@ class EnrollmentController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $roles = Role::all();
-        $enrollments = Enrollment::with('student', 'course')->paginate(5);
+        $enrollments = Enrollment::with('students', 'class')->paginate(5);
         return view('admin.enrollment.index', compact('enrollments','roles'));
     }
 

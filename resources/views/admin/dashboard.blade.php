@@ -70,10 +70,10 @@
         <div class="col-12 col-md-6">
             <div class="card mb-3">
                 <div class="card-header bg-secondary text-light">
-                    <h5>Students Per Course</h5>
+                    <h5>Students Per Class</h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="studentsPerCourseChart" height="200" style="display: block;"></canvas>
+                    <canvas id="studentsPerClassChart" height="200" style="display: block;"></canvas>
                 </div>
             </div>
         </div>
@@ -114,16 +114,16 @@
         </div>
     </div>
 
-    <script>
+    {{-- <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('studentsPerCourseChart').getContext('2d');
+        const ctx = document.getElementById('studentsPerClassChart').getContext('2d');
         const chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: {!! json_encode($studentsPerCourse->pluck('name')) !!},
+                labels: {!! json_encode($studentsPerClass->pluck('name')) !!},
                 datasets: [{
                     label: 'Number of Students',
-                    data: {!! json_encode($studentsPerCourse->pluck('students_count')) !!},
+                    data: {!! json_encode($studentsPerClass->pluck('students_count')) !!},
                     backgroundColor: 'rgba(54, 162, 235, 0.5)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
@@ -206,5 +206,5 @@
             }
         }); 
     });
-    </script>
+    </script> --}}
 @endsection

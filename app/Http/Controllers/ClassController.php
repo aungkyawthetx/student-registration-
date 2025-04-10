@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ClassesExport;
-use App\Imports\ClassesImport;
 use App\Models\Role;
 use App\Models\Room;
+use App\Models\Course;
 use Illuminate\Http\Request;
+use App\Exports\ClassesExport;
+use App\Imports\ClassesImport;
 use App\Models\ClassTimeTable;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Validation\ValidationException;
 
 class ClassController extends Controller
 {
@@ -35,8 +36,9 @@ class ClassController extends Controller
         if (Gate::denies('create', ClassTimeTable::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
+        $courses = Course::all();
         $rooms = Room::all();
-        return view('admin.class.create', compact('rooms'));
+        return view('admin.class.create', compact('rooms', 'courses'));
     }
 
     /**
@@ -48,19 +50,19 @@ class ClassController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $validatedData = $request->validate([
-            'room_id' => 'required|integer',
-            'start_time' => 'required|date_format:h:i A',
-            'end_time' => 'required|date_format:h:i A|after:start_time',
-            'date' => 'required|date',
-            'end_date' => 'required|date'
+            'course_name' => 'required',
+            'room_name' => 'required|integer',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'time' => 'required|string',
         ]);
 
         $classes = ClassTimeTable::create([
-            'room_id' => $validatedData['room_id'],
-            'start_time' => $validatedData['start_time'],
-            'end_time' => $validatedData['end_time'],
-            'date' => $validatedData['date'],
+            'course_id' => $validatedData['course_name'],
+            'room_id' => $validatedData['room_name'], 
+            'start_date' => $validatedData['start_date'],
             'end_date' => $validatedData['end_date'],
+            'time' => $validatedData['time'],
         ]);
         return redirect()->route('classes.index')->with('successAlert', 'Class Added!');
     }

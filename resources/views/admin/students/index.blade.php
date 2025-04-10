@@ -114,15 +114,6 @@
                             <th>Phone</th>
                             <th>Address</th>
                             <th>Parent Info</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Gender</th>
-                            <th>NRC</th>
-                            <th>DOB</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Address</th>
-                            <th>Parent Info</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                 <th>Actions</th>
                                 <th>Actions</th>

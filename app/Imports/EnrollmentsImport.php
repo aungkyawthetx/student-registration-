@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\ClassTimeTable;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Student;
@@ -20,7 +21,7 @@ class EnrollmentsImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        $headers = ['student_name', 'course_name', 'enrollment_date'];
+        $headers = ['student_name', 'class_name', 'enrollment_date'];
 
         foreach ($headers as $header) {
             if (!array_key_exists($header, $row)) {
@@ -35,15 +36,15 @@ class EnrollmentsImport implements ToModel, WithHeadingRow
                 'file' => "Invalid student specified: " . $row['student_name']
             ]);
         }
-        $course = Course::where('name', $row['course_name'])->first();
-        if (!$course) {
+        $class = ClassTimeTable::where('name', $row['class_name'])->first();
+        if (!$class) {
             throw ValidationException::withMessages([
-                'file' => "Invalid course specified: " . $row['course_name']
+                'file' => "Invalid course specified: " . $row['class_name']
             ]);
         }
         return new Enrollment([
             'student_id' => $student ? $student->id : null,
-            'course_id' => $course ? $course->id : null,
+            'class_id' => $class ? $class->id : null,
             'date' => is_numeric($row['enrollment_date'])
                 ? Date::excelToDateTimeObject($row['enrollment_date'])->format('Y-m-d')
                 : Carbon::parse($row['enrollment_date'])->format('Y-m-d'),

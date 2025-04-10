@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\EnrollmentsExport;
 use App\Imports\EnrollmentsImport;
+use App\Models\ClassTimeTable;
 use App\Models\Course;
 use App\Models\Role;
 use App\Models\Student;
@@ -25,7 +26,7 @@ class EnrollmentController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $roles = Role::all();
-        $enrollments = Enrollment::with('students', 'class')->paginate(5);
+        $enrollments = Enrollment::with('student', 'class')->paginate(5);
         return view('admin.enrollment.index', compact('enrollments','roles'));
     }
 
@@ -38,8 +39,8 @@ class EnrollmentController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $students = Student::all();
-        $courses = Course::all();
-        return view('admin.enrollment.create',compact('students', 'courses'));
+        $classes = ClassTimeTable::all();
+        return view('admin.enrollment.create',compact('students', 'classes'));
     }
 
     /**
@@ -52,13 +53,13 @@ class EnrollmentController extends Controller
         }
         $request->validate([
             'student_id' => 'required',
-            'course_id' => 'required',
+            'class_id' => 'required',
             'enrollment_date' => 'required'
         ]);
 
         Enrollment::create([
             'student_id' => $request->student_id,
-            'course_id' => $request->course_id,
+            'class_id' => $request->class_id,
             'date' => $request->enrollment_date,
         ]);
 
@@ -82,9 +83,9 @@ class EnrollmentController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $students = Student::all();
-        $courses = Course::all();
+        $classes = ClassTimeTable::all();
         $enrollment = Enrollment::find($id);
-        return view('admin.enrollment.edit', compact('students', 'courses', 'enrollment'));
+        return view('admin.enrollment.edit', compact('students', 'classes', 'enrollment'));
     }
 
     /**
@@ -97,14 +98,14 @@ class EnrollmentController extends Controller
         }
         $request->validate([
             'student_name' => 'required',
-            'course_name' => 'required',
+            'class_name' => 'required',
             'enrollment_date' => 'required'
         ]);
 
         $enrollment = Enrollment::find($id);
         $enrollment->update([
             'student_id' => $request->student_name,
-            'course_id' => $request->course_name,
+            'class_id' => $request->class_name,
             'date' => $request->enrollment_date,
         ]);
         return redirect()->route('enrollments.index')->with('successAlert', 'Enrollment updated successfully.');
@@ -144,8 +145,8 @@ class EnrollmentController extends Controller
         if($searchData == ""){
             return redirect()->route('enrollments.index');
         } else {
-            $enrollments = Enrollment::whereHas('course', function($courses) use ($searchData){
-                $courses->where('name','LIKE','%'.$searchData.'%');
+            $enrollments = Enrollment::whereHas('class', function($classes) use ($searchData){
+                $classes->where('name','LIKE','%'.$searchData.'%');
             })
             ->orWhereHas('student', function($students) use ($searchData){
                 $students->where('name','LIKE','%'.$searchData.'%');

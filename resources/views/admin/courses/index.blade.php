@@ -81,9 +81,6 @@
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Duration</th>
-                            <th scope="col">Start Date</th>
-                            <th scope="col">End Date</th>
                             <th scope="col">Fees</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                 <th scope="col">Actions</th>
@@ -96,9 +93,6 @@
                                 <tr>
                                     <td>{{ $course->id }}</td>
                                     <td>{{ $course->name }}</td>
-                                    <td>{{ $course->duration }}</td>
-                                    <td>{{ $course->start_date }}</td>
-                                    <td>{{ $course->end_date }}</td>
                                     <td>{{ $course->fees }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>

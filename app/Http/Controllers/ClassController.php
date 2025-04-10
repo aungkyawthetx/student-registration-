@@ -24,7 +24,7 @@ class ClassController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $roles = Role::all();
-        $classes = ClassTimeTable::with('room')->paginate(5);
+        $classes = ClassTimeTable::with('room','course')->paginate(5);
         return view('admin.class.index', compact('classes', 'roles'));
     }
 
@@ -38,7 +38,8 @@ class ClassController extends Controller
         }
         $courses = Course::all();
         $rooms = Room::all();
-        return view('admin.class.create', compact('rooms', 'courses'));
+        $courses = Course::all();
+        return view('admin.class.create', compact('rooms','courses'));
     }
 
     /**
@@ -50,16 +51,16 @@ class ClassController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $validatedData = $request->validate([
-            'course_name' => 'required',
-            'room_name' => 'required|integer',
+            'course_id' => 'required|integer',
+            'room_id' => 'required|integer',
             'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'time' => 'required|string',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'time' => 'required',
         ]);
 
         $classes = ClassTimeTable::create([
-            'course_id' => $validatedData['course_name'],
-            'room_id' => $validatedData['room_name'], 
+            'course_id' => $validatedData['course_id'],
+            'room_id' => $validatedData['room_id'],
             'start_date' => $validatedData['start_date'],
             'end_date' => $validatedData['end_date'],
             'time' => $validatedData['time'],
@@ -84,8 +85,9 @@ class ClassController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $rooms = Room::all();
+        $courses = Course::all();
         $class = ClassTimeTable::find($id);
-        return view('admin.class.edit', compact('class', 'rooms'));
+        return view('admin.class.edit', compact('class', 'rooms','courses'));
     }
 
     /**
@@ -105,10 +107,11 @@ class ClassController extends Controller
 
         $class = ClassTimeTable::find($id);
         $class->update([
+            'course_id' => $validatedData['course_id'],
             'room_id' => $validatedData['room_id'],
-            'date' => $validatedData['date'],
-            'start_time' => $validatedData['start_time'],
-            'end_time' => $validatedData['end_time'],
+            'start_date' => $validatedData['start_date'],
+            'end_date' => $validatedData['end_date'],
+            'time' => $validatedData['time'],
         ]);
 
         return redirect()->route('classes.index')->with('successAlert', 'Class Updated!');
@@ -155,9 +158,11 @@ class ClassController extends Controller
             $classes = ClassTimeTable::whereHas('room', function($rooms) use ($searchData){
                 $rooms->where('name','LIKE','%'.$searchData.'%');
             })
-            ->orWhere('date', 'LIKE', '%'.$searchData.'%')
-            ->orWhere('start_time', 'LIKE', '%'.$searchData.'%')
-            ->orWhere('end_time', 'LIKE', '%'.$searchData.'%')
+            ->orwhereHas('course', function($courses) use ($searchData){
+                $courses->where('name','LIKE','%'.$searchData.'%');
+            })
+            ->orWhere('start_date', 'LIKE', '%'.$searchData.'%')
+            ->orWhere('time', 'LIKE', '%'.$searchData.'%')
             ->paginate(5)
             ->appends(['search_data' => $search]);
             $roles = Role::all();

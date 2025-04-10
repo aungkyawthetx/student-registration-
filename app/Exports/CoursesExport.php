@@ -21,21 +21,18 @@ class CoursesExport implements FromCollection, WithHeadings, ShouldAutoSize, Wit
                 return [
                     'ID' => $course->id,
                     'Name' => $course->name,
-                    'Duration' => $course->duration,
-                    'Start Date' => $course->start_date,
-                    'End Date' => $course->end_date,
                     'Fees' => $course->fees,
                 ];
             });
     }
     public function headings(): array
     {
-        return ['ID', 'Name', 'Duration', 'Start Date', 'End Date', 'Fees'];
+        return ['ID', 'Name', 'Fees'];
     }
 
     public function styles(Worksheet $sheet){
        $sheet->getStyle('1')->getFont()->setBold(true);
        $sheet->getStyle('B1:B'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
-       $sheet->getStyle('A1:E'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+       $sheet->getStyle('A1:C'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
     }
 }

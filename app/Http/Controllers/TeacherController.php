@@ -50,15 +50,12 @@ class TeacherController extends Controller
         }
         $request->validate([
             'name'=>'required|string|max:50',
-            'subject'=>'required|string|max:50',
             'email'=>'required|string|email|max:50',
             'phone'=>'required|string|max:30',
         ]);
 
         Teacher::create([
             'name' => $request->name, 
-            'subject' => $request->subject, 
-            'subject' => $request->subject,
             'email' =>  $request->email, 
             'phone' => $request->phone,
         ]);

@@ -88,10 +88,10 @@
                 <table class="table table-striped table-hover align-middle text-center">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th>
-                            <th>Student Name</th>
-                            <th>Course Name</th>
-                            <th>Enrollment Date</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Student Name</th>
+                            <th scope="col">Class Name</th>
+                            <th scope="col">Enrollment Date</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                 <th>Actions</th>
                             @endif
@@ -103,7 +103,7 @@
                                 <tr>
                                     <td>{{ $enrollment->id }}</td>
                                     <td>{{ $enrollment->student->name }}</td>
-                                    <td>{{ $enrollment->course->name }}</td>
+                                    <td>{{ $enrollment->class->course->name }}</td>
                                     <td>{{ $enrollment->date }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>

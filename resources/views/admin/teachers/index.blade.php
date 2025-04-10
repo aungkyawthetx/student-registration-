@@ -81,7 +81,6 @@
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Subject</th>
                             <th scope="col">Email</th>
                             <th scope="col">Phone</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
@@ -95,7 +94,6 @@
                                 <tr>
                                     <td>{{ $teacher->id }}</td>
                                     <td>{{ $teacher->name }}</td>
-                                    <td>{{ $teacher->subject }}</td>
                                     <td>{{ $teacher->email }}</td>
                                     <td>{{ $teacher->phone }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))

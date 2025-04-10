@@ -24,16 +24,16 @@
           @enderror
         </div>
         <div class="mb-3">
-          <label class="form-label ms-2"> <i class="fa-solid fa-book-open"></i> Course_Name</label>
-          <select name="course_name" class="form-select @error('course_id') is-invalid @enderror">
-            @foreach($courses as $course)
-              <option value="{{ $course->id }}" {{ old('course_name', $enrollment->course->id) == $course->id ? 'selected' : '' }}>
-                {{ $course->name }}
+          <label class="form-label ms-2"> <i class="fa-solid fa-book-open"></i> Class Name</label>
+          <select name="class_name" class="form-select @error('class_id') is-invalid @enderror">
+            @foreach($classes as $class)
+              <option value="{{ $class->id }}" {{ old('class_name', $enrollment->class->id) == $class->id ? 'selected' : '' }}>
+                {{ $class->course->name }}
               </option>
             @endforeach
           </select>
-          @error('course_name')
-          <small class="text-danger ms-2 my-0 py-0"> course field is required </small>
+          @error('class_name')
+          <small class="text-danger ms-2 my-0 py-0"> class field is required </small>
           @enderror
         </div>
         <div class="mb-2">

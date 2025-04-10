@@ -19,22 +19,22 @@ class EnrollmentReportExport implements FromCollection, WithHeadings, ShouldAuto
     public function collection(){
         return DB::table('enrollments')
         ->join('students', 'enrollments.student_id', '=', 'students.id')
-        ->join('courses', 'enrollments.course_id', '=', 'courses.id')
+        ->join('classes', 'enrollments.class_id', '=', 'classes.id')
         ->select(
             'students.name as student_name', 
-            'courses.name as course_name',
+            'classes.name as class_name',
             'enrollments.date as enrollment_date',
-            'courses.duration as duration',
-            'courses.start_date as start_date',
-            'courses.fees as fees'
+            'classes.start_date as start_date',
+            'classes.time as time',
+            'classes.fees as fees'
         )
-        ->groupBy('student_name', 'course_name','enrollment_date','duration','start_date','fees')
+        ->groupBy('student_name', 'class_name','enrollment_date','start_date', 'time', 'fees')
         ->orderBy('enrollment_date','desc')
         ->get();
     }
     public function headings(): array
     {
-        return ['Student Name', 'Enrollment Date', 'Course Name', 'Duration','Start Date','Fees'];
+        return ['Student Name', 'Enrollment Date', 'Course Name' ,'Start Date', 'Time', 'Fees'];
     }
 
     public function styles(Worksheet $sheet){

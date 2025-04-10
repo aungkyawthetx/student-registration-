@@ -16,22 +16,22 @@ class ClassesExport implements FromCollection, WithHeadings, ShouldAutoSize, Wit
             */
     public function collection()
     {
-        return ClassTimeTable::with('room')
+        return ClassTimeTable::with('course','room')
             ->get()
             ->map(function ($class) {
                 return [
                     'ID' => $class->id,
+                    'Course Name' => $class->course->name ? $class->course->name : 'N/A',
                     'Room Name' => $class->room->name ? $class->room->name : 'N/A',
-                    'Date' => $class->date,
-                    'Start Time' => $class->start_time ? $class->start_time : 'N/A',
-                    'End Time' => $class->end_time ? $class->end_time : 'N/A',
+                    'Start Date' => $class->start_date ? $class->start_date : 'N/A',
                     'End Date' => $class->end_date ? $class->end_date : 'N/A',
+                    'Time' => $class->time ? $class->time : 'N/A',
                 ];
             });
     }
     public function headings(): array
     {
-        return ['ID', 'Room Name', 'Date', 'Start Time', 'End Time', 'End Date'];
+        return ['ID', 'Course Name', 'Room Name', 'Start Date', 'End Date', 'Time'];
     }
 
     public function styles(Worksheet $sheet){

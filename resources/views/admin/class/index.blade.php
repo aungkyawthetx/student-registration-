@@ -84,7 +84,7 @@
                             <th scope="col">Room Name</th>
                             <th scope="col">Start Date</th>
                             <th scope="col">End Date</th>
-                            <th>Time</th>
+                            <th scope="col">Time</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                 <th scope="col">Actions</th>
                             @endif
@@ -95,11 +95,11 @@
                             @foreach($classes as $class)
                                 <tr>
                                     <td>{{ $class->id }}</td>
+                                    <td>{{ $class->course ? $class->course->name : 'no course' }}</td>
                                     <td>{{ $class->room ? $class->room->name : 'no room' }}</td>
-                                    <td>{{ $class->date }}</td>
-                                    <td>{{ $class->start_time }}</td>
-                                    <td>{{ $class->end_time }}</td>
+                                    <td>{{ $class->start_date }}</td>
                                     <td>{{ $class->end_date }}</td>
+                                    <td>{{ $class->time }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>
                                             <div class="d-flex justify-content-center gap-2">

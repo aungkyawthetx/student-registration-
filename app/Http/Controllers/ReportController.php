@@ -16,15 +16,16 @@ class ReportController extends Controller
     {
         $attendanceReport = DB::table('attendances')
         ->join('students', 'attendances.student_id', '=', 'students.id')
-        ->join('courses', 'attendances.course_id', '=', 'courses.id')
+        ->join('classes', 'attendances.class_id', '=', 'classes.id')
         ->select(
             'students.name as student_name', 
-            'courses.name as course_name', 
+            'classes.name as class_name', 
+            'classes.time as time',
             DB::raw("COALESCE(COUNT(CASE WHEN attendance_status = 'P' THEN 1 END), 0) AS Present"),
             DB::raw("COALESCE(COUNT(CASE WHEN attendance_status = 'A' THEN 1 END), 0) AS Absent"),
             DB::raw("COALESCE(COUNT(CASE WHEN attendance_status = 'L' THEN 1 END), 0) AS `Leave`")
         )
-        ->groupBy('student_name', 'course_name')
+        ->groupBy('student_name', 'class_name','time')
         ->orderBy('student_name','asc')
         ->paginate(5);
 
@@ -44,10 +45,11 @@ class ReportController extends Controller
         } else {
             $attendanceReport = DB::table('attendances')
             ->join('students', 'attendances.student_id', '=', 'students.id')
-            ->join('courses', 'attendances.course_id', '=', 'courses.id')
+            ->join('classes', 'attendances.class_id', '=', 'classes.id')
             ->select(
                 'students.name as student_name', 
-                'courses.name as course_name', 
+                'classes.name as class_name', 
+                'classes.time as time',
                 DB::raw("COALESCE(COUNT(CASE WHEN attendance_status = 'P' THEN 1 END), 0) AS Present"),
                 DB::raw("COALESCE(COUNT(CASE WHEN attendance_status = 'A' THEN 1 END), 0) AS Absent"),
                 DB::raw("COALESCE(COUNT(CASE WHEN attendance_status = 'L' THEN 1 END), 0) AS `Leave`")
@@ -56,12 +58,12 @@ class ReportController extends Controller
                 $query->where('students.name', 'LIKE', '%'.$searchData.'%');
             })
             ->when($searchData, function ($query, $searchData) {
-                $query->orWhere('courses.name', 'LIKE', '%'.$searchData.'%');
+                $query->orWhere('classes.name', 'LIKE', '%'.$searchData.'%');
             })
             ->when($searchData, function ($query, $searchData) {
                 $query->orWhere('attendances.attendance_date', 'LIKE', '%'.$searchData.'%');
             })
-            ->groupBy('students.name', 'courses.name')
+            ->groupBy('students.name', 'classes.name','classes.time')
             ->orderBy('student_name','asc')
             ->paginate(5)
             ->appends(['search_data' => $search]);
@@ -73,16 +75,16 @@ class ReportController extends Controller
     public function enrollmentReport(){
         $enrollmentReport = DB::table('enrollments')
         ->join('students', 'enrollments.student_id', '=', 'students.id')
-        ->join('courses', 'enrollments.course_id', '=', 'courses.id')
+        ->join('classes', 'enrollments.class_id', '=', 'classes.id')
         ->select(
             'students.name as student_name', 
-            'courses.name as course_name',
+            'classes.name as class_name',
             'enrollments.date as enrollment_date',
-            'courses.duration as duration',
-            'courses.start_date as start_date',
-            'courses.fees as fees'
+            'classes.start_date as start_date',
+            'classes.time as time',
+            'classes.fees as fees'
         )
-        ->groupBy('student_name', 'course_name','enrollment_date','duration','start_date','fees')
+        ->groupBy('student_name', 'class_name','enrollment_date','start_date', 'time', 'fees')
         ->orderBy('enrollment_date','desc')
         ->paginate(5);
 
@@ -102,28 +104,25 @@ class ReportController extends Controller
         } else {
             $enrollmentReport = DB::table('enrollments')
             ->join('students', 'enrollments.student_id', '=', 'students.id')
-            ->join('courses', 'enrollments.course_id', '=', 'courses.id')
+            ->join('classes', 'enrollments.class_id', '=', 'classes.id')
             ->select(
                 'students.name as student_name', 
-                'courses.name as course_name',
+                'classes.name as class_name',
                 'enrollments.date as enrollment_date',
-                'courses.duration as duration',
-                'courses.start_date as start_date',
-                'courses.fees as fees'
+                'classes.start_date as start_date',
+                'classes.time as time',
+                'classes.fees as fees'
             )
             ->when($searchData, function ($query, $searchData) {
                 $query->where('students.name', 'LIKE', '%'.$searchData.'%');
             })
             ->when($searchData, function ($query, $searchData) {
-                $query->orWhere('courses.name', 'LIKE', '%'.$searchData.'%');
+                $query->orWhere('classes.name', 'LIKE', '%'.$searchData.'%');
             })
             ->when($searchData, function ($query, $searchData) {
                 $query->orWhere('enrollments.date', 'LIKE', '%'.$searchData.'%');
             })
-            ->when($searchData, function ($query, $searchData) {
-                $query->orWhere('courses.duration', 'LIKE', '%'.$searchData.'%');
-            })
-            ->groupBy('student_name', 'course_name', 'enrollment_date', 'duration', 'start_date', 'fees')
+            ->groupBy('student_name', 'class_name', 'enrollment_date', 'start_date', 'time', 'fees')
             ->orderBy('enrollment_date','desc')
             ->paginate(5)
             ->appends(['search_data' => $search]);

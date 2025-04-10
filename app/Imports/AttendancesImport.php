@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Attendance;
+use App\Models\ClassTimeTable;
 use App\Models\Course;
 use App\Models\Room;
 use App\Models\Student;
@@ -21,7 +22,7 @@ class AttendancesImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        $headers = ['student_name', 'date', 'course_name', 'room', 'status'];
+        $headers = ['class_name', 'student_name', 'date', 'status'];
 
         foreach ($headers as $header) {
             if (!array_key_exists($header, $row)) {
@@ -38,26 +39,19 @@ class AttendancesImport implements ToModel, WithHeadingRow
             ]);
         }
         
-        $course = Course::where('name', $row['course_name'])->first();
-        if (!$course) {
+        $class = ClassTimeTable::where('name', $row['class_name'])->first();
+        if (!$class) {
             throw ValidationException::withMessages([
-                'file' => "Invalid course specified: " . $row['course_name']
-            ]);
-        }
-        $room = Room::where('name', $row['room'])->first();
-        if (!$room) {
-            throw ValidationException::withMessages([
-                'file' => "Invalid room specified: " . $row['room']
+                'file' => "Invalid course specified: " . $row['class_name']
             ]);
         }
 
         return new Attendance([
+            'class_id' => $class ? $class->id : null,
             'student_id' => $student ? $student->id : null,
             'attendance_date' => is_numeric($row['date'])
                 ? Date::excelToDateTimeObject($row['date'])->format('Y-m-d')
                 : Carbon::parse($row['date'])->format('Y-m-d'),
-            'course_id' => $course ? $course->id : null,
-            'room_id' => $room ? $room->id : null,
             'attendance_status' => $row['status'],
             'created_at' => now(),
             'updated_at' => now(),

@@ -16,20 +16,20 @@ class EnrollmentsExport implements FromCollection, WithHeadings, ShouldAutoSize,
             */
     public function collection()
     {
-        return Enrollment::with('student', 'course')
+        return Enrollment::with('student', 'class')
             ->get()
             ->map(function ($enrollment) {
                 return [
                     'ID' => $enrollment->id,
                     'Student Name' => $enrollment->student->name ? $enrollment->student->name : 'N/A',
-                    'Course Name' => $enrollment->course->name ? $enrollment->course->name : 'N/A',
+                    'Class Name' => $enrollment->class->name ? $enrollment->class->name : 'N/A',
                     'Enrollment Date' => $enrollment->date,
                 ];
             });
     }
     public function headings(): array
     {
-        return ['ID', 'Student Name', 'Course Name', 'Enrollment Date'];
+        return ['ID', 'Student Name', 'Class Name', 'Enrollment Date'];
     }
 
     public function styles(Worksheet $sheet){

@@ -4,11 +4,11 @@
 @endphp
 
 <!-- Desktop Sidebar -->
-<div class="d-flex flex-column flex-shrink-0 p-3 d-lg-block d-none bg-body-tertiary mt-5" style="position: fixed; left: 0; width:20%; height: 100vh; overflow-y:auto;">
+<div class="d-flex flex-column flex-shrink-0 p-3 d-lg-block d-none bg-body-tertiary mt-5" style="position: fixed; left: 0; width:18%; height: 95%; z-index: 1000; overflow-y:auto;">
     <ul class="nav nav-pills flex-column mb-auto">
         @auth
         <!-- Dashboard -->
-        <li class="nav-item">
+        <li class="nav-item mt-3">
             <a href="{{ route('admin.dashboard') }}" class="nav-link text-body {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"> 
                 <i class="fa-solid fa-gauge me-2"></i> Dashboard 
             </a>
@@ -102,12 +102,12 @@
             <h6 class="fw-bold mb-2 ps-2">Reports</h6>
             <li class="nav-item">
                 <a href="{{route('attendance.report')}}" class="nav-link text-body {{ request()->routeIs('attendance.report') ? 'active fw-bold' : ''}}">
-                    <i class="bi bi-book"></i> Student Attendance
+                    <i class="bi bi-clipboard-check"></i> Attendance Report
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{route('enrollment.report')}}" class="nav-link text-body {{ request()->routeIs('enrollment.report') ? 'active fw-bold' : ''}}">
-                    <i class="fa-solid fa-users"></i> Student Enrollment
+                    <i class="bi bi-clipboard-check"></i> Enrollment Report
                 </a>
             </li>
         </li>
@@ -127,7 +127,7 @@
         <!-- Dashboard -->
         <li class="nav-item">
             <a href="{{ route('admin.dashboard') }}" class="nav-link text-center {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="fa-solid fa-gauge d-block mx-auto"></i>
+                <i class="fa-solid fa-gauge d-block mx-auto mb-2"></i>
                 <small>Dashboard</small>
             </a>
         </li>
@@ -209,13 +209,13 @@
         <li class="nav-item">
             <a href="{{route('attendance.report')}}" class="nav-link text-center {{ request()->routeIs('attendance.report') ? 'active' : ''}}">
             <i class="bi bi-book d-block mx-auto"></i>
-            <small class="d-block d-md-none text-wrap">Attendance Report</small>
+            <small class="d-block text-wrap">Attendance Report</small>
             </a>
         </li>
         <li class="nav-item">
             <a href="{{route('enrollment.report')}}" class="nav-link text-center {{ request()->routeIs('enrollment.report') ? 'active' : ''}}">
-            <i class="fa-solid fa-users d-block mx-auto"></i>
-            <small class="d-block d-md-none text-wrap"> Enrollment Report</small>
+            <i class="fa-solid fa-users d-block mx-auto mb-1"></i>
+            <small class="d-block text-wrap"> Enrollment Report</small>
             </a>
         </li>
         @endif

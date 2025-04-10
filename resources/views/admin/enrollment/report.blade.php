@@ -26,7 +26,7 @@
             </div>
             @endif
         </div>
-        <div class="row my-2">
+        <div class="row mt-3">
             <div class="col-12 col-md-6 d-flex gap-2 mb-2 mb-md-0">
                 <form action="{{ route('enrollment-report.search') }}" method="GET" class="w-100 input-group">
                     <input type="text" name="search_data" id="search_data" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search_data') }}">

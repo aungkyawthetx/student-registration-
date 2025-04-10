@@ -31,22 +31,19 @@
                 </div>
             @endif
 
-            <div class="row my-2">
-                <div class="col-12 col-md-6 col-lg-4 d-flex gap-2 mb-2 mb-md-0">
-                    <form action="{{ route('classes.search') }}" method="GET" class="w-100 input-group">
-                        <input type="text" name="search_data" id="search_data" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search_data') }}">
-                        <button class="btn btn-secondary btn-sm" type="submit" title="Search">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                    <form action="{{ route('classes.index') }}" method="GET">
-                        <button type="submit" class="btn btn-secondary btn-sm" title="Show All">
+            <div class="row mt-3">
+                <div class="col-12 d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-2">
+                    <div class="d-flex flex-grow-1 gap-2" style="max-width: 400px;">
+                        <form action="{{ route('classes.search') }}" method="GET" class="d-flex flex-grow-1 input-group">
+                            <input type="text" name="search_data" id="search_data" class="form-control" placeholder="Search..." value="{{ request('search_data') }}">
+                            <button class="btn btn-secondary" type="submit" title="Search">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                        <a href="{{ route('classes.index') }}" class="btn btn-secondary" title="Show All">
                             <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </form>
-                </div>
-    
-                <div class="col-12 col-md-6">
+                        </a>
+                    </div>
                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                         <div class="d-flex flex-wrap justify-content-md-end gap-2">
                             <form action="{{ route('classes.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">

@@ -113,6 +113,21 @@ class CourseController extends Controller
         return redirect()->route('courses.index')->with('success', 'One row deleted.');
     }
 
+    public function destroyall()
+    {
+        if (Gate::denies('delete', Course::class)) {
+            return redirect()->route("admin.dashboard")->with('error', 'No permission.');
+        }
+        $classes = Course::all();
+        if ($classes->isEmpty()) {
+            return redirect()->route('courses.index')->with('errorAlert','No courses to delete.');
+        }
+        foreach ($classes as $class) {
+            $class->delete();
+        }
+        return redirect()->route('courses.index')->with('success','All courses deleted successfully.');
+    }
+    
     public function search(Request $request){
         $search = $request->input('search_data');
         $searchData = $request->search_data;

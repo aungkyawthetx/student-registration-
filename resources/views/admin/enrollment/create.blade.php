@@ -28,7 +28,7 @@
               <select name="class_id" class="form-select @error('class_id') is-invalid @enderror">
                   <option value=""> Select Class </option>
                   @foreach($classes as $class)
-                      <option value="{{ $class->id }}">{{ $class->name }}</option>
+                      <option value="{{ $class->id }}">{{ $class->course->name }}</option>
                   @endforeach
               </select>
               @error('class_id')
@@ -37,7 +37,7 @@
           </div>
           <div class="mb-2">
               <label class="form-label">Enrollment Date</label>
-              <input type="date" name="enrollment_date" class="form-control @error('enrollment_date') is-invalid @enderror">
+              <input type="date" name="enrollment_date" class="form-control @error('enrollment_date') is-invalid @enderror" value="{{ old('enrollment_date', date('Y-m-d')) }}">
               @error('enrollment_date')
               <small class="text-danger ms-2 my-0 py-0"> date field is required </small>
               @enderror

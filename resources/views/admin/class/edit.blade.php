@@ -41,7 +41,7 @@
         </div>
         <div class="mb-3">
           <label for="start_date" class="form-label fw-bold ms-2"> <i class="fa-solid fa-calendar text-primary"></i> Start Date</label>
-          <input type="start_date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" placeholder="Enter Start Date" value="{{$class->date ?? old('start_date') }}">
+          <input type="date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" placeholder="Enter Start Date" value="{{$class->date ?? old('start_date') }}">
           @error('start_date')
               <span class="text-danger"><small>{{ $message }}</small></span>
           @enderror

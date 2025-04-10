@@ -40,14 +40,14 @@
             </div>
             <div class="mb-3">
               <label for="start_date" class="form-label fw-bold ms-2"> <i class="fa-solid fa-calendar text-success"></i> Start Date</label>
-              <input type="start_date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" placeholder="Enter Start Date" value="{{ old('start_date') }}">
+              <input type="date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" placeholder="Enter Start Date" value="{{ old('start_date', date('Y-m-d'))) }}">
               @error('start_date')
                   <span class="text-danger"><small>{{ $message }}</small></span>
               @enderror
             </div>
             <div class="mb-2">
               <label for="end_date" class="form-label fw-bold ms-2"> <i class="fa-solid fa-calendar text-warning"></i> End Date</label>
-              <input type="date" class="form-control @error('end_date') is-invalid @enderror" name="end_date" placeholder="Enter End Date" value="{{ old('end_date') }}">
+              <input type="date" class="form-control @error('end_date') is-invalid @enderror" name="end_date" placeholder="Enter End Date" value="{{ old('end_date', date('Y-m-d'))) }}">
               @error('end_date')
                   <span class="text-danger"><small>{{ $message }}</small></span>
               @enderror

@@ -93,7 +93,7 @@
                                 <tr>
                                     <td>{{ $enrollment->id }}</td>
                                     <td>{{ $enrollment->student->name }}</td>
-                                    <td>{{ $enrollment->class->name }}</td>
+                                    <td>{{ $enrollment->class->course->name }}</td>
                                     <td>{{ $enrollment->date }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>

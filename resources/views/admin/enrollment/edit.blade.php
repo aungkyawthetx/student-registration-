@@ -28,7 +28,7 @@
           <select name="class_name" class="form-select @error('class_id') is-invalid @enderror">
             @foreach($classes as $class)
               <option value="{{ $class->id }}" {{ old('class_name', $enrollment->class->id) == $class->id ? 'selected' : '' }}>
-                {{ $class->name }}
+                {{ $class->course->name }}
               </option>
             @endforeach
           </select>

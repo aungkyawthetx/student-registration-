@@ -93,7 +93,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{route('classes.index')}}" class="nav-link text-body {{ request()->routeIs('classes.*') ? 'active' : '' }}">
-                        <i class="bi bi-calendar me-2"></i> Class Timetables
+                        <i class="bi bi-calendar me-2"></i> Classes
                     </a>
                 </li>
             </ul>

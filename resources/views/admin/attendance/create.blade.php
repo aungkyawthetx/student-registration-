@@ -41,7 +41,7 @@
 
         <div class="mb-3">
           <label for="attendance_date" class="form-label ms-2"><i class="fa-solid fa-calendar-week"></i> Attendance Date</label>
-          <input type="date" class="form-control @error('attendance_date') is-invalid @enderror" name="attendance_date" value="{{ old('attendance_date') }}">
+          <input type="date" class="form-control @error('attendance_date') is-invalid @enderror" name="attendance_date" value="{{ old('attendance_date', date('Y-m-d'))) }}">
           @error('attendance_date')
             <span class="text-danger"><small>{{ $message }}</small></span>
           @enderror

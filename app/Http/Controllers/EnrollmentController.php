@@ -105,7 +105,7 @@ class EnrollmentController extends Controller
         $enrollment = Enrollment::find($id);
         $enrollment->update([
             'student_id' => $request->student_name,
-            'course_id' => $request->class_name,
+            'class_id' => $request->class_name,
             'date' => $request->enrollment_date,
         ]);
         return redirect()->route('enrollments.index')->with('successAlert', 'Enrollment updated successfully.');

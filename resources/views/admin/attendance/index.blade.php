@@ -5,19 +5,20 @@
 @section('content')
 <div class="container my-4">
     <div class="card shadow-sm rounded">
-        <div class="card-header container bg-transparent border-bottom">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+        <div class="card-header bg-transparent border-bottom">
+
+            {{-- Title and Add New Button --}}
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <h2 class="card-title mb-0">Attendances List</h2>
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
-                        <a href="{{ route('attendances.create') }}" class="btn btn-primary btn-sm">
-                            <span class="d-none d-sm-inline">Add New</span>
-                            <i class="fas fa-plus me-1"></i>
-                        </a>
-                    @endif
-                </div>
+                @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
+                    <a href="{{ route('attendances.create') }}" class="btn btn-primary btn-sm">
+                        <span class="d-none d-sm-inline">Add New</span>
+                        <i class="fas fa-plus ms-1"></i>
+                    </a>
+                @endif
             </div>
 
+            {{-- Flash Messages --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
                     {{ session('success') }}
@@ -33,21 +34,23 @@
 
             <div class="row mt-3">
                 <div class="col-12 d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-2">
+
+                    {{-- Search Bar --}}
                     <div class="d-flex flex-grow-1 gap-2" style="max-width: 400px;">
-                        <form action="{{ route('attendances.search') }}" method="GET" class="w-100 input-group">
-                            <input type="text" name="search_data" id="search_data" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search_data') }}">
-                            <button class="btn btn-secondary btn-sm" type="submit" title="Search">
+                        <form action="{{ route('attendances.search') }}" method="GET" class="d-flex flex-grow-1 input-group">
+                            <input type="text" name="search_data" id="search_data" class="form-control" placeholder="Search..." value="{{ request('search_data') }}">
+                            <button class="btn btn-secondary" type="submit" title="Search">
                                 <i class="fas fa-search"></i>
                             </button>
                         </form>
-                        <form action="{{ route('attendances.index') }}" method="GET">
-                            <button type="submit" class="btn btn-secondary btn-sm" title="Show All">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
-                        </form>
+                        <a href="{{ route('attendances.index') }}" class="btn btn-secondary" title="Show All">
+                            <i class="fas fa-sync-alt"></i>
+                        </a>
                     </div>
+
+                    {{-- Import / Export / Delete All --}}
                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-                        <div class="d-flex flex-wrap justify-content-md-end gap-2">
+                        <div class="d-flex flex-wrap gap-2 justify-content-md-end">
                             <form action="{{ route('attendances.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
                                 @csrf
                                 <div class="input-group input-group-sm" style="width: 150px;">
@@ -58,10 +61,12 @@
                                     <span class="d-none d-sm-inline">Import</span>
                                 </button>
                             </form>
+
                             <a href="{{ route('attendances.export') }}" class="btn btn-primary btn-sm" title="Export" onclick="return confirm('Export attendances data as an excel file?')">
                                 <i class="fa-solid fa-download"></i>
                                 <span class="d-none d-sm-inline">Export</span>
                             </a>
+
                             <form action="{{ route('attendances.destroy-all') }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
@@ -75,6 +80,7 @@
                 </div>
             </div>
 
+        {{-- Table --}}
         <div class="card-body">
             <div class="table-responsive my-3">
                 <table class="table table-striped table-hover align-middle text-center">
@@ -86,7 +92,7 @@
                             <th scope="col">Date</th>
                             <th scope="col">Status</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name) || auth()->user()->hasRole($roles[3]->name))
-                                <th scope="col">Actions</th>
+                                <th>Actions</th>
                             @endif
                         </tr>
                     </thead>
@@ -95,7 +101,7 @@
                             @foreach ($attendances as $attendance)
                                 <tr>
                                     <td>{{ $attendance->id }}</td>
-                                    <td>{{ $attendance->class->name ?? 'no class' }}</td>
+                                    <td>{{ $attendance->class->course->name ?? 'no class' }}</td>
                                     <td>{{ $attendance->student->name ?? 'no student' }}</td>
                                     <td>{{ $attendance->attendance_date }}</td>
                                     <td>{{ $attendance->attendance_status }}</td>
@@ -129,6 +135,7 @@
             </div>
         </div>
 
+        {{-- Pagination --}}
         <div class="card-footer bg-transparent border-0 pt-0">
             <div class="container">
                 {{ $attendances->links('pagination::bootstrap-5') }}

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ClassesExport;
-use App\Imports\ClassesImport;
 use App\Models\Role;
 use App\Models\Room;
+use App\Models\Course;
 use Illuminate\Http\Request;
+use App\Exports\ClassesExport;
+use App\Imports\ClassesImport;
 use App\Models\ClassTimeTable;
 use App\Models\Course;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Validation\ValidationException;
 
 class ClassController extends Controller
 {
@@ -36,6 +37,7 @@ class ClassController extends Controller
         if (Gate::denies('create', ClassTimeTable::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
+        $courses = Course::all();
         $rooms = Room::all();
         $courses = Course::all();
         return view('admin.class.create', compact('rooms','courses'));

@@ -1,23 +1,24 @@
 @extends('layouts.app')
 
-@section('title', 'Enrollments')
+@section('title', 'Enrollments List')
 
 @section('content')
 <div class="container my-4">
     <div class="card shadow-sm rounded">
-        <div class="card-header container bg-transparent border-bottom">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-                <h2 class="card-title mb-0">Enrollment List</h2>
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-                        <a href="{{ route('enrollments.create') }}" class="btn btn-primary btn-sm">
-                            <span class="d-none d-sm-inline">New Enrollment</span>
-                            <i class="fas fa-plus me-1"></i>
-                        </a>
-                    @endif
-                </div>
+        <div class="card-header bg-transparent border-bottom">
+
+            {{-- Title and New Enrollment Button --}}
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h2 class="card-title mb-0">Enrollments List</h2>
+                @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+                    <a href="{{ route('enrollments.create') }}" class="btn btn-primary btn-sm">
+                        <span class="d-none d-sm-inline">New Enrollment</span>
+                        <i class="fas fa-plus ms-1"></i>
+                    </a>
+                @endif
             </div>
 
+            {{-- Flash Messages --}}
             @if(session('successAlert'))
                 <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
                     {{ session('successAlert') }}
@@ -30,23 +31,26 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+
             <div class="row mt-3">
                 <div class="col-12 d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-2">
+
+                    {{-- Search Bar --}}
                     <div class="d-flex flex-grow-1 gap-2" style="max-width: 400px;">
-                    <form action="{{ route('enrollments.search') }}" method="GET" class="w-100 input-group">
-                        <input type="text" name="search_data" id="search_data" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search_data') }}">
-                        <button class="btn btn-secondary btn-sm" type="submit" title="Search">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                    <form action="{{ route('enrollments.index') }}" method="GET">
-                        <button type="submit" class="btn btn-secondary btn-sm" title="Show All">
+                        <form action="{{ route('enrollments.search') }}" method="GET" class="d-flex flex-grow-1 input-group">
+                            <input type="text" name="search_data" id="search_data" class="form-control" placeholder="Search..." value="{{ request('search_data') }}">
+                            <button class="btn btn-secondary" type="submit" title="Search">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                        <a href="{{ route('enrollments.index') }}" class="btn btn-secondary" title="Show All">
                             <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </form>
-                </div>
+                        </a>
+                    </div>
+
+                    {{-- Import / Export / Delete All --}}
                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-                        <div class="d-flex flex-wrap justify-content-md-end gap-2">
+                        <div class="d-flex flex-wrap gap-2 justify-content-md-end">
                             <form action="{{ route('enrollments.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
                                 @csrf
                                 <div class="input-group input-group-sm" style="width: 150px;">
@@ -57,10 +61,12 @@
                                     <span class="d-none d-sm-inline">Import</span>
                                 </button>
                             </form>
+
                             <a href="{{ route('enrollments.export') }}" class="btn btn-primary btn-sm" title="Export" onclick="return confirm('Export enrollments data as an excel file?')">
                                 <i class="fa-solid fa-download"></i>
                                 <span class="d-none d-sm-inline">Export</span>
                             </a>
+
                             <form action="{{ route('enrollments.destroy-all') }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
@@ -71,8 +77,12 @@
                             </form>
                         </div>
                     @endif
+
+                </div>
             </div>
         </div>
+
+        {{-- Table --}}
         <div class="card-body">
             <div class="table-responsive my-3">
                 <table class="table table-striped table-hover align-middle text-center">
@@ -83,7 +93,7 @@
                             <th scope="col">Class Name</th>
                             <th scope="col">Enrollment Date</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-                                <th scope="col">Actions</th>
+                                <th>Actions</th>
                             @endif
                         </tr>
                     </thead>
@@ -127,6 +137,7 @@
             </div>
         </div>
 
+        {{-- Pagination --}}
         <div class="card-footer bg-transparent border-0 pt-0">
             <div class="container">
                 {{ $enrollments->links('pagination::bootstrap-5') }}

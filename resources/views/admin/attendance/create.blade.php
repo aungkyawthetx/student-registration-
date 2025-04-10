@@ -16,7 +16,7 @@
             <option value="" selected disabled> Class</option>
             @foreach($classes as $class)
               <option value="{{ $class->id }}" {{ old('class_name') == $class->id ? 'selected' : '' }}>
-                {{ $class->name }}
+                {{ $class->course->name }}
               </option>
             @endforeach
           </select>

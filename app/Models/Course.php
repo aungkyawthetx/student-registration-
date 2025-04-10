@@ -16,4 +16,8 @@ class Course extends Model
     {
         return $this->belongsToMany(Teacher::class, 'teacher_courses');
     }
+    public function classes()
+    {
+        return $this->hasMany(ClassTimeTable::class, 'course_id');
+    }
 }

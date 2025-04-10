@@ -8,14 +8,6 @@
         <div class="card-header container bg-transparent border-bottom">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
                 <h2 class="card-title mb-0">Roles List</h2>
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-                        <a href="{{ route('roles.export') }}" class="btn btn-primary btn-sm" title="Export" onclick="return confirm('Export roles data as an excel file?')">
-                            <i class="fa-solid fa-download"></i>
-                            <span class="d-none d-sm-inline">Export</span>
-                        </a>
-                    @endif
-                </div>
             </div>
 
             @if(session('success'))
@@ -34,17 +26,22 @@
             <div class="row mt-3">
                 <div class="col-12 d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-2">
                     <div class="d-flex flex-grow-1 gap-2" style="max-width: 400px;">
-                    <form action="{{ route('roles.search') }}" method="GET" class="w-100 input-group">
-                        <input type="text" name="search_data" id="search_data" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search_data') }}">
-                        <button class="btn btn-secondary btn-sm" type="submit" title="Search">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                    <form action="{{ route('roles.index') }}" method="GET">
-                        <button type="submit" class="btn btn-secondary btn-sm" title="Show All">
+                        <form action="{{ route('roles.search') }}" method="GET" class="d-flex flex-grow-1 input-group">
+                            <input type="text" name="search_data" id="search_data" class="form-control" placeholder="Search..." value="{{ request('search_data') }}">
+                            <button class="btn btn-secondary" type="submit" title="Search">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                        <a href="{{ route('roles.index') }}" class="btn btn-secondary" title="Show All">
                             <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </form>
+                        </a>
+                    </div>
+                    @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+                        <a href="{{ route('roles.export') }}" class="btn btn-primary" title="Export" onclick="return confirm('Export roles data as an excel file?')">
+                            <i class="fa-solid fa-download"></i>
+                            <span class="d-none d-sm-inline">Export</span>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

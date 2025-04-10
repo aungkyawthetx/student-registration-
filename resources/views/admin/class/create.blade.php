@@ -25,6 +25,20 @@
               @enderror
             </div>
             <div class="mb-3">
+              <label for="courseId" class="form-label ms-2 fw-bold"><i class="fa-solid fa-book"></i> Course</label>
+              <select class="form-select @error('course_id') is-invalid @enderror" name="course_id">
+                <option value="" disabled selected>Choose Course</option>
+                @foreach($courses as $course)
+                  <option value="{{ $course->id }}">
+                    {{ $course->name }}
+                  </option>
+                @endforeach
+              </select>
+              @error('course_id')
+                <span class="text-danger"><small>{{ $message }}</small></span>
+              @enderror
+            </div>
+            <div class="mb-3">
               <label for="roomId" class="form-label ms-2 fw-bold"> <i class="fa-solid fa-door-closed text-primary"></i> Room</label>
               <select class="form-select @error('room_id') is-invalid @enderror" name="room_id">
                 <option value="" disabled selected>Choose Room</option>
@@ -38,6 +52,7 @@
                 <span class="text-danger"><small>{{ $message }}</small></span>
               @enderror
             </div>
+            </div>
             <div class="mb-3">
               <label for="start_date" class="form-label fw-bold ms-2"> <i class="fa-solid fa-calendar text-success"></i> Start Date</label>
               <input type="date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" placeholder="Enter Start Date" value="{{ old('start_date', date('Y-m-d'))) }}">
@@ -49,6 +64,13 @@
               <label for="end_date" class="form-label fw-bold ms-2"> <i class="fa-solid fa-calendar text-warning"></i> End Date</label>
               <input type="date" class="form-control @error('end_date') is-invalid @enderror" name="end_date" placeholder="Enter End Date" value="{{ old('end_date', date('Y-m-d'))) }}">
               @error('end_date')
+                  <span class="text-danger"><small>{{ $message }}</small></span>
+              @enderror
+            </div>
+            <div class="mb-3">
+              <label for="time" class="form-label ms-2 fw-bold"> <i class="fa-solid fa-clock text-success"></i>Time</label>
+              <input type="text" class="form-control @error('time') is-invalid @enderror" name="time" placeholder="Enter Time" value="{{ old('time') }}">
+              @error('time')
                   <span class="text-danger"><small>{{ $message }}</small></span>
               @enderror
             </div>

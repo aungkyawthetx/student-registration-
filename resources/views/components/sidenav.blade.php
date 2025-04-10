@@ -210,6 +210,7 @@
             <a href="{{route('attendance.report')}}" class="nav-link text-center {{ request()->routeIs('attendance.report') ? 'active' : ''}}">
             <i class="bi bi-book d-block mx-auto"></i>
             <small class="d-block text-wrap">Attendance Report</small>
+            <small class="d-block text-wrap">Attendance Report</small>
             </a>
         </li>
         <li class="nav-item">

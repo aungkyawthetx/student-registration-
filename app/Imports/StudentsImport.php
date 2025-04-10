@@ -7,7 +7,7 @@ use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
-
+use Carbon\Carbon;
 class StudentsImport implements ToModel, WithHeadingRow
 {
     /**
@@ -30,7 +30,9 @@ class StudentsImport implements ToModel, WithHeadingRow
             'name' => $row['student_name'],
             'gender' => $row['gender'],
             'nrc' => $row['nrc'],
-            'dob' => Date::excelToDateTimeObject($row['dob'])->format('Y-m-d'),
+            'dob' => is_numeric($row['dob'])
+                ? Date::excelToDateTimeObject($row['dob'])->format('Y-m-d')
+                : Carbon::parse($row['dob'])->format('Y-m-d'),
             'email' => $row['email'],
             'phone' => $row['phone'],
             'address' => $row['address'],

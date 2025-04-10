@@ -67,23 +67,23 @@
     </div>
 
     <div class="row mb-4">
-        <div class="col-12 col-md-6 mb-3 mb-md-0">
-            <div class="card h-100">
+        <div class="col-12 col-md-6">
+            <div class="card mb-3">
                 <div class="card-header bg-secondary text-light">
                     <h5>Students Per Course</h5>
                 </div>
-                <div class="card-body chart-container" style="position: relative; height: 300px;">
-                    <canvas id="studentsPerCourseChart"></canvas>
+                <div class="card-body">
+                    <canvas id="studentsPerCourseChart" height="200" style="display: block;"></canvas>
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-6">
-            <div class="card h-100">
+            <div class="card">
                 <div class="card-header bg-secondary text-light">
                     <h5>Monthly Registrations</h5>
                 </div>
-                <div class="card-body chart-container">
-                    <canvas id="monthlyRegistrationsChart"></canvas>
+                <div class="card-body">
+                    <canvas id="monthlyRegistrationsChart" height="200" style="display: block;"></canvas>
                 </div>
             </div>
         </div>
@@ -114,124 +114,97 @@
         </div>
     </div>
 
-
-    <style>
-        .chart-container {
-            position: relative;
-            height: 200px;
-            width: 100%;
-        }
-        
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 250px;
-            }
-        }
-    </style>
-
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('studentsPerCourseChart').getContext('2d');
-            const chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: {!! json_encode($studentsPerCourse->pluck('name')) !!},
-                    datasets: [{
-                        label: 'Number of Students',
-                        data: {!! json_encode($studentsPerCourse->pluck('students_count')) !!},
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]  
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Students',
-                                color: 'rgba(54, 162, 235, 0.8)'
-                            },
-                            ticks: {
-                                stepSize: 1,
-                                color: 'rgba(54, 162, 235, 1)'
-                            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('studentsPerCourseChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($studentsPerCourse->pluck('name')) !!},
+                datasets: [{
+                    label: 'Number of Students',
+                    data: {!! json_encode($studentsPerCourse->pluck('students_count')) !!},
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]  
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Students',
+                            color: 'rgba(54, 162, 235, 0.8)'
                         },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Course Name',
-                                color: 'rgba(54, 162, 235, 0.8)'
-                            },
-                            ticks:{
-                                color: 'rgba(54, 162, 235, 1)'
-                            }
+                        ticks: {
+                            stepSize: 1,
+                            color: 'rgba(54, 162, 235, 1)'
                         }
                     },
-                    plugins: {
-                        legend: {
-                            display: false
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Course Name',
+                            color: 'rgba(54, 162, 235, 0.8)'
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.parsed.y} students`;
-                                }
+                        ticks:{
+                            color: 'rgba(54, 162, 235, 1)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.parsed.y} students`;
                             }
                         }
                     }
                 }
-            });
-            const monthlyRegistrationsCtx = document.getElementById('monthlyRegistrationsChart').getContext('2d');
-            const monthlyRegistrationsChart = new Chart(monthlyRegistrationsCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    datasets: [{
-                        label: 'Student Registrations',
-                        data: {!! json_encode($monthlyRegistrations) !!},
-                        fill: false,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true, 
-                    maintainAspectRatio: false,
-                    plugins:{
-                        legend:{
-                            labels:{
-                                color:'rgb(75, 192, 192)'
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: 'rgb(75, 192, 192)'
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                color: 'rgb(75, 192, 192)'
-                            }
-                        }
-                    }
-                }
-            }); 
+            }
         });
-
-        // Proper resize handler
-            window.addEventListener('resize', function() {
-                document.querySelectorAll('canvas').forEach(canvas => {
-                    if (canvas.chart) {
-                        canvas.chart.resize();
+        const monthlyRegistrationsCtx = document.getElementById('monthlyRegistrationsChart').getContext('2d');
+        const monthlyRegistrationsChart = new Chart(monthlyRegistrationsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Student Registrations',
+                    data: {!! json_encode($monthlyRegistrations) !!},
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins:{
+                    legend:{
+                        labels:{
+                            color:'rgb(75, 192, 192)'
+                        }
                     }
-                });
-            });
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: 'rgb(75, 192, 192)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: 'rgb(75, 192, 192)'
+                        }
+                    }
+                }
+            }
+        }); 
+    });
     </script>
 @endsection

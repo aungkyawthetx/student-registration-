@@ -17,13 +17,8 @@ class Attendance extends Model
         return $this->belongsTo(Student::class, 'student_id');
     }
 
-    public function room()
+    public function class()
     {
-        return $this->belongsTo(Room::class, 'room_id');
-    }
-
-    public function course()
-    {
-        return $this->belongsTo(Course::class, 'course_id');
+        return $this->belongsTo(ClassTimeTable::class, 'class_id');
     }
 }

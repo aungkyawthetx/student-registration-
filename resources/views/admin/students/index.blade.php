@@ -1,10 +1,13 @@
 @extends('layouts.app')
-
 @section('title', 'Students List')
 
 @section('content')
 <div class="container my-4">
     <div class="card shadow-sm rounded">
+        <div class="card-header bg-transparent border-bottom">
+
+            {{-- Title and New Student Button --}}
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <div class="card-header bg-transparent border-bottom">
 
             {{-- Title and New Student Button --}}
@@ -16,8 +19,15 @@
                         <i class="fas fa-user-plus ms-1"></i>
                     </a>
                 @endif
+                @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+                    <a href="{{ route('students.create') }}" class="btn btn-primary btn-sm">
+                        <span class="d-none d-sm-inline">New Student</span>
+                        <i class="fas fa-user-plus ms-1"></i>
+                    </a>
+                @endif
             </div>
 
+            {{-- Flash Messages --}}
             {{-- Flash Messages --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
@@ -48,6 +58,10 @@
                     </div>
 
                     {{-- Import / Export / Delete All --}}
+                        </a>
+                    </div>
+
+                    {{-- Import / Export / Delete All --}}
                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                         <div class="d-flex flex-wrap gap-2 justify-content-md-end">
                             <form action="{{ route('students.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
@@ -61,10 +75,12 @@
                                 </button>
                             </form>
 
+
                             <a href="{{ route('students.export') }}" class="btn btn-primary btn-sm" title="Export" onclick="return confirm('Export students data as an excel file?')">
                                 <i class="fa-solid fa-download"></i>
                                 <span class="d-none d-sm-inline">Export</span>
                             </a>
+
 
                             <form action="{{ route('students.destroy-all') }}" method="POST" class="d-inline">
                                 @csrf
@@ -76,9 +92,12 @@
                             </form>
                         </div>
                     @endif
+
                 </div>
             </div>
         </div>
+
+        {{-- Table --}}
 
         {{-- Table --}}
         <div class="card-body">
@@ -95,7 +114,17 @@
                             <th>Phone</th>
                             <th>Address</th>
                             <th>Parent Info</th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>NRC</th>
+                            <th>DOB</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Parent Info</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
+                                <th>Actions</th>
                                 <th>Actions</th>
                             @endif
                         </tr>

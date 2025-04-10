@@ -28,6 +28,7 @@ class AttendanceReportExport implements FromCollection, WithHeadings, ShouldAuto
             DB::raw("COALESCE(COUNT(CASE WHEN attendance_status = 'L' THEN 1 END), 0) AS `Leave`")
         )
         ->groupBy('student_name', 'course_name')
+        ->orderBy('student_name','asc')
         ->get();
     }
     public function headings(): array

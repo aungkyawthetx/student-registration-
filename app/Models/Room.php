@@ -17,9 +17,4 @@ class Room extends Model
     {
         return $this->hasMany(ClassTimeTable::class, 'room_id');
     }
-
-    public function attendance()
-    {
-        return $this->hasMany(Attendance::class, 'room_id');
-    }
 }

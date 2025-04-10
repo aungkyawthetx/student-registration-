@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Carbon\Carbon;
 
 class AttendancesImport implements ToModel, WithHeadingRow
 {
@@ -52,7 +53,9 @@ class AttendancesImport implements ToModel, WithHeadingRow
 
         return new Attendance([
             'student_id' => $student ? $student->id : null,
-            'attendance_date' => Date::excelToDateTimeObject($row['date'])->format('Y-m-d'),
+            'attendance_date' => is_numeric($row['date'])
+                ? Date::excelToDateTimeObject($row['date'])->format('Y-m-d')
+                : Carbon::parse($row['date'])->format('Y-m-d'),
             'course_id' => $course ? $course->id : null,
             'room_id' => $room ? $room->id : null,
             'attendance_status' => $row['status'],

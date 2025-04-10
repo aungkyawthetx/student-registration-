@@ -29,6 +29,7 @@ class EnrollmentReportExport implements FromCollection, WithHeadings, ShouldAuto
             'courses.fees as fees'
         )
         ->groupBy('student_name', 'course_name','enrollment_date','duration','start_date','fees')
+        ->orderBy('enrollment_date','desc')
         ->get();
     }
     public function headings(): array

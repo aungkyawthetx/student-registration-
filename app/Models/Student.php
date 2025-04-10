@@ -21,8 +21,8 @@ class Student extends Model
         return $this->hasMany(Attendance::class, 'student_id');
     }
 
-    public function courses()
+    public function classes()
     {
-        return $this->belongsToMany(Course::class, 'enrollments');
+        return $this->belongsToMany(ClassTimeTable::class, 'enrollments');
     }
 }

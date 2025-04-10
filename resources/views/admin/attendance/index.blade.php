@@ -79,7 +79,6 @@
                     @endif
                 </div>
             </div>
-        </div>
 
         {{-- Table --}}
         <div class="card-body">

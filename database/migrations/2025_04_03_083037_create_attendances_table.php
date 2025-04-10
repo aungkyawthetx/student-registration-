@@ -15,14 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('student_id');
             $table->date('attendance_date');
-            $table->unsignedBigInteger('course_id');
-            $table->unsignedBigInteger('room_id');
+            $table->unsignedBigInteger('class_id');
             $table->enum('attendance_status', ['P', 'A', 'L'])->default('P');
             $table->timestamps();
             //FK
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
-            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
+            $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
         });
     }
 

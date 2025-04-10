@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Carbon\Carbon;
 
 class ClassesImport implements ToModel, WithHeadingRow
 {
@@ -36,10 +37,14 @@ class ClassesImport implements ToModel, WithHeadingRow
         }
         return new ClassTimeTable([
             'room_id' => $room ? $room->id : null,
-            'date' => Date::excelToDateTimeObject($row['date'])->format('Y-m-d'),
+            'date' => is_numeric($row['date'])
+                ? Date::excelToDateTimeObject($row['date'])->format('Y-m-d')
+                : Carbon::parse($row['date'])->format('Y-m-d'),
             'start_time' => $this->formatExcelTime($row['start_time']),
             'end_time' => $this->formatExcelTime($row['end_time']),
-            'end_date' => Date::excelToDateTimeObject($row['end_date'])->format('Y-m-d'),
+            'end_date' => is_numeric($row['end_date'])
+                ? Date::excelToDateTimeObject($row['end_date'])->format('Y-m-d')
+                : Carbon::parse($row['end_date'])->format('Y-m-d'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -53,7 +58,7 @@ class ClassesImport implements ToModel, WithHeadingRow
         }
 
         try {
-            return \Carbon\Carbon::parse($excelTime)->format('h:i A');
+            return Carbon::parse($excelTime)->format('h:i A');
         } catch (\Exception $e) {
             return null;
         }

@@ -31,8 +31,9 @@
                 </div>
             @endif
 
-            <div class="row my-2">
-                <div class="col-12 col-md-6 col-lg-4 d-flex gap-2 mb-2 mb-md-0">
+            <div class="row mt-3">
+                <div class="col-12 d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-2">
+                    <div class="d-flex flex-grow-1 gap-2" style="max-width: 400px;">
                     <form action="{{ route('roles.search') }}" method="GET" class="w-100 input-group">
                         <input type="text" name="search_data" id="search_data" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search_data') }}">
                         <button class="btn btn-secondary btn-sm" type="submit" title="Search">

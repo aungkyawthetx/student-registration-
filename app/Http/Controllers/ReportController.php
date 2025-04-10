@@ -25,6 +25,7 @@ class ReportController extends Controller
             DB::raw("COALESCE(COUNT(CASE WHEN attendance_status = 'L' THEN 1 END), 0) AS `Leave`")
         )
         ->groupBy('student_name', 'course_name')
+        ->orderBy('student_name','asc')
         ->paginate(5);
 
         $roles = Role::all();
@@ -61,6 +62,7 @@ class ReportController extends Controller
                 $query->orWhere('attendances.attendance_date', 'LIKE', '%'.$searchData.'%');
             })
             ->groupBy('students.name', 'courses.name')
+            ->orderBy('student_name','asc')
             ->paginate(5)
             ->appends(['search_data' => $search]);
             $roles = Role::all();
@@ -81,6 +83,7 @@ class ReportController extends Controller
             'courses.fees as fees'
         )
         ->groupBy('student_name', 'course_name','enrollment_date','duration','start_date','fees')
+        ->orderBy('enrollment_date','desc')
         ->paginate(5);
 
         $roles=Role::all();
@@ -121,6 +124,7 @@ class ReportController extends Controller
                 $query->orWhere('courses.duration', 'LIKE', '%'.$searchData.'%');
             })
             ->groupBy('student_name', 'course_name', 'enrollment_date', 'duration', 'start_date', 'fees')
+            ->orderBy('enrollment_date','desc')
             ->paginate(5)
             ->appends(['search_data' => $search]);
             $roles=Role::all();

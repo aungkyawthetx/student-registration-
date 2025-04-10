@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Course;
 use App\Models\Student;
+use App\Models\ClassTimeTable;
 use Illuminate\Database\Eloquent\Model;
 
 class Enrollment extends Model
@@ -16,8 +17,8 @@ class Enrollment extends Model
         return $this->belongsTo(Student::class);
     }
 
-    public function course()
+    public function class()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(ClassTimeTable::class);
     }
 }

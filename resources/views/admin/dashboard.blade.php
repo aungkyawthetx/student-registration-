@@ -66,23 +66,23 @@
     </div>
 
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
             <div class="card mb-3">
                 <div class="card-header bg-secondary text-light">
                     <h5>Students Per Course</h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="studentsPerCourseChart" height="200"></canvas>
+                    <canvas id="studentsPerCourseChart" height="200" style="display: block;"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header bg-secondary text-light">
                     <h5>Monthly Registrations</h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="monthlyRegistrationsChart" height="200"></canvas>
+                    <canvas id="monthlyRegistrationsChart" height="200" style="display: block;"></canvas>
                 </div>
             </div>
         </div>
@@ -113,11 +113,6 @@
         </div>
     </div>
 
-
-
-
-
-
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('studentsPerCourseChart').getContext('2d');
@@ -140,16 +135,22 @@
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Number of Students'
+                            text: 'Number of Students',
+                            color: 'rgba(54, 162, 235, 0.8)'
                         },
                         ticks: {
-                            stepSize: 1
+                            stepSize: 1,
+                            color: 'rgba(54, 162, 235, 1)'
                         }
                     },
                     x: {
                         title: {
                             display: true,
-                            text: 'Course Name'
+                            text: 'Course Name',
+                            color: 'rgba(54, 162, 235, 0.8)'
+                        },
+                        ticks:{
+                            color: 'rgba(54, 162, 235, 1)'
                         }
                     }
                 },
@@ -167,7 +168,6 @@
                 }
             }
         });
-
         const monthlyRegistrationsCtx = document.getElementById('monthlyRegistrationsChart').getContext('2d');
         const monthlyRegistrationsChart = new Chart(monthlyRegistrationsCtx, {
             type: 'line',
@@ -175,11 +175,33 @@
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 datasets: [{
                     label: 'Student Registrations',
-                    data: {!! json_encode(array_values($monthlyRegistrations->pluck('count')->toArray())) !!},
+                    data: {!! json_encode($monthlyRegistrations) !!},
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.1
                 }]
+            },
+            options: {
+                responsive: true,
+                plugins:{
+                    legend:{
+                        labels:{
+                            color:'rgb(75, 192, 192)'
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: 'rgb(75, 192, 192)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: 'rgb(75, 192, 192)'
+                        }
+                    }
+                }
             }
         }); 
     });

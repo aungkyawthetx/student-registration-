@@ -28,7 +28,7 @@
 <body data-bs-theme="light" class="d-flex flex-column min-vh-100">
   @include('components.navbar')
   @include('components.sidenav')
-  <div class="container mt-4 d-none d-lg-block flex-grow-1" style="padding-left: 220px; min-height: 70vh;">
+  <div class="container mt-4 d-none d-lg-block flex-grow-1" style="padding-left: 250px; min-height: 70vh;">
     @yield('content')
   </div>
   <div class="container mt-2 d-block d-lg-none flex-grow-1">

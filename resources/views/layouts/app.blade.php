@@ -35,10 +35,9 @@
   </div>
   <div class="container mt-2 d-block d-lg-none flex-grow-1">
     @yield('content')
+    @yield('scripts')
   </div>
   {{-- @include('components.footer') --}}
-
-
 
 
   {{-- flow charts link --}}

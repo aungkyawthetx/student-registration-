@@ -8,14 +8,25 @@ class ClassTimeTable extends Model
 {
     protected $guarded = [];
     protected $table = 'classes';
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
+    
 
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id');
     }
 
-    public function course(){
+    public function course()
+    {
         return $this->belongsTo(Course::class,'course_id');
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'enrollments', 'class_id', 'student_id');
     }
 
     public function enrollments()
@@ -26,10 +37,5 @@ class ClassTimeTable extends Model
     public function attendances()
     {
         return $this->hasMany(Attendance::class, 'class_id');
-    }
-
-    public function students()
-    {
-        return $this->hasMany(Student::class, 'class_id');
     }
 }

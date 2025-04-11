@@ -93,7 +93,15 @@
                             @foreach($teacher_courses as $teacher_course)
                                 <tr>
                                     <td>{{ $teacher_course->id ?? 'null' }}</td>
-                                    <td>{{ $teacher_course->teacher->name ?? 'no teacher' }}</td>
+                                    <td>
+                                        <a href="#" 
+                                        class="text-decoration-none text-body teacher-detail-link"
+                                        data-id="{{ $teacher_course->id }}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#teacherModal">
+                                        {{ $teacher_course->teacher->name ?? 'no teacher' }}
+                                    </a>
+                                    </td>
                                     <td>{{ $teacher_course->course->name ?? 'no course' }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>
@@ -132,4 +140,42 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="teacherModal" tabindex="-1" aria-labelledby="teacherModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="teacherModalLabel">Teacher Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4" id="teacherDetailsContent">
+                <div class="text-center">
+                    <div id="teacherDetails"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.teacher-detail-link', function(e) {
+        e.preventDefault();
+
+        const teacherId = $(this).data('id');
+        $('#teacherDetailsContent').html('<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>');
+
+        $.ajax({
+            url: '/teachers/' + teacherId,
+            type: 'GET',
+            success: function(response) {
+                $('#teacherDetailsContent').html(response);
+            },
+            error: function() {
+                $('#teacherDetailsContent').html('<p class="text-danger">Error loading teacher details.</p>'); // Updated error message
+            }
+        });
+    });
+</script>
 @endsection

@@ -23,7 +23,8 @@ return new class extends Migration
             $table->string('address');
             $table->string('parent_info');
             $table->timestamps();
-            $table->foreignId('class_id')->constrained()->onDelete('cascade');
+
+            $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
         });
     }
 

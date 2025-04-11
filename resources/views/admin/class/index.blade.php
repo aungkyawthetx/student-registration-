@@ -94,11 +94,21 @@
                         @if($classes->isNotEmpty())
                             @foreach($classes as $class)
                                 <tr>
+                                    
                                     <td>{{ $class->id }}</td>
-                                    <td>{{ $class->course ? $class->course->name : 'no course' }}</td>
+                                    <td title="view course details">
+                                        <a href="#" 
+                                            class="text-decoration-none text-body class-detail-link"
+                                            data-id="{{ $class->id }}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#classModal">
+                                            {{ $class->course ? $class->course->name : 'no course' }}
+                                        </a>
+                                    </td>
+
                                     <td>{{ $class->room ? $class->room->name : 'no room' }}</td>
-                                    <td>{{ $class->start_date }}</td>
-                                    <td>{{ $class->end_date }}</td>
+                                    <td>{{ $class->start_date->format('Y-m-d') }}</td>
+                                    <td>{{ $class->end_date->format('Y-m-d') }}</td>
                                     <td>{{ $class->time }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>
@@ -139,4 +149,44 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="classModal" tabindex="-1" aria-labelledby="classModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="classModalLabel">Class Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4" id="classDetailContent">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.class-detail-link', function(e) {
+        e.preventDefault();
+
+        const classId = $(this).data('id');
+        $('#classDetailContent').html('<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>');
+
+        $.ajax({
+            url: '/classes/' + classId,
+            type: 'GET',
+            success: function(response) {
+                $('#classDetailContent').html(response);
+            },
+            error: function() {
+                $('#classDetailContent').html('<p class="text-danger">Error loading class details.</p>');
+            }
+        });
+    });
+</script>
+
 @endsection

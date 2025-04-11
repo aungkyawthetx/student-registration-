@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('class_id');
             $table->enum('attendance_status', ['P', 'A', 'L'])->default('P');
             $table->timestamps();
+            $table->unique(['student_id', 'class_id', 'attendance_date']);
             //FK
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');

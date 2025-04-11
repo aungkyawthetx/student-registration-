@@ -5,11 +5,6 @@
 <div class="container my-4">
     <div class="card shadow-sm rounded">
         <div class="card-header bg-transparent border-bottom">
-
-            {{-- Title and New Student Button --}}
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <div class="card-header bg-transparent border-bottom">
-
             {{-- Title and New Student Button --}}
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <h2 class="card-title mb-0">Students List</h2>
@@ -19,15 +14,7 @@
                         <i class="fas fa-user-plus ms-1"></i>
                     </a>
                 @endif
-                @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-                    <a href="{{ route('students.create') }}" class="btn btn-primary btn-sm">
-                        <span class="d-none d-sm-inline">New Student</span>
-                        <i class="fas fa-user-plus ms-1"></i>
-                    </a>
-                @endif
             </div>
-
-            {{-- Flash Messages --}}
             {{-- Flash Messages --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
@@ -54,10 +41,6 @@
                         </form>
                         <a href="{{ route('students.index') }}" class="btn btn-secondary" title="Show All">
                             <i class="fas fa-sync-alt"></i>
-                        </a>
-                    </div>
-
-                    {{-- Import / Export / Delete All --}}
                         </a>
                     </div>
 
@@ -115,7 +98,6 @@
                             <th>Address</th>
                             <th>Parent Info</th>
                             @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
-                                <th>Actions</th>
                                 <th>Actions</th>
                             @endif
                         </tr>

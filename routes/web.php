@@ -24,6 +24,10 @@ Route::get('/', function () {
 
 //dashboard
 Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware('auth');
+Route::get('/get-students/{classId}', [AttendanceController::class, 'getStudentByClass']);
+Route::get('/students/{id}', [StudentController::class, 'show']);
+Route::get('/classes/{id}', [ClassController::class, 'show']);
+Route::get('/teachers/{id}', [TeacherController::class, 'show']);
 
 //auth
 Route::get('/register', [RegisterController::class,'register'])->name('register');

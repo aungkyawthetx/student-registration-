@@ -10,7 +10,7 @@ class Student extends Model
 {
     protected $guarded = [];
 
-
+    
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class, 'student_id');
@@ -21,8 +21,8 @@ class Student extends Model
         return $this->hasMany(Attendance::class, 'student_id');
     }
 
-    public function class()
+    public function classes()
     {
-        return $this->belongsTo(ClassTimeTable::class, 'class_id');
+        return $this->belongsToMany(ClassTimeTable::class, 'enrollments', 'student_id', 'class_id');
     }
 }

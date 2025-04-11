@@ -47,7 +47,7 @@ class CourseController extends Controller
         }
         $request->validate([
             'name' => 'required|string|max:50',
-            'fees' => 'required',
+            'fees' => 'required|numeric|min:0',
         ]);
 
         Course::create($request->all());

@@ -8,6 +8,7 @@
         <a href="{{ route('enrollments.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
       </div>
     </div>
+    
     <div class="card-body">
       <form action="{{ route('enrollments.store') }}" method="POST">
           @csrf
@@ -28,7 +29,9 @@
               <select name="class_id" class="form-select @error('class_id') is-invalid @enderror">
                   <option value=""> Select Class </option>
                   @foreach($classes as $class)
-                      <option value="{{ $class->id }}">{{ $class->course->name }}</option>
+                      <option value="{{ $class->id }}">
+                        {{ $class->course->name }} - {{ $class->start_date }}
+                      </option>
                   @endforeach
               </select>
               @error('class_id')

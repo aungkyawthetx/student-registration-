@@ -36,8 +36,6 @@ class TeacherController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         return view('admin.teachers.create');
-        $courses = Course::all();
-        return view('admin.teachers.create', compact('courses'));
     }
 
     /**
@@ -67,7 +65,8 @@ class TeacherController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $teacher = Teacher::with('courses')->findOrFail($id);
+        return view('admin.details.teacherdetails', compact('teacher'));
     }
 
     /**
@@ -92,7 +91,6 @@ class TeacherController extends Controller
         }
         $request->validate([
             'name'=>'required|string|max:50',
-            'subject'=>'required|string|max:50',
             'email'=>'required|string|email|max:50',
             'phone'=>'required|string|max:30',
         ]);

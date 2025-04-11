@@ -102,8 +102,18 @@
                             @foreach($enrollments as $enrollment)
                                 <tr>
                                     <td>{{ $enrollment->id }}</td>
-                                    <td>{{ $enrollment->student->name }}</td>
-                                    <td>{{ $enrollment->class->course->name }}</td>
+                                    <td title="view student details">
+                                        <a href="#" 
+                                            class="text-decoration-none text-body student-detail-link" 
+                                            data-id="{{ $enrollment->student->id }}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#studentModal"
+                                            onclick="loadStudentDetails()">
+                                            {{ $enrollment->student->name }}
+                                        </a>
+                                    </td>
+
+                                    <td>{{ $enrollment->class->course->name ?? 'Null' }}</td>
                                     <td>{{ $enrollment->date }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>
@@ -145,4 +155,47 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="studentModalLabel">Student Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="studentDetailContent">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('livewire:load', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+
+    $(document).on('click', '.student-detail-link', function(e) {
+        e.preventDefault();
+        const studentId = $(this).data('id');
+        $('#studentDetailContent').html('Loading...');
+
+        $.ajax({
+            url: '/students/' + studentId, // adjust if you have a different route
+            type: 'GET',
+            success: function(response) {
+                $('#studentDetailContent').html(response);
+            },
+            error: function() {
+                $('#studentDetailContent').html('<p class="text-danger">Error loading student details.</p>');
+            }
+        });
+    });
+</script>
 @endsection

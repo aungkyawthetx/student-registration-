@@ -73,7 +73,8 @@ class ClassController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $class = ClassTimeTable::with(['course', 'students'])->findOrFail($id);
+        return view('admin.details.classdetails', compact('class'));
     }
 
     /**
@@ -99,10 +100,11 @@ class ClassController extends Controller
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
         $validatedData = $request->validate([
+            'course_id' => 'required|integer',
             'room_id' => 'required|integer',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:h:i A',
-            'end_time' => 'required|date_format:h:i A|after:start_time',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'time' => 'required',
         ]);
 
         $class = ClassTimeTable::find($id);

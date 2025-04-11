@@ -19,6 +19,7 @@ return new class extends Migration
             //FK
             $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+            $table->unique(columns: ['teacher_id', 'course_id']);
         });
     }
 

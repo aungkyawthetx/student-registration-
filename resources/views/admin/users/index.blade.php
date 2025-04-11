@@ -104,8 +104,6 @@
                                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#viewPasswordModal{{ $user->id }}">
                                                 <i class="fas fa-edit"></i>
                                                 <span class="d-none d-sm-inline">Edit</span>
-                                                <i class="fas fa-edit"></i>
-                                                <span class="d-none d-sm-inline">Edit</span>
                                             </button>
                                             <!-- Password Modal -->
                                             <div class="modal fade" id="viewPasswordModal{{ $user->id }}" tabindex="-1" aria-labelledby="viewPasswordLabel{{ $user->id }}" aria-hidden="true">

@@ -7,6 +7,7 @@ use App\Imports\TeacherCoursesImport;
 use App\Models\Course;
 use App\Models\Role;
 use App\Models\Teacher;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\TeacherCourse;
 use Illuminate\Support\Facades\Gate;
@@ -49,16 +50,24 @@ class TeacherCoursesController extends Controller
         if (Gate::denies('create', TeacherCourse::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'teacher_name' => 'required',
-            'course_name' => 'required',
-        ]);
-
-        TeacherCourse::create([
-            'teacher_id' => $request->teacher_name,
-            'course_id' => $request->course_name,
-        ]);
-        return redirect()->route('teachercourses.index')->with('success', 'Teacher Course assigned successfully.'); 
+        try{
+            $request->validate([
+                'teacher_name' => 'required',
+                'course_name' => 'required',
+            ]);
+    
+            TeacherCourse::create([
+                'teacher_id' => $request->teacher_name,
+                'course_id' => $request->course_name,
+            ]);
+            return redirect()->route('teachercourses.index')->with('success', 'Teacher Course assigned successfully.'); 
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -91,16 +100,24 @@ class TeacherCoursesController extends Controller
         if (Gate::denies('update', TeacherCourse::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'teacher_name' => 'required|string|max:30',
-            'course_name' => 'required|string|max:50',
-        ]);
-        $teacher_course = TeacherCourse::find($id);
-        $teacher_course->update([
-            'teacher_id' => $request->teacher_name, //value = id
-            'course_id' => $request->course_name, //value = id
-        ]);
-        return redirect()->route('teachercourses.index')->with('success', 'TeacherCourse Updated!');
+        try{
+            $request->validate([
+                'teacher_name' => 'required|string|max:30',
+                'course_name' => 'required|string|max:50',
+            ]);
+            $teacher_course = TeacherCourse::find($id);
+            $teacher_course->update([
+                'teacher_id' => $request->teacher_name, //value = id
+                'course_id' => $request->course_name, //value = id
+            ]);
+            return redirect()->route('teachercourses.index')->with('success', 'TeacherCourse Updated!');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -167,8 +184,12 @@ class TeacherCoursesController extends Controller
             return redirect()->route('teachercourses.index')->with('success', 'Teacher courses imported successfully!');
         } catch (ValidationException $e) {
             return back()->with('error', $e->getMessage());
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import. Please check your Excel file format.');
+            return back()->with('error', 'Failed to import. Please check your Excel file format. Please check your Excel file format. Ensure there are no duplicated rows.');
         }
     }
 }

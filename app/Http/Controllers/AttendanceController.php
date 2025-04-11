@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\Student;
 use App\Models\Attendance;
 use App\Models\ClassTimeTable;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -52,25 +53,42 @@ class AttendanceController extends Controller
         if (Gate::denies('create', Attendance::class)) {
             return redirect()->route('admin.dashboard')->with('error', 'No permission.');
         }
-        $validateData = $request->validate([
-            'class_name' => 'required|exists:classes,id',
-            'student_name' => 'required|exists:students,id',
-            'attendance_date' => 'required|date',
-            'status' => 'required|in:P,A,L',
-        ]);
-        $student = Student::findOrFail($validateData['student_name']);
-        if (!$student->classes()->where('classes.id', $validateData['class_name'])->exists()) {
-            return redirect()->back()->withErrors([
-                'class_name' => 'The selected class is not enrolled by the student.',
-            ])->withInput();
+        try{
+            $validateData = $request->validate([
+                'class_name' => 'required|exists:classes,id',
+                'student_name' => 'required|exists:students,id',
+                'attendance_date' => 'required|date|before_or_equal:today',
+                'status' => 'required|in:P,A,L',
+            ]);
+            $alreadyEntered = DB::table('attendances')
+                ->where('student_id', $request['student_name'])
+                ->where('class_id', $request['class_name'])
+                ->where('attendance_date', $request['attendance_date'])
+                ->exists();
+    
+            if ($alreadyEntered) {
+                return redirect()->back()->with('error', 'This attendance is already recorded.')->withInput();
+            }
+            $student = Student::findOrFail($validateData['student_name']);
+            if (!$student->classes()->where('classes.id', $validateData['class_name'])->exists()) {
+                return redirect()->back()->withErrors([
+                    'class_name' => 'The selected class is not enrolled by the student.',
+                ])->withInput();
+            }
+            Attendance::create([
+                'class_id' => $request->class_name,
+                'student_id' => $request->student_name,
+                'attendance_date' => $request->attendance_date,
+                'attendance_status' => $request->status,
+            ]);
+            return redirect()->route('attendances.index')->with('success', 'Attendance recorded successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
         }
-        Attendance::create([
-            'class_id' => $request->class_name,
-            'student_id' => $request->student_name,
-            'attendance_date' => $request->attendance_date,
-            'attendance_status' => $request->status,
-        ]);
-        return redirect()->route('attendances.index')->with('success', 'Attendance recorded successfully.');
     }
 
     /**
@@ -101,21 +119,29 @@ class AttendanceController extends Controller
         if (Gate::denies('update', Attendance::class)) {
             return redirect()->route('admin.dashboard')->with('error', 'No permission.');
         }
-        $request->validate([
-            'class_name' => 'required',
-            'student_name' => 'required',
-            'attendance_date' => 'required',
-            'status' => 'required|in:P,A,L',
-        ]);
-
-        $attendance = Attendance::findOrFail($id);
-        $attendance->update([
-            'class_id' => $request->class_name,
-            'student_id' => $request->student_name,
-            'attendance_date' => $request->attendance_date,
-            'attendance_status' => $request->status,
-        ]);
-        return redirect()->route('attendances.index')->with('success', 'Attendance updated successfully.');
+        try{
+            $request->validate([
+                'class_name' => 'required',
+                'student_name' => 'required',
+                'attendance_date' => 'required',
+                'status' => 'required|in:P,A,L',
+            ]);
+    
+            $attendance = Attendance::findOrFail($id);
+            $attendance->update([
+                'class_id' => $request->class_name,
+                'student_id' => $request->student_name,
+                'attendance_date' => $request->attendance_date,
+                'attendance_status' => $request->status,
+            ]);
+            return redirect()->route('attendances.index')->with('success', 'Attendance updated successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -184,8 +210,12 @@ class AttendanceController extends Controller
             return redirect()->route('attendances.index')->with('success', 'Attendances imported successfully!');
         } catch (ValidationException $e) {
             return back()->with('error', $e->getMessage());
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import. Please check your Excel file format.');
+            return back()->with('error', 'Failed to import. Please check your Excel file format. Ensure there are no duplicated rows.');
         }
     }
 }

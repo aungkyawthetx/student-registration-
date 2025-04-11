@@ -93,7 +93,13 @@
                                 <tr>
                                     <td>{{ $course->id }}</td>
                                     <td>{{ $course->name }}</td>
-                                    <td>{{ $course->fees }}</td>
+                                    <td>
+                                        @if ($course->fees == 0)
+                                            FREE
+                                        @else
+                                        {{ $course->fees }}
+                                        @endif
+                                    </td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>
                                             <div class="d-flex justify-content-center gap-2">

@@ -7,6 +7,18 @@
           <a href="{{ route('attendances.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
       </div>
       <div class="card-body">
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+            {{ session('successAlert') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
         <form action="{{ route('attendances.update',$attendance->id ) }}" method="POST">
             @csrf
             @method('PUT')
@@ -15,7 +27,7 @@
               <select class="form-select @error('class_name') is-invalid @enderror" name="class_name">
                 <option value="" selected disabled> Class</option>
                 <option value="{{ $attendance->class_id }}" selected>
-                  {{ $attendance->class->name }}
+                  {{ $attendance->class->course->name }} — {{$attendance->class->start_date}} ({{$attendance->class->time}})
                 </option>
               </select>
               @error('class_name')

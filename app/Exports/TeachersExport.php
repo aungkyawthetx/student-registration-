@@ -21,7 +21,6 @@ class TeachersExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
                 return [
                     'ID' => $teacher->id,
                     'Name' => $teacher->name,
-                    'Subject' => $teacher->subject,
                     'Email' => $teacher->email,
                     'Phone' => $teacher->phone,
                 ];
@@ -29,13 +28,13 @@ class TeachersExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
     }
     public function headings(): array
     {
-        return ['ID', 'Name', 'Subject', 'Email', 'Phone'];
+        return ['ID', 'Name', 'Email', 'Phone'];
     }
 
     public function styles(Worksheet $sheet){
        $sheet->getStyle('1')->getFont()->setBold(true);
        $sheet->getStyle('B1:B'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
-       $sheet->getStyle('A1:E'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+       $sheet->getStyle('A1:D'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
     }
 }
 

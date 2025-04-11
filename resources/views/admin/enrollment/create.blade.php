@@ -9,6 +9,18 @@
       </div>
     </div>
     <div class="card-body">
+      @if(session('success'))
+          <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+              {{ session('successAlert') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      @endif
+      @if(session('error'))
+          <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+              {{ session('error') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      @endif
       <form action="{{ route('enrollments.store') }}" method="POST">
           @csrf
           <div class="mb-3">
@@ -28,7 +40,9 @@
               <select name="class_id" class="form-select @error('class_id') is-invalid @enderror">
                   <option value=""> Select Class </option>
                   @foreach($classes as $class)
-                      <option value="{{ $class->id }}">{{ $class->course->name }}</option>
+                      <option value="{{ $class->id }}">
+                        {{ $class->course->name }} — {{$class->start_date}} ({{$class->time}})
+                      </option>
                   @endforeach
               </select>
               @error('class_id')

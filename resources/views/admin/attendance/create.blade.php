@@ -8,15 +8,27 @@
         <a href="{{ route('attendances.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
     </div>
     <div class="card-body">
+      @if(session('success'))
+          <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+              {{ session('successAlert') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      @endif
+      @if(session('error'))
+          <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+              {{ session('error') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      @endif
       <form action="{{ route('attendances.store') }}" method="POST">
         @csrf
         <div class="mb-3">
           <label for="class_name" class="form-label ms-2"><i class="fa-solid fa-book"></i> Class</label>
-          <select class="form-select @error('class_name') is-invalid @enderror" name="class_name">
+          <select id="classSelect" class="form-select @error('class_name') is-invalid @enderror" name="class_name">
             <option value="" selected disabled> Class</option>
             @foreach($classes as $class)
               <option value="{{ $class->id }}" {{ old('class_name') == $class->id ? 'selected' : '' }}>
-                {{ $class->course->name }}
+                {{ $class->course->name }} — {{$class->start_date}} ({{$class->time}})
               </option>
             @endforeach
           </select>
@@ -26,7 +38,7 @@
         </div>
         <div class="mb-3">
           <label for="student_name" class="form-label ms-2"><i class="fas fa-user"></i> Student_Name</label>
-          <select class="form-select @error('student_name') is-invalid @enderror" name="student_name">
+          <select id="studentSelect" class="form-select @error('student_name') is-invalid @enderror" name="student_name">
             <option value="" selected disabled> Name</option>
             @foreach($students as $student)
               <option value="{{ $student->id }}" {{ old('student_name') == $student->id ? 'selected' : '' }}>
@@ -41,7 +53,7 @@
 
         <div class="mb-3">
           <label for="attendance_date" class="form-label ms-2"><i class="fa-solid fa-calendar-week"></i> Attendance Date</label>
-          <input type="date" class="form-control @error('attendance_date') is-invalid @enderror" name="attendance_date" value="{{ old('attendance_date', date('Y-m-d'))) }}">
+          <input type="date" class="form-control @error('attendance_date') is-invalid @enderror" name="attendance_date" value="{{ old('attendance_date', date('Y-m-d')) }}">
           @error('attendance_date')
             <span class="text-danger"><small>{{ $message }}</small></span>
           @enderror
@@ -62,4 +74,5 @@
       </form>
     </div>
   </div>
+
 @endsection

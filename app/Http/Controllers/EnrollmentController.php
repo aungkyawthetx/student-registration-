@@ -9,6 +9,7 @@ use App\Models\Course;
 use App\Models\Role;
 use App\Models\Student;
 use App\Models\Enrollment;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -51,19 +52,34 @@ class EnrollmentController extends Controller
         if (Gate::denies('create', Enrollment::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'student_id' => 'required',
-            'class_id' => 'required',
-            'enrollment_date' => 'required'
-        ]);
-
-        Enrollment::create([
-            'student_id' => $request->student_id,
-            'class_id' => $request->class_id,
-            'date' => $request->enrollment_date,
-        ]);
-
-        return redirect()->route('enrollments.index')->with('successAlert', 'Enrollment created successfully.');
+        try{
+            $request->validate([
+                'student_id' => 'required',
+                'class_id' => 'required',
+                'enrollment_date' => 'required'
+            ]);
+            $alreadyEnrolled = DB::table('enrollments')
+                ->where('student_id', $request['student_id'])
+                ->where('class_id', $request['class_id'])
+                ->exists();
+    
+            if ($alreadyEnrolled) {
+                return redirect()->back()->with('error', 'This student is already enrolled in the selected class.')->withInput();
+            }
+            Enrollment::create([
+                'student_id' => $request->student_id,
+                'class_id' => $request->class_id,
+                'date' => $request->enrollment_date,
+            ]);
+    
+            return redirect()->route('enrollments.index')->with('successAlert', 'Enrollment created successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -96,19 +112,26 @@ class EnrollmentController extends Controller
         if (Gate::denies('update', Enrollment::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'student_name' => 'required',
-            'class_name' => 'required',
-            'enrollment_date' => 'required'
-        ]);
-
-        $enrollment = Enrollment::find($id);
-        $enrollment->update([
-            'student_id' => $request->student_name,
-            'class_id' => $request->class_name,
-            'date' => $request->enrollment_date,
-        ]);
-        return redirect()->route('enrollments.index')->with('successAlert', 'Enrollment updated successfully.');
+        try{
+            $request->validate([
+                'student_name' => 'required',
+                'class_name' => 'required',
+                'enrollment_date' => 'required'
+            ]);
+            $enrollment = Enrollment::find($id);
+            $enrollment->update([
+                'student_id' => $request->student_name,
+                'class_id' => $request->class_name,
+                'date' => $request->enrollment_date,
+            ]);
+            return redirect()->route('enrollments.index')->with('successAlert', 'Enrollment updated successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -171,13 +194,18 @@ class EnrollmentController extends Controller
         if (!str_contains(strtolower($originalName), 'enrollments')) {
             return redirect()->back()->with('error', 'Excel file name must contain the word "enrollments"');
         }
+        
         try {
             Excel::import(new EnrollmentsImport(), $request->file('enrollments'));
             return redirect()->route('enrollments.index')->with('successAlert', 'Enrollments imported successfully!');
         } catch (ValidationException $e) {
             return back()->with('error', $e->getMessage());
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import. Please check your Excel file format.');
+            return back()->with('error', 'Failed to import. Please check your Excel file format. Ensure there are no duplicated rows.');
         }
     }
 }

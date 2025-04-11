@@ -114,4 +114,8 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/attendance-report/export',[ReportController::class,'exportAttendanceReport'])->name('attendance-report.export');
     Route::get('/enrollment-report_search', [ReportController::class,'searchEnrollmentReport'])->name('enrollment-report.search');
     Route::get('/attendance-report_search', [ReportController::class,'searchAttendanceReport'])->name('attendance-report.search');
+    Route::get('/enrollment-report/student/{id}', [ReportController::class, 'showStudentDetails']);
+    Route::get('/enrollment-report/class/{id}', [ReportController::class, 'showClassDetails']);
+    Route::get('/attendance-report/student/{id}', [ReportController::class, 'showStudentDetails']);
+    Route::get('/attendance-report/class/{id}', [ReportController::class, 'showClassDetails']);
 });

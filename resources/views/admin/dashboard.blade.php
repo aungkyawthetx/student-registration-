@@ -114,13 +114,13 @@
         </div>
     </div>
 
-    {{-- <script>
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('studentsPerClassChart').getContext('2d');
         const chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: {!! json_encode($studentsPerClass->pluck('name')) !!},
+                labels: {!! json_encode($studentsPerClass->pluck('course.name')) !!},
                 datasets: [{
                     label: 'Number of Students',
                     data: {!! json_encode($studentsPerClass->pluck('students_count')) !!},
@@ -199,6 +199,7 @@
                     },
                     y: {
                         ticks: {
+                            stepSize: 1,
                             color: 'rgb(75, 192, 192)'
                         }
                     }
@@ -206,5 +207,5 @@
             }
         }); 
     });
-    </script> --}}
+    </script>
 @endsection

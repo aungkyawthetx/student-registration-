@@ -22,6 +22,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->unique(['name', 'email', 'password','role_id']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

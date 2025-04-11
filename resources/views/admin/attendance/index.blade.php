@@ -101,7 +101,7 @@
                             @foreach ($attendances as $attendance)
                                 <tr>
                                     <td>{{ $attendance->id }}</td>
-                                    <td>{{ $attendance->class->course->name ?? 'no class' }}</td>
+                                    <td>{{ $attendance->class->course->name ?? 'no class' }} — {{$attendance->class->start_date}} ({{$attendance->class->time}})</td>
                                     <td>{{ $attendance->student->name ?? 'no student' }}</td>
                                     <td>{{ $attendance->attendance_date }}</td>
                                     <td>{{ $attendance->attendance_status }}</td>

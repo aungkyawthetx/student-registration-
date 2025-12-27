@@ -6,6 +6,7 @@ use App\Exports\CoursesExport;
 use App\Imports\CoursesImport;
 use App\Models\Course;
 use App\Models\Role;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
@@ -45,14 +46,22 @@ class CourseController extends Controller
         if (Gate::denies('create', Course::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'name' => 'required|string|max:50',
-            'fees' => 'required|numeric|min:0',
-        ]);
-
-        Course::create($request->all());
-
-        return redirect()->route('courses.index')->with('success', 'Course created successfully.');
+        try{
+            $request->validate([
+                'name' => 'required|string|max:50',
+                'fees' => 'required|numeric|min:0',
+            ]);
+    
+            Course::create($request->all());
+    
+            return redirect()->route('courses.index')->with('success', 'Course created successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -83,15 +92,23 @@ class CourseController extends Controller
         if (Gate::denies('update', Course::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'name' => 'required|string|max:50',
-            'fees' => 'required',
-        ]);
-
-        $course = Course::find($id);
-        $course->update($request->all());
-
-        return redirect()->route('courses.index')->with('success', 'Course updated successfully.');
+        try{
+            $request->validate([
+                'name' => 'required|string|max:50',
+                'fees' => 'required|numeric|min:0',
+            ]);
+    
+            $course = Course::find($id);
+            $course->update($request->all());
+    
+            return redirect()->route('courses.index')->with('success', 'Course updated successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -155,8 +172,12 @@ class CourseController extends Controller
             return redirect()->route('courses.index')->with('success', 'Courses imported successfully!');
         } catch (ValidationException $e) {
             return back()->with('error', $e->getMessage());
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import. Please check your Excel file format.');
+            return back()->with('error', 'Failed to import. Please check your Excel file format. Ensure there are no duplicated rows.');
         }
     }
 }

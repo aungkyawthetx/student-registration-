@@ -16,7 +16,7 @@ class TeachersImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        $headers = ['name', 'subject', 'email', 'phone'];
+        $headers = ['name', 'email', 'phone'];
 
         foreach ($headers as $header) {
             if (!array_key_exists($header, $row)) {
@@ -27,7 +27,6 @@ class TeachersImport implements ToModel, WithHeadingRow
         }
         return new Teacher([
             'name' => $row['name'],
-            'subject' => $row['subject'],
             'email' => $row['email'],
             'phone' => $row['phone'],
             'created_at' => now(),

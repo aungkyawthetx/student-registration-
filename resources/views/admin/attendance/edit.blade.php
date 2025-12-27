@@ -7,20 +7,30 @@
           <a href="{{ route('attendances.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
       </div>
       <div class="card-body">
-        <form action="{{ route('attendances.update', $attendance->id) }}" method="POST">
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+            {{ session('successAlert') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+        <form action="{{ route('attendances.update',$attendance->id ) }}" method="POST">
             @csrf
             @method('PUT')
 
             {{-- Class --}}
             <div class="mb-3">
-              <label for="class_id">Class</label>
-              <select name="class_id" id="class_id" class="form-control" required>
-                  <option value=""> Choose Class</option>
-                  @foreach ($classes as $class)
-                      <option value="{{ $class->id }}" {{ $attendance->class_id == $class->id ? 'selected' : '' }}>
-                        {{ $class->course->name }} - {{ \Carbon\Carbon::parse($class->class_date)->format('Y-m-d') }}
-                      </option>
-                  @endforeach
+              <label for="class_name" class="form-label ms-2"><i class="fa-solid fa-book"></i> Class</label>
+              <select class="form-select @error('class_name') is-invalid @enderror" name="class_name">
+                <option value="" selected disabled> Class</option>
+                <option value="{{ $attendance->class_id }}" selected>
+                  {{ $attendance->class->course->name }} — {{$attendance->class->start_date}} ({{$attendance->class->time}})
+                </option>
               </select>
           </div>
           

@@ -38,4 +38,10 @@ class ClassTimeTable extends Model
     {
         return $this->hasMany(Attendance::class, 'class_id');
     }
+
+    // public function students()
+    // {
+    // return $this->belongsToMany(Student::class, 'enrollments', 'class_id', 'student_id');
+    // }
+
 }

@@ -21,7 +21,9 @@ class AttendancesExport implements FromCollection, WithHeadings, ShouldAutoSize,
             ->map(function ($attendance) {
                 return [
                     'ID' => $attendance->id,
-                    'Class Name' => $attendance->class->name ? $attendance->class->name : 'N/A',
+                    'Class Name' => $attendance->class->course->name ? $attendance->class->course->name : 'N/A',
+                    'Start Date' => $attendance->class->start_date ? $attendance->class->start_date :'N/A',
+                    'Time' => $attendance->class->time ? $attendance->class->time :'N/A',
                     'Student Name' => $attendance->student->name ? $attendance->student->name : 'N/A',
                     'Date' => $attendance->attendance_date,
                     'Status' => $attendance->attendance_status,
@@ -30,12 +32,12 @@ class AttendancesExport implements FromCollection, WithHeadings, ShouldAutoSize,
     }
     public function headings(): array
     {
-        return ['ID', 'Class Name', 'Student Name', 'Date', 'Status'];
+        return ['ID', 'Class Name', 'Start Date', 'Time', 'Student Name', 'Date', 'Status'];
     }
 
     public function styles(Worksheet $sheet){
        $sheet->getStyle('1')->getFont()->setBold(true);
        $sheet->getStyle('B1:B'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
-       $sheet->getStyle('A1:E'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+       $sheet->getStyle('A1:G'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
     }
 }

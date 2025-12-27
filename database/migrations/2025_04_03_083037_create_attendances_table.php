@@ -22,6 +22,7 @@ return new class extends Migration
             //FK
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
+            $table->unique(['class_id', 'student_id', 'attendance_date']);
         });
     }
 

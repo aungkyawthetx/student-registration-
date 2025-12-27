@@ -22,20 +22,22 @@ class EnrollmentsExport implements FromCollection, WithHeadings, ShouldAutoSize,
                 return [
                     'ID' => $enrollment->id,
                     'Student Name' => $enrollment->student->name ? $enrollment->student->name : 'N/A',
-                    'Class Name' => $enrollment->class->name ? $enrollment->class->name : 'N/A',
+                    'Class Name' => $enrollment->class->course->name ? $enrollment->class->course->name : 'N/A',
+                    'Start Date' => $enrollment->class->start_date ? $enrollment->class->start_date :'N/A',
+                    'Time' => $enrollment->class->time ? $enrollment->class->time :'N/A',
                     'Enrollment Date' => $enrollment->date,
                 ];
             });
     }
     public function headings(): array
     {
-        return ['ID', 'Student Name', 'Class Name', 'Enrollment Date'];
+        return ['ID', 'Student Name', 'Class Name', 'Start Date','Time', 'Enrollment Date'];
     }
 
     public function styles(Worksheet $sheet){
        $sheet->getStyle('1')->getFont()->setBold(true);
        $sheet->getStyle('B1:B'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
-       $sheet->getStyle('A1:D'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+       $sheet->getStyle('A1:F'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
     }
 }
 

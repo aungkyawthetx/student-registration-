@@ -7,6 +7,18 @@
             <a href="{{ route('courses.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
         </div>
         <div class="card-body">
+            @if(session('success'))
+          <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+              {{ session('successAlert') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      @endif
+      @if(session('error'))
+          <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+              {{ session('error') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      @endif
             <form action="{{ route('courses.store') }}" method="POST">
                 @csrf
                 <div class="mb-3">

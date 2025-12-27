@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('building');
             $table->string('name');
             $table->timestamps();
+            $table->unique(columns: ['building', 'name']);
         });
     }
 

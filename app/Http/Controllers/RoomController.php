@@ -6,6 +6,7 @@ use App\Exports\RoomsExport;
 use App\Imports\RoomsImport;
 use App\Models\Role;
 use App\Models\Room;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
@@ -45,13 +46,21 @@ class RoomController extends Controller
         if (Gate::denies('create', Room::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'building' => 'required|string|max:10',
-            'name' => 'required|string|max:10',
-        ]);
-
-        Room::create($request->all());
-        return redirect()->route('rooms.index')->with('success', 'Room created successfully.');
+        try{
+            $request->validate([
+                'building' => 'required|string|max:10',
+                'name' => 'required|string|max:10',
+            ]);
+    
+            Room::create($request->all());
+            return redirect()->route('rooms.index')->with('success', 'Room created successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -82,15 +91,23 @@ class RoomController extends Controller
         if (Gate::denies('update', Room::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'building' => 'required|string|max:10',
-            'name' => 'required|string|max:10',
-        ]);
-
-        $room = Room::find($id);
-        $room->update($request->all());
-
-        return redirect()->route('rooms.index')->with('success', 'Room updated successfully.');
+        try{
+            $request->validate([
+                'building' => 'required|string|max:10',
+                'name' => 'required|string|max:10',
+            ]);
+    
+            $room = Room::find($id);
+            $room->update($request->all());
+    
+            return redirect()->route('rooms.index')->with('success', 'Room updated successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -155,8 +172,12 @@ class RoomController extends Controller
             return redirect()->route('rooms.index')->with('success', 'Rooms imported successfully!');
         } catch (ValidationException $e) {
             return back()->with('error', $e->getMessage());
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import. Please check your Excel file format.');
+            return back()->with('error', 'Failed to import. Please check your Excel file format. Ensure there are no duplicated rows.');
         }
     }
 }

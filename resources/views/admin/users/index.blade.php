@@ -11,8 +11,7 @@
                 <div class="d-flex flex-wrap align-items-center gap-2">
                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                         <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm">
-                            <span class="d-none d-sm-inline">New User</span>
-                            <i class="fas fa-plus me-1"></i>
+                            <span class="d-none d-sm-inline"> Add User</span>
                         </a>
                     @endif
                 </div>
@@ -101,11 +100,8 @@
                                     <td>{{ $user->email }}</td>
                                     @if(auth()->user()->hasRole($roles->first()->name))
                                         <td>
-                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#viewPasswordModal{{ $user->id }}">
-                                                <i class="fas fa-edit"></i>
-                                                <span class="d-none d-sm-inline">Edit</span>
-                                                <i class="fas fa-edit"></i>
-                                                <span class="d-none d-sm-inline">Edit</span>
+                                            <button class="btn btn-info rounded-circle" data-bs-toggle="modal" data-bs-target="#viewPasswordModal{{ $user->id }}">
+                                               <i class="bi bi-pencil-square text-light"></i>
                                             </button>
                                             <!-- Password Modal -->
                                             <div class="modal fade" id="viewPasswordModal{{ $user->id }}" tabindex="-1" aria-labelledby="viewPasswordLabel{{ $user->id }}" aria-hidden="true">
@@ -133,17 +129,15 @@
                                     <td>{{ $user->role ? $user->role->name : 'N/A' }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-success">
-                                                    <i class="fas fa-edit"></i>
-                                                    <span class="d-none d-sm-inline">Edit</span>
+                                            <div class="d-flex justify-content-center gap-2 align-items-center">
+                                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">
+                                                   <i class="bi bi-pencil-square"></i>
                                                 </a>
                                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">
-                                                        <i class="fas fa-trash"></i>
-                                                        <span class="d-none d-sm-inline">Delete</span>
+                                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">
+                                                        <i class="bi bi-trash3"></i>
                                                     </button>
                                                 </form>
                                             </div>

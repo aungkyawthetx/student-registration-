@@ -6,6 +6,7 @@ use App\Exports\StudentsExport;
 use App\Imports\StudentsImport;
 use App\Models\Role;
 use App\Models\Student;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
@@ -45,20 +46,28 @@ class StudentController extends Controller
         if (Gate::denies('create', Student::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'name' => 'required|string|max:50',
-            'gender' => 'required|string|max:10',
-            'nrc' => 'required|string|max:20',
-            'dob' => 'required|date',
-            'email' => 'required|string|email|max:50',
-            'phone' => 'required|string|max:30',
-            'address' => 'required|string|max:100',
-            'parent_info' => 'required|string|max:100',
-        ]);
-
-        Student::create($request->all());
-
-        return redirect()->route('students.index')->with('success', 'Student added successfully.');
+        try{
+            $request->validate([
+                'name' => 'required|string|max:50',
+                'gender' => 'required|string|max:10',
+                'nrc' => 'required|string|max:20',
+                'dob' => 'required|date|before:today',
+                'email' => 'required|string|email|max:50',
+                'phone' => 'required|string|max:30',
+                'address' => 'required|string|max:100',
+                'parent_info' => 'required|string|max:100',
+            ]);
+    
+            Student::create($request->all());
+    
+            return redirect()->route('students.index')->with('success', 'Student added successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -90,19 +99,27 @@ class StudentController extends Controller
         if (Gate::denies('update', Student::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'name' => 'required|string|max:50',
-            'gender' => 'required|string|max:10',
-            'nrc' => 'required|string|max:20',
-            'dob' => 'required|date',
-            'email' => 'required|string|email|max:50',
-            'phone' => 'required|string|max:30',
-            'address' => 'required|string|max:100',
-            'parent_info' => 'required|string|max:100',
-        ]);
-        $student = Student::find($id);
-        $student->update($request->all());
-        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
+        try{
+            $request->validate([
+                'name' => 'required|string|max:50',
+                'gender' => 'required|string|max:10',
+                'nrc' => 'required|string|max:20',
+                'dob' => 'required|date|before:today',
+                'email' => 'required|string|email|max:50',
+                'phone' => 'required|string|max:30',
+                'address' => 'required|string|max:100',
+                'parent_info' => 'required|string|max:100',
+            ]);
+            $student = Student::find($id);
+            $student->update($request->all());
+            return redirect()->route('students.index')->with('success', 'Student updated successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -167,8 +184,12 @@ class StudentController extends Controller
             return redirect()->route('students.index')->with('success', 'Students imported successfully!');
         } catch (ValidationException $e) {
             return back()->with('error', $e->getMessage());
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import. Please check your Excel file format.');
+            return back()->with('error', 'Failed to import. Please check your Excel file format. Ensure there are no duplicated rows.');
         }
     }
 }

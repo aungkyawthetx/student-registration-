@@ -18,7 +18,7 @@ class AdminDashboardController extends Controller
         $studentCount = Student::count();
         $teacherCount = Teacher::count();
         $classCount = ClassTimeTable::count();
-        $studentsPerClass = ClassTimeTable::withCount('students')->with('course')->get();
+        $studentsPerClass = ClassTimeTable::withCount('students')->with('course')->get();;
         $rawData = DB::table('enrollments')
         ->selectRaw('MONTH(date) as month, COUNT(*) as count')
         ->groupBy('month')

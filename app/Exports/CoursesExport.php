@@ -34,5 +34,11 @@ class CoursesExport implements FromCollection, WithHeadings, ShouldAutoSize, Wit
        $sheet->getStyle('1')->getFont()->setBold(true);
        $sheet->getStyle('B1:B'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
        $sheet->getStyle('A1:C'.$sheet->getHighestRow())->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+       $highestRow = $sheet->getHighestRow();
+        for ($row = 2; $row <= $highestRow; $row++) {
+            if ($sheet->getCell('C' . $row)->getValue() === null || $sheet->getCell('C' . $row)->getValue() === '') {
+                $sheet->setCellValue('C' . $row, 0);
+            }
+        }
     }
 }

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
             $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
+            $table->unique(['course_id', 'room_id', 'start_date','end_date','time']);
         });
     }
 

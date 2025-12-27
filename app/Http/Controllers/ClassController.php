@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\Room;
 use App\Models\Course;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Exports\ClassesExport;
 use App\Imports\ClassesImport;
@@ -50,22 +51,36 @@ class ClassController extends Controller
         if (Gate::denies('create', ClassTimeTable::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $validatedData = $request->validate([
-            'course_id' => 'required|integer',
-            'room_id' => 'required|integer',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'time' => 'required',
-        ]);
-
-        $classes = ClassTimeTable::create([
-            'course_id' => $validatedData['course_id'],
-            'room_id' => $validatedData['room_id'],
-            'start_date' => $validatedData['start_date'],
-            'end_date' => $validatedData['end_date'],
-            'time' => $validatedData['time'],
-        ]);
-        return redirect()->route('classes.index')->with('successAlert', 'Class Added!');
+        try{
+            $validatedData = $request->validate([
+                'course_id' => 'required|integer',
+                'room_id' => 'required|integer',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+                'time' => [
+                    'required',
+                    'regex:/^([0-9]{1,2})(:[0-9]{2})?\s?(am|pm)?\s?-\s?([0-9]{1,2})(:[0-9]{2})?\s?(am|pm)?$/i'
+                ],'message' => [
+                    'time.regex' => 'Time must be a valid range like 10am - 2pm or 09:00 - 14:00',
+                ],
+                
+            ]);
+    
+            $classes = ClassTimeTable::create([
+                'course_id' => $validatedData['course_id'],
+                'room_id' => $validatedData['room_id'],
+                'start_date' => $validatedData['start_date'],
+                'end_date' => $validatedData['end_date'],
+                'time' => $validatedData['time'],
+            ]);
+            return redirect()->route('classes.index')->with('successAlert', 'Class Added!');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -99,24 +114,37 @@ class ClassController extends Controller
         if (Gate::denies('update', ClassTimeTable::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $validatedData = $request->validate([
-            'course_id' => 'required|integer',
-            'room_id' => 'required|integer',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'time' => 'required',
-        ]);
-
-        $class = ClassTimeTable::find($id);
-        $class->update([
-            'course_id' => $validatedData['course_id'],
-            'room_id' => $validatedData['room_id'],
-            'start_date' => $validatedData['start_date'],
-            'end_date' => $validatedData['end_date'],
-            'time' => $validatedData['time'],
-        ]);
-
-        return redirect()->route('classes.index')->with('successAlert', 'Class Updated!');
+        try{
+            $validatedData = $request->validate([
+                'course_id' => 'required|integer',
+                'room_id' => 'required|integer',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+                'time' => [
+                    'required',
+                    'regex:/^([0-9]{1,2})(:[0-9]{2})?\s?(am|pm)?\s?-\s?([0-9]{1,2})(:[0-9]{2})?\s?(am|pm)?$/i'
+                ],'message' => [
+                    'time.regex' => 'Time must be a valid range like 10am - 2pm or 09:00 - 14:00',
+                ],
+            ]);
+    
+            $class = ClassTimeTable::find($id);
+            $class->update([
+                'course_id' => $validatedData['course_id'],
+                'room_id' => $validatedData['room_id'],
+                'start_date' => $validatedData['start_date'],
+                'end_date' => $validatedData['end_date'],
+                'time' => $validatedData['time'],
+            ]);
+    
+            return redirect()->route('classes.index')->with('successAlert', 'Class Updated!');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -173,24 +201,28 @@ class ClassController extends Controller
     }
 
     public function export(){
-        return Excel::download(new ClassesExport(),'classtimetables.xlsx');
+        return Excel::download(new ClassesExport(),'classes.xlsx');
     }
 
     public function import(Request $request){
-        $request->validate(['classtimetables'=>'required|file|mimes:xlsx,xls,csv']);
-        $file = $request->file('classtimetables');
+        $request->validate(['classes'=>'required|file|mimes:xlsx,xls,csv']);
+        $file = $request->file('classes');
         $originalName = $file->getClientOriginalName();
 
-        if (!str_contains(strtolower($originalName), 'classtimetables')) {
-            return redirect()->back()->with('errorAlert', 'Excel file name must contain the word "classtimetables"');
+        if (!str_contains(strtolower($originalName), 'classes')) {
+            return redirect()->back()->with('errorAlert', 'Excel file name must contain the word "classes"');
         }
         try {
-            Excel::import(new ClassesImport(), $request->file('classtimetables'));
-            return redirect()->route('classes.index')->with('successAlert', 'Class timetables imported successfully!');
+            Excel::import(new ClassesImport(), $request->file('classes'));
+            return redirect()->route('classes.index')->with('successAlert', 'Classes imported successfully!');
         } catch (ValidationException $e) {
             return back()->with('errorAlert', $e->getMessage());
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('errorAlert', 'This entry already exists in the database.');
+            }
         } catch (\Exception $e) {
-            return back()->with('errorAlert', 'Failed to import. Please check your Excel file format.');
+            return back()->with('errorAlert', 'Failed to import. Please check your Excel file format. Ensure there are no duplicated rows.');
         }
     }
 }

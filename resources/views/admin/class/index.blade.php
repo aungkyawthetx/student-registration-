@@ -49,7 +49,7 @@
                             <form action="{{ route('classes.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
                                 @csrf
                                 <div class="input-group input-group-sm" style="width: 150px;">
-                                    <input type="file" name="classtimetables" class="form-control form-control-sm" required>
+                                    <input type="file" name="classes" class="form-control form-control-sm" required>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-sm" title="Import">
                                     <i class="fa-solid fa-upload"></i>

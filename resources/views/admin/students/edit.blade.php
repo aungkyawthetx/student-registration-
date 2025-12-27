@@ -4,9 +4,21 @@
     <div class="card shadow-sm my-2">
         <div class="card-header bg-transparent d-flex align-items-center justify-content-between">
             <h4 class="card-title d-inline mb-0">Edit Student</h4>
-            <a href="{{ route('students.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
+            <a href="javascript:history.back()" class="text-decoration-none"> &larr; Back</a>
         </div>
         <div class="card-body">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                    {{ session('successAlert') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <form action="{{route('students.update', $student->id)}}" method="POST">
                 @csrf
                 @method('PUT')

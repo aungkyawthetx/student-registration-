@@ -199,6 +199,7 @@
                     },
                     y: {
                         ticks: {
+                            stepSize: 1,
                             color: 'rgb(75, 192, 192)'
                         }
                     }

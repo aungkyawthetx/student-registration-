@@ -25,6 +25,10 @@
     font-family: "Poppins", sans-serif;
     font-style: normal;
   }
+  ::-webkit-scrollbar {
+    width: 0px; 
+    background: transparent;  
+  }
   </style>
 </head>
 <body data-bs-theme="light" class="d-flex flex-column min-vh-100">

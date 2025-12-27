@@ -7,6 +7,7 @@ use App\Imports\TeachersImport;
 use App\Models\Course;
 use App\Models\Role;
 use App\Models\Teacher;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
@@ -46,18 +47,26 @@ class TeacherController extends Controller
         if (Gate::denies('create', Teacher::class)) {
             return redirect()->route("admin.dashboard")->with('error', 'No permission.');
         }
-        $request->validate([
-            'name'=>'required|string|max:50',
-            'email'=>'required|string|email|max:50',
-            'phone'=>'required|string|max:30',
-        ]);
-
-        Teacher::create([
-            'name' => $request->name, 
-            'email' =>  $request->email, 
-            'phone' => $request->phone,
-        ]);
-        return redirect()->route('teachers.index')->with('success', 'Teacher added successfully.');
+        try{
+            $request->validate([
+                'name'=>'required|string|max:50',
+                'email'=>'required|string|email|max:50',
+                'phone'=>'required|string|max:30',
+            ]);
+    
+            Teacher::create([
+                'name' => $request->name, 
+                'email' =>  $request->email, 
+                'phone' => $request->phone,
+            ]);
+            return redirect()->route('teachers.index')->with('success', 'Teacher added successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -99,6 +108,25 @@ class TeacherController extends Controller
         $teacher->update($request->all());
 
         return redirect()->route('teachers.index')->with('success', 'Teacher updated successfully.');
+        try{
+            $request->validate([
+                'name'=>'required|string|max:50',
+                'subject'=>'required|string|max:50',
+                'email'=>'required|string|email|max:50',
+                'phone'=>'required|string|max:30',
+            ]);
+    
+            $teacher = Teacher::find($id);
+            $teacher->update($request->all());
+    
+            return redirect()->route('teachers.index')->with('success', 'Teacher updated successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
+    
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred.']);
+        }
     }
 
     /**
@@ -164,8 +192,12 @@ class TeacherController extends Controller
             return redirect()->route('teachers.index')->with('success', 'Teachers imported successfully!');
         } catch (ValidationException $e) {
             return back()->with('error', $e->getMessage());
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('error', 'This entry already exists in the database.');
+            }
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import. Please check your Excel file format.');
+            return back()->with('error', 'Failed to import. Please check your Excel file format. Ensure there are no duplicated rows.');
         }
     }
 }

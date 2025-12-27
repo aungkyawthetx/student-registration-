@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->float('fees');
             $table->timestamps();
+            $table->unique(['name', 'fees']);
         });
     }
 

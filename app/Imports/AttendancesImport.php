@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Attendance;
 use App\Models\ClassTimeTable;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Room;
 use App\Models\Student;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -22,7 +23,7 @@ class AttendancesImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        $headers = ['class_name', 'student_name', 'date', 'status'];
+        $headers = ['class_name', 'start_date', 'time', 'student_name', 'date', 'status'];
 
         foreach ($headers as $header) {
             if (!array_key_exists($header, $row)) {
@@ -39,19 +40,46 @@ class AttendancesImport implements ToModel, WithHeadingRow
             ]);
         }
         
-        $class = ClassTimeTable::where('name', $row['class_name'])->first();
+        $course = Course::where('name', $row['class_name'])->first();
+        $startDate = is_numeric($row['start_date'])
+        ? Date::excelToDateTimeObject($row['start_date'])->format('Y-m-d')
+        : Carbon::parse($row['start_date'])->format('Y-m-d');
+        $class = ClassTimeTable::where('course_id', $course->id)
+                    ->where('start_date', $startDate)
+                    ->where('time', $row['time'])
+                    ->first();
         if (!$class) {
             throw ValidationException::withMessages([
-                'file' => "Invalid course specified: " . $row['class_name']
+                'file' => "Invalid class specified: " . $row['class_name'] . ". Please check if class start date and time are correct too."
             ]);
         }
-
+        $enrollment = Enrollment::where('student_id', $student->id)
+            ->where('class_id', $class->id)
+            ->first();
+        if (!$enrollment) {
+            throw ValidationException::withMessages([
+                'file' => "Student '{$student->name}' is not enrolled in class '{$course->name}'"
+            ]);
+        }
+        
+        $attendanceDate = is_numeric($row['date'])
+            ? Date::excelToDateTimeObject($row['date'])->format('Y-m-d')
+            : Carbon::parse($row['date'])->format('Y-m-d');
+        
+        if ($attendanceDate < $enrollment->date) {
+            throw ValidationException::withMessages([
+                'file' => "Invalid attendance date for student '{$student->name}' — attendance date '{$attendanceDate}' is before enrollment date '{$enrollment->date}'"
+            ]);
+        }
+        if ($attendanceDate > $class->end_date) {
+            throw ValidationException::withMessages([
+                'file' => "Invalid attendance date for '{$student->name}'. Attendance date '{$attendanceDate}' is after class end date '{$class->end_date}'."
+            ]);
+        }
         return new Attendance([
             'class_id' => $class ? $class->id : null,
             'student_id' => $student ? $student->id : null,
-            'attendance_date' => is_numeric($row['date'])
-                ? Date::excelToDateTimeObject($row['date'])->format('Y-m-d')
-                : Carbon::parse($row['date'])->format('Y-m-d'),
+            'attendance_date' => $attendanceDate,
             'attendance_status' => $row['status'],
             'created_at' => now(),
             'updated_at' => now(),

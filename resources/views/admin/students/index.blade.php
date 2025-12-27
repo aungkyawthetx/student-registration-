@@ -5,16 +5,17 @@
 <div class="container my-4">
     <div class="card shadow-sm rounded">
         <div class="card-header bg-transparent border-bottom">
+
             {{-- Title and New Student Button --}}
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <h2 class="card-title mb-0">Students List</h2>
                 @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                     <a href="{{ route('students.create') }}" class="btn btn-primary btn-sm">
-                        <span class="d-none d-sm-inline">New Student</span>
-                        <i class="fas fa-user-plus ms-1"></i>
+                        <span class="d-none d-sm-inline">Add Student</span>
                     </a>
                 @endif
             </div>
+
             {{-- Flash Messages --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
@@ -69,18 +70,15 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete all students?')">
-                                    <i class="fas fa-trash"></i>
-                                    <span class="d-none d-sm-inline">Delete All</span>
+                                    <span class="d-none d-sm-inline">Del All</span>
+                                    <i class="bi bi-trash3"></i>
                                 </button>
                             </form>
                         </div>
                     @endif
-
                 </div>
             </div>
         </div>
-
-        {{-- Table --}}
 
         {{-- Table --}}
         <div class="card-body">
@@ -117,17 +115,15 @@
                                     <td>{{ $student->parent_info }}</td>
                                     @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
                                         <td>
-                                            <div class="d-flex justify-content-center gap-2">
+                                            <div class="d-flex gap-2">
                                                 <a href="{{ route('students.edit', $student->id) }}" class="btn btn-sm btn-success">
-                                                    <i class="fas fa-edit"></i>
-                                                    <span class="d-none d-sm-inline">Edit</span>
+                                                    <i class="bi bi-pencil-square"></i>
                                                 </a>
                                                 <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete?')">
-                                                        <i class="fas fa-trash"></i>
-                                                        <span class="d-none d-sm-inline">Delete</span>
+                                                        <i class="bi bi-trash3"></i>
                                                     </button>
                                                 </form>
                                             </div>

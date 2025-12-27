@@ -4,20 +4,28 @@
 @endphp
 
 <!-- Desktop Sidebar -->
-<div class="d-flex flex-column flex-shrink-0 p-3 d-lg-block d-none bg-body-tertiary mt-5" style="position: fixed; left: 0; width:18%; height: 95%; z-index: 1000; overflow-y:auto;">
+<div class="d-flex flex-column flex-shrink-0 p-3 d-lg-block d-none mt-5"
+style="
+    position: fixed;
+    left: 0; width:18%;
+    height: 95%;
+    z-index: 1000;
+    overflow-y: auto;
+    background-color: #fafafa;
+    box-shadow: 0px 4px 16px rgba(0,0,0, 0.2)">
     <ul class="nav nav-pills flex-column mb-auto">
         @auth
         <!-- Dashboard -->
         <li class="nav-item mt-3">
             <a href="{{ route('admin.dashboard') }}" class="nav-link text-body {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"> 
-                <i class="fa-solid fa-gauge me-2"></i> Dashboard 
+                <i class="bi bi-house me-1"></i> Dashboard 
             </a>
         </li>
 
         @if(auth()->user()->hasRole($roles[1]->name) || auth()->user()->hasRole($roles->first()->name))
         <!-- Accounts Section -->
         <li class="nav-item mt-3">
-            <div class="fw-bold mb-2 ps-2">Accounts</div>
+            <div class="fw-bold mb-2 ps-2">User & Role</div>
             <ul class="nav flex-column ps-3">
                 <li class="nav-item">
                     <a href="{{route('users.index')}}" class="nav-link text-body {{ request()->routeIs('users.*') ? 'active' : ''}}">
@@ -40,17 +48,17 @@
             <ul class="nav flex-column ps-3">
                 <li class="nav-item">
                     <a href="{{route('students.index')}}" class="nav-link text-body {{ request()->routeIs('students.*') ? 'active' : ''}}">
-                        <i class="bi bi-people me-2"></i> Students
+                        <i class="fa-solid fa-users me-2"></i> Students
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{route('enrollments.index')}}" class="nav-link text-body {{ request()->routeIs('enrollments.*') ? 'active' : '' }}">
-                        <i class="bi bi-card-list me-2"></i> Enrollment
+                        <i class="bi bi-card-heading me-2"></i> Enrollment
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{route('attendances.index')}}" class="nav-link text-body {{ request()->routeIs('attendances.*') ? 'active' : '' }}">
-                        <i class="bi bi-check2-square me-2"></i> Attendance
+                        <i class="bi bi-calendar-check me-2"></i> Attendance
                     </a>
                 </li>
             </ul>
@@ -64,7 +72,7 @@
             <ul class="nav flex-column ps-3">
                 <li class="nav-item">
                     <a href="{{route('teachers.index')}}" class="nav-link text-body {{ request()->routeIs('teachers.*') ? 'active' : ''}}">
-                        <i class="fas fa-chalkboard-teacher me-2"></i> Teachers
+                        <i class="fa-solid fa-graduation-cap me-2"></i> Teachers
                     </a>
                 </li>
                 <li class="nav-item">
@@ -93,7 +101,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{route('classes.index')}}" class="nav-link text-body {{ request()->routeIs('classes.*') ? 'active' : '' }}">
-                        <i class="bi bi-calendar me-2"></i> Class
+                        <i class="bi bi-calendar2-date me-2"></i> Classes
                     </a>
                 </li>
             </ul>
@@ -102,12 +110,12 @@
             <h6 class="fw-bold mb-2 ps-2">Reports</h6>
             <li class="nav-item">
                 <a href="{{route('attendance.report')}}" class="nav-link text-body {{ request()->routeIs('attendance.report') ? 'active fw-bold' : ''}}">
-                    <i class="bi bi-clipboard-check"></i> Attendance Report
+                    <i class="bi bi-flag me-2"></i> Attendance Report
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{route('enrollment.report')}}" class="nav-link text-body {{ request()->routeIs('enrollment.report') ? 'active fw-bold' : ''}}">
-                    <i class="bi bi-clipboard-check"></i> Enrollment Report
+                    <i class="bi bi-flag me-2"></i> Enrollment Report
                 </a>
             </li>
         </li>
@@ -245,6 +253,7 @@
     
     .nav-link.active {
         font-weight: 500;
+        color: #fff !important;
     }
     
     .nav-link i {

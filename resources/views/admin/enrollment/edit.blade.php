@@ -7,6 +7,18 @@
       <a href="{{ route('enrollments.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
     </div>
     <div class="card-body">
+      @if(session('success'))
+          <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+              {{ session('successAlert') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      @endif
+      @if(session('error'))
+          <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+              {{ session('error') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      @endif
       <form action="{{ route('enrollments.update', $enrollment->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -28,7 +40,7 @@
           <select name="class_name" class="form-select @error('class_id') is-invalid @enderror">
             @foreach($classes as $class)
               <option value="{{ $class->id }}" {{ old('class_name', $enrollment->class->id) == $class->id ? 'selected' : '' }}>
-                {{ $class->course->name }}
+                {{ $class->course->name }} — {{$class->start_date}} ({{$class->time}})
               </option>
             @endforeach
           </select>

@@ -5,11 +5,23 @@
         <div class="card-header bg-transparent border-bottom">
             <div class="container d-flex justify-content-between align-items-center mt-1">
                 <h4 class="text-uppercase">new student </h4>
-                <a href="{{ route('students.index') }}" class="btn btn-dark"> <i class="fa-solid fa-chevron-left"></i> Back</a>
+                <a href="javascript:history.back()" class="text-decoration-none"> &larr; Back</a>
             </div>
             
         </div>
         <div class="card-body">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                    {{ session('successAlert') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <form action="{{ route('students.store') }}" method="POST">
                 @csrf
                 <div class="mb-3">
@@ -81,7 +93,7 @@
                         <span class="text-danger"><small>{{ $message }}</small></span>
                     @enderror
                 </div>
-                <button type="submit" class="btn btn-primary"> Add <i class="fas fa-user-plus me-1"></i> </button>
+                <button type="submit" class="btn btn-primary"> Submit </button>
             </form>
         </div>
     </div>

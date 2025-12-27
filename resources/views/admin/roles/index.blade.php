@@ -48,14 +48,14 @@
 
         <div class="card-body">
             <div class="table-responsive my-3">
-                <table class="table table-striped table-hover align-middle text-center">
+                <table class="table table-striped table-hover align-middle">
                     <thead class="table-light">
                         <tr>
                             <th scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Description</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Permission</th>
                             @if(auth()->user()->hasRole($roles->first()->name))
-                                <th scope="col">Actions</th>
+                                <th scope="col" class="text-center"> Action </th>
                             @endif
                         </tr>
                     </thead>
@@ -68,10 +68,9 @@
                                     <td>{{ $role->description }}</td>
                                     @if(auth()->user()->hasRole($roles->first()->name))
                                         <td>
-                                            <div class="d-flex justify-content-center gap-2">
+                                            <div class="text-center">
                                                 <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-sm btn-success">
-                                                    <i class="fas fa-edit"></i>
-                                                    <span class="d-none d-sm-inline">Edit</span>
+                                                    <i class="bi bi-pencil-square"></i>
                                                 </a>
                                             </div>
                                         </td>
@@ -80,7 +79,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="{{ auth()->user()->hasRole($roles->first()->name) ? 4 : 3 }}" class="text-center">
+                                <td colspan="{{ auth()->user()->hasRole($roles->first()->name) ? 4 : 3 }}">
                                     No roles found
                                 </td>
                             </tr>
